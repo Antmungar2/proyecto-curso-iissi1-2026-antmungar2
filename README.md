@@ -241,13 +241,79 @@ para tener en cuenta a los artistas más ligados al festival cuando prepare el p
 
 #### R.F.09. Mi saldo y mis movimientos
 
+Como asistente  
+quiero consultar el saldo actual de mi entrada y la lista de mis recargas y consumos, con el producto y el punto de venta de cada consumo, ordenados por fecha y hora  
+para saber cuánto dinero me queda y en qué me lo he gastado.
+
+**Prueba de aceptación**
+- Una entrada con dos recargas, de 30 € por la web el 20 de mayo y de 20 € en un punto de recarga el viernes 21, y con dos consumos, de 8 € (2 cervezas en la «Barra Azahar») y de 9,50 € (una hamburguesa en un *food truck*), aparece con un saldo de 32,50 €.
+- Las recargas y los consumos aparecen en una misma lista, ordenados por fecha y hora, y cada consumo indica su producto y su punto de venta.
+- Si la credencial tuvo una pulsera que se repuso, aparecen los consumos hechos con las dos pulseras y todos cuentan para el saldo.
+- Si la credencial ya ha tenido una devolución de saldo, esta se descuenta y el saldo sale a 0 €.
+- No aparecen movimientos de otras credenciales.
+- Se consulta una entrada sin recargas ni consumos y aparece con un saldo de 0 € y la lista de movimientos vacía.
+- La consulta usa la información de R.I.06, R.I.08, R.I.09, R.I.10, R.I.11 y R.I.12.
+
 #### R.F.10. Ventas de un punto de venta por producto y hora
+
+Como responsable de punto de venta  
+quiero consultar, para mi punto de venta y una jornada, las unidades vendidas y el importe de cada producto en cada franja de una hora  
+para saber a qué horas se vende más y preparar el personal y el *stock*.
+
+**Prueba de aceptación**
+- Se consultan las ventas de la «Barra Azahar» del viernes 21 y aparecen, para cada franja de una hora, los productos vendidos con sus unidades y su importe, ordenados por franja y por producto.
+- Si en la franja de 17:00 a 18:00 se han vendido 12 cervezas a 4,00 €, aparecen con 12 unidades y 48,00 €.
+- Si el precio de un producto cambió durante la jornada, el importe suma cada consumo con el precio unitario que tenía al venderse.
+- Un consumo de las 01:30 de la madrugada del sábado aparece en la jornada del viernes, en la franja de 01:00 a 02:00.
+- Las franjas en las que no se ha vendido nada no aparecen.
+- No aparecen ventas de otros puntos de venta ni de otras jornadas.
+- Se consulta un punto de venta sin ventas en esa jornada y el listado sale vacío.
+- La consulta usa la información de R.I.08 y R.I.10.
 
 #### R.F.11. Ranking de puntos de venta
 
+Como director del festival  
+quiero consultar los puntos de venta de una edición ordenados de más a menos recaudación, con su producto más vendido  
+para saber qué puntos de venta funcionan mejor y qué es lo que más se consume.
+
+**Prueba de aceptación**
+- Se consulta el ranking de la edición de 2027 y aparecen sus puntos de venta ordenados de mayor a menor recaudación, con el importe total de sus consumos.
+- Cada punto de venta indica su producto más vendido, que es el que tiene más unidades vendidas.
+- Un punto de venta que todavía no ha vendido nada aparece al final con 0 € y sin producto más vendido.
+- No aparecen los puntos de venta de otras ediciones.
+- Se consulta una edición sin puntos de venta y el listado sale vacío.
+- La consulta usa la información de R.I.02, R.I.08 y R.I.10.
+
 #### R.F.12. Productos que hay que reponer
 
+Como responsable de punto de venta  
+quiero consultar los productos de mi punto de venta cuyo *stock* está por debajo del mínimo, con las unidades que se han vendido en la jornada y las que faltan para llegar al mínimo  
+para pedir a tiempo la reposición de lo que se está acabando.
+
+**Prueba de aceptación**
+- Si el agua de la «Barra Azahar» tiene un *stock* de 20 unidades y un mínimo de 50, aparece con 30 unidades que faltan para llegar al mínimo.
+- Cada producto indica las unidades que se han vendido en la jornada que se consulta.
+- Un producto por debajo del mínimo que no se ha vendido en esa jornada aparece con 0 unidades vendidas.
+- Un producto cuyo *stock* es igual al mínimo no aparece, porque no está por debajo.
+- No aparecen productos de otros puntos de venta.
+- Se consulta un punto de venta en el que ningún producto está por debajo del mínimo y el listado sale vacío.
+- La consulta usa la información de R.I.08 y R.I.10.
+
 #### R.F.13. Saldo sin reclamar
+
+Como director del festival  
+quiero consultar las credenciales de una edición, entradas y acreditaciones, que tienen saldo y todavía no han pedido la devolución, con su titular y su saldo  
+para saber cuánto dinero está sin reclamar y poder avisar a sus titulares antes de que termine el plazo.
+
+**Prueba de aceptación**
+- Una entrada con un saldo de 11,50 € y sin devolución aparece con su titular y su saldo.
+- Una acreditación con saldo y sin devolución también aparece, con el profesional que es su titular.
+- Una credencial con un saldo de 0 € no aparece.
+- Una credencial que ya ha pedido la devolución no aparece, aunque su devolución todavía no se haya pagado.
+- No aparecen credenciales de otras ediciones.
+- Se consulta una edición en la que todas las credenciales tienen saldo 0 € o ya han pedido la devolución y el listado sale vacío.
+- La consulta usa la información de R.I.01, R.I.06, R.I.07, R.I.09, R.I.10, R.I.11 y R.I.12.
+- Se debe aplicar la regla de negocio R.N.10.
 
 #### R.F.14. Personas dentro de cada zona
 
@@ -348,11 +414,86 @@ para preparar el cartel y organizar el trabajo de cada escenario.
 
 ##### R.I.08. Información sobre puntos de venta y productos
 
+Como director del festival  
+quiero disponer de la siguiente información sobre los puntos de venta y sus productos:
+- De cada punto de venta: la edición (R.I.02) en la que abre; su nombre, que no se puede repetir dentro de la edición; su tipo (barra, *food truck* o tienda); la zona en la que está (R.I.03) y su responsable, que tiene que ser un profesional con el rol de responsable de punto de venta (R.I.01).
+- De cada producto: el punto de venta en el que se vende; su nombre, que no se puede repetir dentro de su punto de venta; su categoría (bebida, comida o merchandising); su precio actual; si lleva alcohol; el *stock* disponible y el *stock* mínimo.
+
+para saber qué se vende en cada barra, *food truck* y tienda, a qué precio y cuántas unidades quedan.
+
+**Prueba de aceptación**
+- Se registra la «Barra Azahar» de la edición de 2027, de tipo barra, en la zona «Recinto general» y con su responsable, se pide el listado de puntos de venta y aparece.
+- Se registra en esa barra el producto «Cerveza», de la categoría bebida, con alcohol, a 4,00 €, con 300 unidades de *stock* y un *stock* mínimo de 50, se pide el listado de productos y aparece.
+- Se registra en la misma barra el producto «Agua», sin alcohol, y también aparece en el listado.
+- Se registra el producto «Cerveza» en la «Barra Guadalquivir» y se registra sin errores, porque su nombre solo tiene que ser único dentro de su punto de venta.
+- Se registra una «Barra Azahar» en la edición de 2026 y se registra sin errores, porque su nombre solo se compara con los de su edición.
+- Se intenta registrar otra «Barra Azahar» en la edición de 2027 y se recibe un mensaje de error.
+- Se intenta registrar otro producto «Cerveza» en la «Barra Azahar» y se recibe un mensaje de error.
+- Se intenta registrar un punto de venta sin edición, sin zona o sin responsable, o con un tipo distinto de barra, *food truck* o tienda, y se recibe un mensaje de error.
+- Se intenta registrar un punto de venta cuyo responsable es un profesional con otro rol, por ejemplo un vendedor, y se recibe un mensaje de error.
+- Se intenta registrar un producto con una categoría distinta de bebida, comida o merchandising, o sin indicar si lleva alcohol, y se recibe un mensaje de error.
+- Se intenta registrar un producto con un precio de cero o negativo, o con un *stock* o un *stock* mínimo negativos, y se recibe un mensaje de error.
+
 ##### R.I.09. Información sobre recargas
+
+Como director del festival  
+quiero disponer de la siguiente información sobre cada recarga:
+- La credencial a la que se carga el saldo, que puede ser una entrada (R.I.06) o una acreditación (R.I.07). Se recarga a la credencial y no a la pulsera, porque se puede recargar por la web antes de tener la pulsera.
+- El importe.
+- La fecha y la hora.
+- El canal por el que se hace: la web o un punto de recarga.
+
+para saber cuánto dinero se ha cargado a cada credencial y poder calcular su saldo.
+
+**Prueba de aceptación**
+- Se registra una recarga de 20 € por la web a la entrada de Elena Ortega Gil, se pide el listado de recargas y aparece.
+- Se registra una recarga de 50 € en un punto de recarga a la acreditación de Lucía Romero Prieto y aparece en el listado.
+- Se registra una recarga por la web a una entrada que todavía no se ha canjeado por una pulsera y aparece en el listado, porque las recargas van a la credencial.
+- Se intenta registrar una recarga sin credencial, sin importe, sin fecha y hora o sin canal, y se recibe un mensaje de error.
+- Se intenta registrar una recarga con un canal distinto de la web o un punto de recarga y se recibe un mensaje de error.
+- Se debe aplicar la regla de negocio R.N.07.
 
 ##### R.I.10. Información sobre consumos
 
+Como director del festival  
+quiero disponer de la siguiente información sobre cada consumo:
+- La pulsera con la que se paga (R.I.12).
+- El producto que se compra (R.I.08) y la cantidad.
+- El precio unitario en el momento de la venta. No cambia aunque después cambie el precio del producto.
+- El vendedor que cobra, que tiene que ser un profesional con el rol de vendedor (R.I.01).
+- La fecha y la hora.
+
+para saber qué se vende, a qué precio, quién lo cobra y a cuánto asciende lo que gasta cada credencial.
+
+**Prueba de aceptación**
+- Con una pulsera con saldo suficiente, se registra el consumo de 2 cervezas de la «Barra Azahar» a 4,00 € cada una, cobrado por un vendedor, se pide el listado de consumos y aparece con un precio unitario de 4,00 €.
+- Después se sube el precio de la cerveza a 4,50 €: el consumo anterior sigue apareciendo con 4,00 € y un consumo nuevo se registra con 4,50 €.
+- Se intenta registrar un consumo con una cantidad de cero o negativa, o sin pulsera, sin producto, sin vendedor o sin fecha y hora, y se recibe un mensaje de error.
+- Se intenta registrar un consumo cobrado por un profesional que no tiene el rol de vendedor y se recibe un mensaje de error.
+- Se deben aplicar las reglas de negocio R.N.07, R.N.08 y R.N.09.
+
 ##### R.I.11. Información sobre devoluciones de saldo
+
+Como atención al cliente  
+quiero disponer de la siguiente información sobre cada devolución de saldo:
+- La credencial cuyo saldo se devuelve, que puede ser una entrada (R.I.06) o una acreditación (R.I.07).
+- El importe devuelto, que es el saldo completo de la credencial en el momento de la solicitud.
+- La fecha de solicitud.
+- La fecha de pago, cuando ya se ha pagado.
+- El estado: solicitada o pagada.
+- El profesional de atención al cliente que la tramita (R.I.01).
+
+para devolver a cada asistente y a cada profesional el saldo que le sobra y llevar el control de lo que ya se ha pagado.
+
+**Prueba de aceptación**
+- Con una entrada con un saldo de 11,50 €, se registra una devolución de 11,50 € tramitada por atención al cliente, sin fecha de pago, se pide el listado de devoluciones y aparece como solicitada.
+- Se marca esa devolución como pagada, con su fecha de pago, y aparece en el listado como pagada.
+- Se registra una devolución de una acreditación con saldo y aparece en el listado.
+- Se intenta registrar una devolución sin credencial, sin importe, sin fecha de solicitud o sin profesional que la tramite, y se recibe un mensaje de error.
+- Se intenta registrar una devolución con un importe de cero o negativo, o con un estado distinto de solicitada o pagada, y se recibe un mensaje de error.
+- Se intenta registrar una devolución tramitada por un profesional que no tiene el rol de atención al cliente y se recibe un mensaje de error.
+- Se intenta marcar una devolución como pagada sin fecha de pago y se recibe un mensaje de error.
+- Se debe aplicar la regla de negocio R.N.10.
 
 ##### R.I.12. Información sobre pulseras
 
@@ -400,11 +541,50 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 ##### R.N.07. Saldo nunca negativo y límites de recarga
 
+El saldo de una credencial no puede quedar nunca por debajo de cero: se rechaza un consumo si su importe, que es la cantidad por el precio unitario, supera el saldo de la credencial a la que pertenece la pulsera. El saldo es lo que se ha recargado menos lo que se ha consumido con todas sus pulseras y menos lo que ya se ha devuelto. Además, cada recarga tiene que ser de 5 € como mínimo y de 200 € como máximo.
+
+**Prueba de aceptación**
+- Si una entrada tiene un saldo de 10 €, se cobran 2 bocadillos de 5 € y el consumo se registra sin errores, porque el saldo queda en 0 €.
+- En esa misma situación, con un saldo de 10 €, se intenta cobrar 3 bocadillos de 5 € (15 €) y se recibe un mensaje de error.
+- Si una entrada se ha recargado con 50 € y ha consumido 38,50 €, se intenta cobrar 2 platos de 6 € (12 €) y se recibe un mensaje de error, porque solo quedan 11,50 €.
+- Si una credencial se ha recargado con 40 € y con su primera pulsera se han gastado 30 €, esa pulsera se pierde y se repone, con la pulsera nueva se intenta cobrar 15 € y se recibe un mensaje de error, porque con la nueva solo quedan 10 €.
+- Se registra una recarga de 5 € y otra de 200 €, y las dos se registran sin errores.
+- Se intenta registrar una recarga de 4,99 € y se recibe un mensaje de error.
+- Se intenta registrar una recarga de 200,01 € y se recibe un mensaje de error.
+
 ##### R.N.08. Prohibida la venta de alcohol a menores
+
+No se puede vender un producto con alcohol a una pulsera cuyo titular tenga menos de 18 años en el momento de la venta. La edad se calcula con la fecha de nacimiento del titular y la fecha y hora del consumo. Los productos sin alcohol se pueden vender a cualquier titular.
+
+**Prueba de aceptación**
+- Si la pulsera tiene saldo suficiente y su titular es un adulto de 35 años, se cobra una cerveza (con alcohol) y el consumo se registra sin errores.
+- Martín Ruiz Ortega, nacido el 14/03/2012, tiene 15 años en mayo de 2027: se intenta cobrarle una cerveza con saldo suficiente a su pulsera el sábado 22 de mayo a las 20:00 y se recibe un mensaje de error.
+- Ese mismo titular, con saldo suficiente, compra un refresco sin alcohol el mismo día y el consumo se registra sin errores.
+- Si el titular de un abono nació el 22/05/2009 y su pulsera tiene saldo suficiente, se intenta cobrarle una cerveza el viernes 21 de mayo de 2027 a las 20:00 y se recibe un mensaje de error, porque todavía tiene 17 años.
+- En esa misma situación, se le cobra una cerveza el sábado 22 de mayo de 2027 a las 20:00 y se registra sin errores, porque ese día cumple 18 años.
 
 ##### R.N.09. Control de stock
 
+No se puede vender más cantidad de un producto que su *stock* disponible. Cada consumo descuenta su cantidad del *stock* del producto.
+
+**Prueba de aceptación**
+- Si el agua de la «Barra Azahar» tiene 100 unidades de *stock* y se cobran 2 con una pulsera con saldo suficiente, el consumo se registra sin errores y el *stock* pasa a 98.
+- Si un producto tiene 5 unidades de *stock* y se cobran las 5 con una pulsera con saldo suficiente, el consumo se registra sin errores y el *stock* queda en 0.
+- Si un producto tiene 5 unidades de *stock*, se intenta cobrar 6 con una pulsera con saldo suficiente y se recibe un mensaje de error. El *stock* sigue en 5.
+- Si un producto tiene 0 unidades de *stock*, se intenta cobrar 1 con una pulsera con saldo suficiente y se recibe un mensaje de error.
+
 ##### R.N.10. Devolución del saldo sin comisión
+
+La devolución del saldo sobrante se puede pedir desde que termina la última jornada de la edición y durante los 30 días siguientes. En 2027 eso es desde el lunes 24 de mayo a las 06:00 hasta el miércoles 23 de junio a las 06:00. Cada credencial solo puede pedir una devolución, sin comisión y por el saldo completo que tenga en ese momento, aunque sea menor de 2 €. Así evitamos problemas como el que le costó la multa al Reggaeton Beach Festival en 2026.
+
+**Prueba de aceptación**
+- Si una entrada tiene un saldo de 11,50 €, se solicita su devolución el lunes 24 de mayo de 2027 a las 06:00, justo cuando termina la última jornada, y se registra sin errores por 11,50 €, sin ninguna comisión.
+- Si una entrada tiene un saldo de 1,20 €, se solicita su devolución el martes 1 de junio de 2027 y se registra sin errores por 1,20 €, aunque sea menor de 2 €.
+- Si una acreditación tiene un saldo de 5 €, se solicita su devolución el martes 25 de mayo de 2027 y se registra sin errores por 5 €.
+- Si una entrada tiene un saldo de 11,50 €, se solicita su devolución el miércoles 23 de junio de 2027 a las 06:00, justo 30 días después, y se registra sin errores.
+- Si una entrada tiene un saldo de 11,50 €, se intenta solicitar su devolución el lunes 24 de mayo de 2027 a las 05:59, cuando todavía no ha terminado la última jornada, y se recibe un mensaje de error.
+- Si una entrada tiene un saldo de 11,50 €, se intenta solicitar su devolución el miércoles 23 de junio de 2027 a las 06:01, cuando ya ha pasado el plazo, y se recibe un mensaje de error.
+- Si una entrada ya tiene una devolución solicitada el martes 25 de mayo de 2027, se intenta solicitar otra el miércoles 26 de mayo y se recibe un mensaje de error, porque solo se puede pedir una vez por credencial.
 
 ##### R.N.11. Acceso solo a zonas y jornadas permitidas
 
