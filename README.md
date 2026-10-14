@@ -251,13 +251,61 @@ para tener en cuenta a los artistas más ligados al festival cuando prepare el p
 
 #### R.F.14. Personas dentro de cada zona
 
+Como personal de acceso  
+quiero consultar en tiempo real el número de personas que hay dentro de mi zona y su aforo máximo  
+para saber si puedo dejar entrar a más público sin superar el límite permitido.
+
+**Prueba de aceptación**
+- Se consulta la ocupación del «Patio VIP» y muestra 1.150 de 1.200 personas permitidas.
+- Se registran 50 accesos de entrada más, el aforo alcanza los 1.200 y el sistema avisa visualmente de que la zona está completa.
+- Se registra la salida de 5 personas y el contador baja a 1.195, permitiendo nuevos accesos.
+- La consulta usa la información de R.I.03 y R.I.13, y aplica la regla R.N.12.
+
 #### R.F.15. Accesos de una pulsera
+
+Como seguridad  
+quiero consultar el historial de accesos de una pulsera concreta  
+para comprobar a qué hora ha entrado, en qué zonas ha estado y si se está haciendo un uso fraudulento de ella.
+
+**Prueba de aceptación**
+- Se lee una pulsera con el dispositivo de consulta y aparece un listado ordenado cronológicamente con sus entradas y salidas.
+- Cada línea del registro indica la hora exacta, la zona y si fue un movimiento de entrada o de salida.
+- Si la pulsera es nueva y acaba de ser canjeada, el historial aparece vacío.
+- La consulta usa la información de R.I.12 y R.I.13.
 
 #### R.F.16. Titulares que no llegaron a entrar
 
+Como director del festival  
+quiero consultar la lista de titulares de entradas que no llegaron a registrar ningún acceso al recinto durante su jornada  
+para medir la tasa de absentismo (*no-shows*) del evento.
+
+**Prueba de aceptación**
+- Termina la jornada del viernes y al consultar el listado aparecen las entradas válidas para el viernes que no tienen ninguna lectura en los controles de acceso al recinto general.
+- Un titular que entró, salió y no volvió a entrar no aparece en este listado.
+- La consulta usa la información de R.I.06 y R.I.13.
+
 #### R.F.17. Pulseras bloqueadas y repuestas
 
+Como atención al cliente  
+quiero consultar el listado de pulseras bloqueadas por pérdida o rotura y ver cuál es su pulsera de repuesto  
+para llevar un control de las incidencias de canje y los trasvases de saldo.
+
+**Prueba de aceptación**
+- Se busca el documento de identidad de un asistente que perdió su pulsera y aparece la pulsera original marcada como «bloqueada» y la nueva marcada como «activa».
+- El historial muestra la fecha y hora exactas en las que se realizó el bloqueo y la asociación de la nueva pulsera.
+- La consulta usa la información de R.I.12 y aplica la regla R.N.13.
+
 #### R.F.18. Incidencias por zona, tipo y gravedad
+
+Como director del festival  
+quiero consultar las incidencias registradas en una jornada agrupadas por zona, tipo (sanitaria, seguridad o técnica) y gravedad (leve, grave o muy grave)  
+para evaluar qué áreas del recinto son más conflictivas y dimensionar mejor al personal en la próxima edición.
+
+**Prueba de aceptación**
+- Se consultan las incidencias del viernes y aparece un desglose mostrando, por ejemplo, 5 sanitarias leves en el «Recinto general» y 1 técnica grave en el «Escenario Azahar».
+- Se puede filtrar el listado para ver únicamente las incidencias de tipo «seguridad».
+- Si en una zona no hubo incidencias, aparece con el contador a cero.
+- La consulta usa la información de R.I.03 y R.I.14.
 
 #### 4.1.1. Requisitos de información
 
@@ -356,9 +404,54 @@ para preparar el cartel y organizar el trabajo de cada escenario.
 
 ##### R.I.12. Información sobre pulseras
 
+Como atención al cliente  
+quiero disponer de la siguiente información sobre cada pulsera:
+- Código identificador único del chip NFC. No se puede repetir.
+- Estado actual: activa o bloqueada.
+- Credencial a la que está asociada (la entrada del público o la acreditación del profesional).
+- Saldo actual disponible.
+
+para poder gestionar los canjes, los pagos y bloquearlas si el asistente avisa de una pérdida.
+
+**Prueba de aceptación**
+- Se canjea una entrada por una pulsera, se registra en el sistema como «activa» con saldo cero, y aparece asociada a esa entrada concreta.
+- Se intenta registrar en el sistema una pulsera con un código NFC que ya existe y se recibe un mensaje de error.
+- Se bloquea una pulsera por pérdida, su estado cambia a «bloqueada» y el saldo se congela para transferirlo.
+
 ##### R.I.13. Información sobre accesos
 
+Como personal de acceso  
+quiero disponer de la siguiente información sobre cada lectura en un punto de control:
+- La pulsera leída.
+- La zona a la que se intenta acceder o de la que se sale.
+- Fecha y hora exacta (con segundos) de la lectura.
+- Tipo de movimiento: entrada o salida.
+- El usuario (personal de acceso) que ha validado la lectura.
+- Resultado: permitido o denegado (y el motivo del rechazo).
+
+para mantener el registro en tiempo real de quién está dentro de cada zona y quién lo ha dejado pasar.
+
+**Prueba de aceptación**
+- Se lee una pulsera válida al entrar al «Patio VIP», queda registrada la pulsera, la fecha/hora, el tipo «entrada», resultado «permitido» y el trabajador responsable.
+- Se intenta entrar a una zona sin permisos, el movimiento queda registrado como «denegado» con el motivo correspondiente (ej. "Credencial no válida para zona VIP").
+- Se intenta registrar un acceso sin especificar la zona o la pulsera y el sistema devuelve un error.
+
 ##### R.I.14. Información sobre incidencias
+
+Como profesional (seguridad, sanitario o jefe de escenario)  
+quiero disponer de la siguiente información sobre cada incidencia ocurrida:
+- Fecha y hora exacta.
+- Zona o escenario donde se ha producido.
+- Tipo de incidencia: sanitaria, seguridad o técnica.
+- Gravedad: leve, grave o muy grave.
+- Descripción de lo ocurrido.
+- El profesional que la ha registrado.
+
+para tener un registro centralizado de todos los problemas del evento y evitar que la información se pierda en grupos de WhatsApp o partes de papel.
+
+**Prueba de aceptación**
+- Un sanitario registra una atención por un esguince: anota la hora, zona «Carpa Alameda», tipo «sanitaria», gravedad «leve», redacta la descripción y su usuario queda asociado. Se pide el listado y aparece.
+- Se intenta guardar una incidencia sin especificar el tipo, la zona o la descripción, y el sistema devuelve un mensaje de error.
 
 #### 4.1.2. Reglas de negocio
 
@@ -408,9 +501,32 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 ##### R.N.11. Acceso solo a zonas y jornadas permitidas
 
+Una pulsera solo dará acceso a una zona si su credencial asociada (entrada o acreditación) es válida para la jornada actual y tiene los permisos necesarios para ese tipo de zona. 
+
+**Prueba de aceptación**
+- Un asistente con entrada general intenta entrar en el «Patio VIP», el sistema deniega el acceso y marca una luz roja.
+- Un asistente con abono VIP intenta entrar en el «Patio VIP», el sistema lo permite y marca luz verde.
+- Un asistente con entrada de día para el viernes intenta entrar al recinto el sábado a las 18:00, el sistema deniega el acceso.
+- Un profesional con acreditación de barra intenta entrar al *backstage*, el sistema deniega el acceso al no tener ese privilegio en su rol.
+
 ##### R.N.12. Aforo máximo de cada zona
 
+El sistema bloqueará cualquier nuevo registro de entrada en una zona si la diferencia entre las entradas y salidas registradas ese día (ocupación actual) es igual o superior al aforo máximo definido para dicha zona (R.I.03).
+
+**Prueba de aceptación**
+- La «Carpa Alameda» tiene un aforo de 2.500 personas. Hay 2.499 dentro. Se lee una pulsera válida y se permite el acceso.
+- A continuación, con 2.500 personas dentro, se lee otra pulsera válida. El sistema deniega el acceso por aforo completo.
+- Alguien sale de la Carpa Alameda, la ocupación baja a 2.499. Se vuelve a leer la pulsera que fue denegada antes y ahora el sistema permite el acceso.
+
 ##### R.N.13. Una sola pulsera activa por credencial
+
+Una credencial (entrada o acreditación) solo puede tener asociada una única pulsera en estado «activa». Si se le asocia una nueva pulsera (por pérdida, rotura o robo), la anterior pasa automáticamente a estado «bloqueada» y su saldo íntegro se traspasa a la nueva.
+
+**Prueba de aceptación**
+- Un titular tiene la pulsera A activa con 15 € de saldo. Acude a incidencias porque la ha roto. 
+- Atención al cliente le asocia la nueva pulsera B a su entrada.
+- El sistema marca automáticamente la pulsera A como «bloqueada» y la pulsera B como «activa» con 15 € de saldo.
+- Alguien encuentra la pulsera A rota e intenta pagar una cerveza en una barra. El lector rechaza la operación porque la pulsera está bloqueada.
 
 ### 4.2. Mapa de historias de usuario (opcional)
 
