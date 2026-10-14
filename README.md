@@ -231,13 +231,54 @@ para tener en cuenta a los artistas más ligados al festival cuando prepare el p
 
 #### R.F.04. Mis entradas
 
+Como asistente quiero consultar el listado de las entradas de las que soy comprador o titular, viendo su código, tipo, titular y estado para gestionar mis compras, cambiar los titulares si es necesario y presentar la entrada en las taquillas para el canje.
+
+**Prueba de aceptación**
+- Un usuario entra al sistema y ve las 2 entradas que compró: una donde es titular y otra donde su amigo es titular.
+- El amigo (titular, pero no comprador) entra al sistema y ve únicamente la entrada que está a su nombre.
+- Las entradas que ya han sido devueltas o canceladas aparecen marcadas claramente en el listado.
+- La consulta usa la información de R.I.01 y R.I.06.
+
 #### R.F.05. Ventas por tipo de entrada y fase
+
+Como director del festival quiero consultar un listado con el número de entradas vendidas agrupadas por edición, tipo de entrada y fase de venta, mostrando también los ingresos totales generados por cada grupo para analizar el rendimiento económico, el ritmo de ventas y planificar la estrategia de precios.
+
+**Prueba de aceptación**
+- Se consulta el listado para la edición 2027 y aparecen filas detallando "Abono General - Fase 1: 1000 ventas, 40.000€", "Abono General - Fase 2: 500 ventas, 25.000€", etc.
+- La suma total de los ingresos cuadra exactamente con el sumatorio individual de cada entrada en estado "comprada" o "canjeada".
+- Las entradas devueltas no suman ni en la cantidad de ventas ni en los ingresos.
+- La consulta usa la información de R.I.02, R.I.05 y R.I.06.
 
 #### R.F.06. Ocupación prevista de cada jornada
 
+Como director del festival quiero consultar el número exacto de personas que tienen derecho a acceder al recinto en cada jornada de una edición, desglosado por público (entradas) y personal (acreditaciones) para prever las necesidades de seguridad, sanitarios, limpieza y asegurar que no se supera el aforo de 15.000 personas.
+
+**Prueba de aceptación**
+- Se consulta la ocupación del viernes 21 y el sistema suma todos los abonos vendidos + las entradas de día del viernes + las acreditaciones emitidas.
+- El listado muestra visualmente cuánto falta para llegar al aforo máximo establecido en R.I.02.
+- Si se revoca una acreditación o se devuelve una entrada, el número total de ocupación prevista desciende en la consulta.
+- La consulta usa la información de R.I.02, R.I.06, R.I.07 y aplica R.N.05.
+
 #### R.F.07. Compradores con el máximo de entradas
 
+Como atención al cliente quiero obtener un listado de los usuarios que han comprado el máximo de entradas permitidas (4) para la edición actual para poder auditar a estos usuarios e investigar posibles casos de reventa no autorizada.
+
+**Prueba de aceptación**
+- Al lanzar la consulta, aparece un usuario que ha comprado 2 abonos y 2 entradas de día.
+- Un usuario que ha comprado 3 entradas no aparece en el listado.
+- Un usuario que compró 4 entradas en la edición de 2026 pero 0 en la actual, no aparece en la consulta de la edición actual.
+- La consulta usa la información de R.I.01, R.I.06 y aplica R.N.04.
+
 #### R.F.08. Menores de una jornada y su adulto responsable
+
+Como personal de acceso quiero consultar un listado de los menores de 16 años que tienen previsto asistir en la jornada actual, junto con el nombre y teléfono de su adulto responsable registrado para agilizar el control en puerta y poder contactar rápidamente con el tutor legal en caso de una incidencia o emergencia.
+
+**Prueba de aceptación**
+- Se consulta el listado del viernes 21 y aparecen todos los titulares de entradas válidas para ese día cuya fecha de nacimiento indique que tienen menos de 16 años.
+- Junto al nombre del menor, aparece el DNI, nombre y teléfono del adulto responsable asociado a esa entrada.
+- Los menores de 17 años no aparecen en el listado, ya que no requieren adulto responsable.
+- Si el menor no tiene adulto asignado aún (entrada comprada pero pendiente de completar datos), aparece resaltado con un aviso de que no puede acceder.
+- La consulta usa la información de R.I.01, R.I.06 y aplica R.N.06.
 
 #### R.F.09. Mi saldo y mis movimientos
 
@@ -251,13 +292,61 @@ para tener en cuenta a los artistas más ligados al festival cuando prepare el p
 
 #### R.F.14. Personas dentro de cada zona
 
+Como personal de acceso  
+quiero consultar en tiempo real el número de personas que hay dentro de mi zona y su aforo máximo  
+para saber si puedo dejar entrar a más público sin superar el límite permitido.
+
+**Prueba de aceptación**
+- Se consulta la ocupación del «Patio VIP» y muestra 1.150 de 1.200 personas permitidas.
+- Se registran 50 accesos de entrada más, el aforo alcanza los 1.200 y el sistema avisa visualmente de que la zona está completa.
+- Se registra la salida de 5 personas y el contador baja a 1.195, permitiendo nuevos accesos.
+- La consulta usa la información de R.I.03 y R.I.13, y aplica la regla R.N.12.
+
 #### R.F.15. Accesos de una pulsera
+
+Como seguridad  
+quiero consultar el historial de accesos de una pulsera concreta  
+para comprobar a qué hora ha entrado, en qué zonas ha estado y si se está haciendo un uso fraudulento de ella.
+
+**Prueba de aceptación**
+- Se lee una pulsera con el dispositivo de consulta y aparece un listado ordenado cronológicamente con sus entradas y salidas.
+- Cada línea del registro indica la hora exacta, la zona y si fue un movimiento de entrada o de salida.
+- Si la pulsera es nueva y acaba de ser canjeada, el historial aparece vacío.
+- La consulta usa la información de R.I.12 y R.I.13.
 
 #### R.F.16. Titulares que no llegaron a entrar
 
+Como director del festival  
+quiero consultar la lista de titulares de entradas que no llegaron a registrar ningún acceso al recinto durante su jornada  
+para medir la tasa de absentismo (*no-shows*) del evento.
+
+**Prueba de aceptación**
+- Termina la jornada del viernes y al consultar el listado aparecen las entradas válidas para el viernes que no tienen ninguna lectura en los controles de acceso al recinto general.
+- Un titular que entró, salió y no volvió a entrar no aparece en este listado.
+- La consulta usa la información de R.I.06 y R.I.13.
+
 #### R.F.17. Pulseras bloqueadas y repuestas
 
+Como atención al cliente  
+quiero consultar el listado de pulseras bloqueadas por pérdida o rotura y ver cuál es su pulsera de repuesto  
+para llevar un control de las incidencias de canje y los trasvases de saldo.
+
+**Prueba de aceptación**
+- Se busca el documento de identidad de un asistente que perdió su pulsera y aparece la pulsera original marcada como «bloqueada» y la nueva marcada como «activa».
+- El historial muestra la fecha y hora exactas en las que se realizó el bloqueo y la asociación de la nueva pulsera.
+- La consulta usa la información de R.I.12 y aplica la regla R.N.13.
+
 #### R.F.18. Incidencias por zona, tipo y gravedad
+
+Como director del festival  
+quiero consultar las incidencias registradas en una jornada agrupadas por zona, tipo (sanitaria, seguridad o técnica) y gravedad (leve, grave o muy grave)  
+para evaluar qué áreas del recinto son más conflictivas y dimensionar mejor al personal en la próxima edición.
+
+**Prueba de aceptación**
+- Se consultan las incidencias del viernes y aparece un desglose mostrando, por ejemplo, 5 sanitarias leves en el «Recinto general» y 1 técnica grave en el «Escenario Azahar».
+- Se puede filtrar el listado para ver únicamente las incidencias de tipo «seguridad».
+- Si en una zona no hubo incidencias, aparece con el contador a cero.
+- La consulta usa la información de R.I.03 y R.I.14.
 
 #### 4.1.1. Requisitos de información
 
@@ -342,9 +431,50 @@ para preparar el cartel y organizar el trabajo de cada escenario.
 
 ##### R.I.05. Información sobre tipos de credencial y fases de venta
 
+Como director del festival quiero disponer de la siguiente información sobre los tipos de credencial y las fases de venta:  
+- De cada tipo de credencial: su nombre (Abono General, Abono VIP, Entrada de viernes, Acreditación de Staff, etc.), si está destinada a público o profesionales, y las zonas del recinto a las que da acceso (R.I.03).  
+- De cada fase de venta (solo para credenciales de público): nombre de la fase, tipo de entrada al que aplica, fecha y hora de inicio, fecha y hora de fin, precio y cupo máximo de entradas a vender.  
+para configurar la venta escalonada de entradas y definir los permisos de acceso de cada credencial en el recinto.
+
+**Prueba de aceptación**
+- Se registra el tipo "Abono General" con acceso a la zona "Pública", se pide el listado de tipos de credencial y aparece.
+- Se registra una fase de venta para el "Abono General" con 50€ y cupo de 2000, y aparece vinculada al tipo de entrada.
+- Se intenta registrar una fase de venta con fecha de fin anterior a la de inicio, o con un cupo negativo, y se recibe un mensaje de error.
+- Se intenta solapar las fechas de dos fases de venta para el mismo tipo de credencial y se recibe un mensaje de error.
+
 ##### R.I.06. Información sobre entradas
 
+Como atención al cliente quiero disponer de la siguiente información sobre las entradas vendidas:  
+- Código alfanumérico único de la entrada.  
+- Usuario que realizó la compra (R.I.01).  
+- Usuario titular que usará la entrada (R.I.01).  
+- Tipo de credencial (R.I.05) y edición (R.I.02).  
+- Fase de venta en la que se adquirió y precio final pagado.  
+- Estado de la entrada: comprada, canjeada por pulsera o devuelta.  
+- Si el titular es menor de 16 años, enlace al documento de autorización y DNI del adulto responsable (R.I.01).  
+para gestionar la asistencia, resolver problemas de compra, gestionar cambios de titular y realizar el canje por pulseras en el recinto.
+
+**Prueba de aceptación**
+- Se registra la compra de una entrada asignando comprador y titular, se consulta la entrada y aparecen sus datos.
+- Se intenta registrar una entrada sin comprador, sin titular o sin tipo asignado, y se recibe un mensaje de error.
+- Se modifica el titular de una entrada en estado "comprada", y el cambio se guarda correctamente.
+- Se intenta cambiar el titular de una entrada en estado "canjeada", y se recibe un mensaje de error.
+
 ##### R.I.07. Información sobre acreditaciones
+
+Como director del festival quiero disponer de la siguiente información sobre las acreditaciones:  
+- Código alfanumérico único de la acreditación.  
+- Profesional al que está asignada (R.I.01).  
+- Tipo de credencial (R.I.05) que define a qué zonas profesionales puede acceder.  
+- Edición del festival (R.I.02).  
+- Estado de la acreditación: emitida, canjeada por pulsera o revocada.  
+para dar acceso al personal a las zonas de trabajo correspondientes y controlar las credenciales entregadas.
+
+**Prueba de aceptación**
+- Se emite una acreditación para un profesional de seguridad, se consulta el listado y aparece con estado "emitida".
+- Se intenta asignar una acreditación a un usuario que solo tiene perfil de asistente (no es profesional), y se recibe un mensaje de error.
+- Se revoca una acreditación, su estado cambia a "revocada" y ya no permite el canje por pulsera.
+
 
 ##### R.I.08. Información sobre puntos de venta y productos
 
@@ -356,9 +486,54 @@ para preparar el cartel y organizar el trabajo de cada escenario.
 
 ##### R.I.12. Información sobre pulseras
 
+Como atención al cliente  
+quiero disponer de la siguiente información sobre cada pulsera:
+- Código identificador único del chip NFC. No se puede repetir.
+- Estado actual: activa o bloqueada.
+- Credencial a la que está asociada (la entrada del público o la acreditación del profesional).
+- Saldo actual disponible.
+
+para poder gestionar los canjes, los pagos y bloquearlas si el asistente avisa de una pérdida.
+
+**Prueba de aceptación**
+- Se canjea una entrada por una pulsera, se registra en el sistema como «activa» con saldo cero, y aparece asociada a esa entrada concreta.
+- Se intenta registrar en el sistema una pulsera con un código NFC que ya existe y se recibe un mensaje de error.
+- Se bloquea una pulsera por pérdida, su estado cambia a «bloqueada» y el saldo se congela para transferirlo.
+
 ##### R.I.13. Información sobre accesos
 
+Como personal de acceso  
+quiero disponer de la siguiente información sobre cada lectura en un punto de control:
+- La pulsera leída.
+- La zona a la que se intenta acceder o de la que se sale.
+- Fecha y hora exacta (con segundos) de la lectura.
+- Tipo de movimiento: entrada o salida.
+- El usuario (personal de acceso) que ha validado la lectura.
+- Resultado: permitido o denegado (y el motivo del rechazo).
+
+para mantener el registro en tiempo real de quién está dentro de cada zona y quién lo ha dejado pasar.
+
+**Prueba de aceptación**
+- Se lee una pulsera válida al entrar al «Patio VIP», queda registrada la pulsera, la fecha/hora, el tipo «entrada», resultado «permitido» y el trabajador responsable.
+- Se intenta entrar a una zona sin permisos, el movimiento queda registrado como «denegado» con el motivo correspondiente (ej. "Credencial no válida para zona VIP").
+- Se intenta registrar un acceso sin especificar la zona o la pulsera y el sistema devuelve un error.
+
 ##### R.I.14. Información sobre incidencias
+
+Como profesional (seguridad, sanitario o jefe de escenario)  
+quiero disponer de la siguiente información sobre cada incidencia ocurrida:
+- Fecha y hora exacta.
+- Zona o escenario donde se ha producido.
+- Tipo de incidencia: sanitaria, seguridad o técnica.
+- Gravedad: leve, grave o muy grave.
+- Descripción de lo ocurrido.
+- El profesional que la ha registrado.
+
+para tener un registro centralizado de todos los problemas del evento y evitar que la información se pierda en grupos de WhatsApp o partes de papel.
+
+**Prueba de aceptación**
+- Un sanitario registra una atención por un esguince: anota la hora, zona «Carpa Alameda», tipo «sanitaria», gravedad «leve», redacta la descripción y su usuario queda asociado. Se pide el listado y aparece.
+- Se intenta guardar una incidencia sin especificar el tipo, la zona o la descripción, y el sistema devuelve un mensaje de error.
 
 #### 4.1.2. Reglas de negocio
 
@@ -392,11 +567,39 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 ##### R.N.03. Fase activa y precio congelado
 
+Para un mismo tipo de entrada, solo puede haber una fase de venta activa en un momento dado. Una fase se desactiva automáticamente si se alcanza su fecha de fin o si se agota su cupo máximo de entradas. El precio pagado por una entrada queda registrado de forma inmutable; si la fase cambia o el precio sube posteriormente, el histórico de la entrada ya vendida no se altera.
+
+**Prueba de aceptación**
+- Se configura la Fase 1 hasta agotar 1000 abonos. Al vender la entrada 1000, la Fase 1 se cierra y se activa automáticamente la Fase 2 si su fecha de inicio lo permite.
+- Se intenta crear una nueva fase cuyas fechas se solapan con una fase existente para el mismo tipo de entrada, y el sistema muestra un mensaje de error.
+- Se consulta una entrada vendida en Fase 1 a 40€ cuando la Fase 3 a 70€ está activa, y la entrada sigue mostrando 40€ como precio pagado.
+
 ##### R.N.04. Máximo cuatro entradas por comprador y edición
+
+Un mismo usuario en su rol de comprador no puede adquirir más de 4 entradas para la misma edición del festival, sumando todos los tipos de entrada adquiridos. Esta restricción es por comprador, independientemente de quiénes sean los titulares de esas entradas.
+
+**Prueba de aceptación**
+- Un usuario compra 4 abonos generales para 2027 poniéndose a sí mismo y a 3 amigos como titulares, y la compra se completa sin errores.
+- Ese mismo usuario intenta comprar 1 entrada de día extra para 2027 y el sistema bloquea la compra mostrando un mensaje de error.
+- Ese usuario intenta comprar entradas para la edición de 2028, y el sistema se lo permite porque la restricción es por edición.
 
 ##### R.N.05. Aforo máximo de cada jornada
 
+El sistema bloqueará cualquier venta de entradas o emisión de acreditaciones si la suma total de personas con derecho a acceder en una jornada supera el aforo máximo autorizado para esa jornada (R.I 02). Para este cálculo cuentan tanto las entradas de día de esa jornada, como los abonos generales, abonos VIP y las acreditaciones de personal activas.
+
+**Prueba de aceptación**
+- Si el aforo máximo de la jornada del viernes es 15.000 personas y hay 14.999 credenciales válidas emitidas para ese día, se vende una entrada de viernes y se procesa sin errores.
+- En la misma situación, se intenta comprar un abono general (que incluye el viernes) o emitir una acreditación más, y el sistema lo impide mostrando un mensaje de error de aforo completo.
+- Se devuelve una entrada de viernes, liberando espacio, y el sistema permite una nueva venta para esa jornada.
+
 ##### R.N.06. Menores de 16 años con adulto responsable
+
+Si el usuario asignado como titular de una entrada tiene menos de 16 años cumplidos el día en que comienza la jornada a la que asiste, el sistema exigirá obligatoriamente registrar el DNI de un adulto responsable (usuario mayor de 18 años) y subir un documento de autorización firmado antes de permitir el canje de la entrada por la pulsera de acceso.
+
+**Prueba de aceptación**
+- Un titular de 15 años se presenta al canje sin un adulto responsable registrado en su entrada, y el sistema bloquea el canje mostrando una alerta.
+- Se añade el DNI de un usuario de 19 años como adulto responsable y se adjunta la autorización PDF, y el sistema permite el canje.
+- Un titular de 17 años se presenta al canje, y el sistema lo permite directamente sin pedir autorización de adulto.
 
 ##### R.N.07. Saldo nunca negativo y límites de recarga
 
@@ -408,9 +611,32 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 ##### R.N.11. Acceso solo a zonas y jornadas permitidas
 
+Una pulsera solo dará acceso a una zona si su credencial asociada (entrada o acreditación) es válida para la jornada actual y tiene los permisos necesarios para ese tipo de zona. 
+
+**Prueba de aceptación**
+- Un asistente con entrada general intenta entrar en el «Patio VIP», el sistema deniega el acceso y marca una luz roja.
+- Un asistente con abono VIP intenta entrar en el «Patio VIP», el sistema lo permite y marca luz verde.
+- Un asistente con entrada de día para el viernes intenta entrar al recinto el sábado a las 18:00, el sistema deniega el acceso.
+- Un profesional con acreditación de barra intenta entrar al *backstage*, el sistema deniega el acceso al no tener ese privilegio en su rol.
+
 ##### R.N.12. Aforo máximo de cada zona
 
+El sistema bloqueará cualquier nuevo registro de entrada en una zona si la diferencia entre las entradas y salidas registradas ese día (ocupación actual) es igual o superior al aforo máximo definido para dicha zona (R.I.03).
+
+**Prueba de aceptación**
+- La «Carpa Alameda» tiene un aforo de 2.500 personas. Hay 2.499 dentro. Se lee una pulsera válida y se permite el acceso.
+- A continuación, con 2.500 personas dentro, se lee otra pulsera válida. El sistema deniega el acceso por aforo completo.
+- Alguien sale de la Carpa Alameda, la ocupación baja a 2.499. Se vuelve a leer la pulsera que fue denegada antes y ahora el sistema permite el acceso.
+
 ##### R.N.13. Una sola pulsera activa por credencial
+
+Una credencial (entrada o acreditación) solo puede tener asociada una única pulsera en estado «activa». Si se le asocia una nueva pulsera (por pérdida, rotura o robo), la anterior pasa automáticamente a estado «bloqueada» y su saldo íntegro se traspasa a la nueva.
+
+**Prueba de aceptación**
+- Un titular tiene la pulsera A activa con 15 € de saldo. Acude a incidencias porque la ha roto. 
+- Atención al cliente le asocia la nueva pulsera B a su entrada.
+- El sistema marca automáticamente la pulsera A como «bloqueada» y la pulsera B como «activa» con 15 € de saldo.
+- Alguien encuentra la pulsera A rota e intenta pagar una cerveza en una barra. El lector rechaza la operación porque la pulsera está bloqueada.
 
 ### 4.2. Mapa de historias de usuario (opcional)
 
