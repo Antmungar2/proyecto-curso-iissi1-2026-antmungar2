@@ -231,13 +231,54 @@ para tener en cuenta a los artistas más ligados al festival cuando prepare el p
 
 #### R.F.04. Mis entradas
 
+Como asistente quiero consultar el listado de las entradas de las que soy comprador o titular, viendo su código, tipo, titular y estado para gestionar mis compras, cambiar los titulares si es necesario y presentar la entrada en las taquillas para el canje.
+
+**Prueba de aceptación**
+- Un usuario entra al sistema y ve las 2 entradas que compró: una donde es titular y otra donde su amigo es titular.
+- El amigo (titular, pero no comprador) entra al sistema y ve únicamente la entrada que está a su nombre.
+- Las entradas que ya han sido devueltas o canceladas aparecen marcadas claramente en el listado.
+- La consulta usa la información de R.I.01 y R.I.06.
+
 #### R.F.05. Ventas por tipo de entrada y fase
+
+Como director del festival quiero consultar un listado con el número de entradas vendidas agrupadas por edición, tipo de entrada y fase de venta, mostrando también los ingresos totales generados por cada grupo para analizar el rendimiento económico, el ritmo de ventas y planificar la estrategia de precios.
+
+**Prueba de aceptación**
+- Se consulta el listado para la edición 2027 y aparecen filas detallando "Abono General - Fase 1: 1000 ventas, 40.000€", "Abono General - Fase 2: 500 ventas, 25.000€", etc.
+- La suma total de los ingresos cuadra exactamente con el sumatorio individual de cada entrada en estado "comprada" o "canjeada".
+- Las entradas devueltas no suman ni en la cantidad de ventas ni en los ingresos.
+- La consulta usa la información de R.I.02, R.I.05 y R.I.06.
 
 #### R.F.06. Ocupación prevista de cada jornada
 
+Como director del festival quiero consultar el número exacto de personas que tienen derecho a acceder al recinto en cada jornada de una edición, desglosado por público (entradas) y personal (acreditaciones) para prever las necesidades de seguridad, sanitarios, limpieza y asegurar que no se supera el aforo de 15.000 personas.
+
+**Prueba de aceptación**
+- Se consulta la ocupación del viernes 21 y el sistema suma todos los abonos vendidos + las entradas de día del viernes + las acreditaciones emitidas.
+- El listado muestra visualmente cuánto falta para llegar al aforo máximo establecido en R.I.02.
+- Si se revoca una acreditación o se devuelve una entrada, el número total de ocupación prevista desciende en la consulta.
+- La consulta usa la información de R.I.02, R.I.06, R.I.07 y aplica R.N.05.
+
 #### R.F.07. Compradores con el máximo de entradas
 
+Como atención al cliente quiero obtener un listado de los usuarios que han comprado el máximo de entradas permitidas (4) para la edición actual para poder auditar a estos usuarios e investigar posibles casos de reventa no autorizada.
+
+**Prueba de aceptación**
+- Al lanzar la consulta, aparece un usuario que ha comprado 2 abonos y 2 entradas de día.
+- Un usuario que ha comprado 3 entradas no aparece en el listado.
+- Un usuario que compró 4 entradas en la edición de 2026 pero 0 en la actual, no aparece en la consulta de la edición actual.
+- La consulta usa la información de R.I.01, R.I.06 y aplica R.N.04.
+
 #### R.F.08. Menores de una jornada y su adulto responsable
+
+Como personal de acceso quiero consultar un listado de los menores de 16 años que tienen previsto asistir en la jornada actual, junto con el nombre y teléfono de su adulto responsable registrado para agilizar el control en puerta y poder contactar rápidamente con el tutor legal en caso de una incidencia o emergencia.
+
+**Prueba de aceptación**
+- Se consulta el listado del viernes 21 y aparecen todos los titulares de entradas válidas para ese día cuya fecha de nacimiento indique que tienen menos de 16 años.
+- Junto al nombre del menor, aparece el DNI, nombre y teléfono del adulto responsable asociado a esa entrada.
+- Los menores de 17 años no aparecen en el listado, ya que no requieren adulto responsable.
+- Si el menor no tiene adulto asignado aún (entrada comprada pero pendiente de completar datos), aparece resaltado con un aviso de que no puede acceder.
+- La consulta usa la información de R.I.01, R.I.06 y aplica R.N.06.
 
 #### R.F.09. Mi saldo y mis movimientos
 
@@ -390,9 +431,50 @@ para preparar el cartel y organizar el trabajo de cada escenario.
 
 ##### R.I.05. Información sobre tipos de credencial y fases de venta
 
+Como director del festival quiero disponer de la siguiente información sobre los tipos de credencial y las fases de venta:  
+- De cada tipo de credencial: su nombre (Abono General, Abono VIP, Entrada de viernes, Acreditación de Staff, etc.), si está destinada a público o profesionales, y las zonas del recinto a las que da acceso (R.I.03).  
+- De cada fase de venta (solo para credenciales de público): nombre de la fase, tipo de entrada al que aplica, fecha y hora de inicio, fecha y hora de fin, precio y cupo máximo de entradas a vender.  
+para configurar la venta escalonada de entradas y definir los permisos de acceso de cada credencial en el recinto.
+
+**Prueba de aceptación**
+- Se registra el tipo "Abono General" con acceso a la zona "Pública", se pide el listado de tipos de credencial y aparece.
+- Se registra una fase de venta para el "Abono General" con 50€ y cupo de 2000, y aparece vinculada al tipo de entrada.
+- Se intenta registrar una fase de venta con fecha de fin anterior a la de inicio, o con un cupo negativo, y se recibe un mensaje de error.
+- Se intenta solapar las fechas de dos fases de venta para el mismo tipo de credencial y se recibe un mensaje de error.
+
 ##### R.I.06. Información sobre entradas
 
+Como atención al cliente quiero disponer de la siguiente información sobre las entradas vendidas:  
+- Código alfanumérico único de la entrada.  
+- Usuario que realizó la compra (R.I.01).  
+- Usuario titular que usará la entrada (R.I.01).  
+- Tipo de credencial (R.I.05) y edición (R.I.02).  
+- Fase de venta en la que se adquirió y precio final pagado.  
+- Estado de la entrada: comprada, canjeada por pulsera o devuelta.  
+- Si el titular es menor de 16 años, enlace al documento de autorización y DNI del adulto responsable (R.I.01).  
+para gestionar la asistencia, resolver problemas de compra, gestionar cambios de titular y realizar el canje por pulseras en el recinto.
+
+**Prueba de aceptación**
+- Se registra la compra de una entrada asignando comprador y titular, se consulta la entrada y aparecen sus datos.
+- Se intenta registrar una entrada sin comprador, sin titular o sin tipo asignado, y se recibe un mensaje de error.
+- Se modifica el titular de una entrada en estado "comprada", y el cambio se guarda correctamente.
+- Se intenta cambiar el titular de una entrada en estado "canjeada", y se recibe un mensaje de error.
+
 ##### R.I.07. Información sobre acreditaciones
+
+Como director del festival quiero disponer de la siguiente información sobre las acreditaciones:  
+- Código alfanumérico único de la acreditación.  
+- Profesional al que está asignada (R.I.01).  
+- Tipo de credencial (R.I.05) que define a qué zonas profesionales puede acceder.  
+- Edición del festival (R.I.02).  
+- Estado de la acreditación: emitida, canjeada por pulsera o revocada.  
+para dar acceso al personal a las zonas de trabajo correspondientes y controlar las credenciales entregadas.
+
+**Prueba de aceptación**
+- Se emite una acreditación para un profesional de seguridad, se consulta el listado y aparece con estado "emitida".
+- Se intenta asignar una acreditación a un usuario que solo tiene perfil de asistente (no es profesional), y se recibe un mensaje de error.
+- Se revoca una acreditación, su estado cambia a "revocada" y ya no permite el canje por pulsera.
+
 
 ##### R.I.08. Información sobre puntos de venta y productos
 
@@ -485,11 +567,39 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 ##### R.N.03. Fase activa y precio congelado
 
+Para un mismo tipo de entrada, solo puede haber una fase de venta activa en un momento dado. Una fase se desactiva automáticamente si se alcanza su fecha de fin o si se agota su cupo máximo de entradas. El precio pagado por una entrada queda registrado de forma inmutable; si la fase cambia o el precio sube posteriormente, el histórico de la entrada ya vendida no se altera.
+
+**Prueba de aceptación**
+- Se configura la Fase 1 hasta agotar 1000 abonos. Al vender la entrada 1000, la Fase 1 se cierra y se activa automáticamente la Fase 2 si su fecha de inicio lo permite.
+- Se intenta crear una nueva fase cuyas fechas se solapan con una fase existente para el mismo tipo de entrada, y el sistema muestra un mensaje de error.
+- Se consulta una entrada vendida en Fase 1 a 40€ cuando la Fase 3 a 70€ está activa, y la entrada sigue mostrando 40€ como precio pagado.
+
 ##### R.N.04. Máximo cuatro entradas por comprador y edición
+
+Un mismo usuario en su rol de comprador no puede adquirir más de 4 entradas para la misma edición del festival, sumando todos los tipos de entrada adquiridos. Esta restricción es por comprador, independientemente de quiénes sean los titulares de esas entradas.
+
+**Prueba de aceptación**
+- Un usuario compra 4 abonos generales para 2027 poniéndose a sí mismo y a 3 amigos como titulares, y la compra se completa sin errores.
+- Ese mismo usuario intenta comprar 1 entrada de día extra para 2027 y el sistema bloquea la compra mostrando un mensaje de error.
+- Ese usuario intenta comprar entradas para la edición de 2028, y el sistema se lo permite porque la restricción es por edición.
 
 ##### R.N.05. Aforo máximo de cada jornada
 
+El sistema bloqueará cualquier venta de entradas o emisión de acreditaciones si la suma total de personas con derecho a acceder en una jornada supera el aforo máximo autorizado para esa jornada (R.I 02). Para este cálculo cuentan tanto las entradas de día de esa jornada, como los abonos generales, abonos VIP y las acreditaciones de personal activas.
+
+**Prueba de aceptación**
+- Si el aforo máximo de la jornada del viernes es 15.000 personas y hay 14.999 credenciales válidas emitidas para ese día, se vende una entrada de viernes y se procesa sin errores.
+- En la misma situación, se intenta comprar un abono general (que incluye el viernes) o emitir una acreditación más, y el sistema lo impide mostrando un mensaje de error de aforo completo.
+- Se devuelve una entrada de viernes, liberando espacio, y el sistema permite una nueva venta para esa jornada.
+
 ##### R.N.06. Menores de 16 años con adulto responsable
+
+Si el usuario asignado como titular de una entrada tiene menos de 16 años cumplidos el día en que comienza la jornada a la que asiste, el sistema exigirá obligatoriamente registrar el DNI de un adulto responsable (usuario mayor de 18 años) y subir un documento de autorización firmado antes de permitir el canje de la entrada por la pulsera de acceso.
+
+**Prueba de aceptación**
+- Un titular de 15 años se presenta al canje sin un adulto responsable registrado en su entrada, y el sistema bloquea el canje mostrando una alerta.
+- Se añade el DNI de un usuario de 19 años como adulto responsable y se adjunta la autorización PDF, y el sistema permite el canje.
+- Un titular de 17 años se presenta al canje, y el sistema lo permite directamente sin pedir autorización de adulto.
 
 ##### R.N.07. Saldo nunca negativo y límites de recarga
 
