@@ -265,10 +265,6 @@ para evaluar qué áreas del recinto son más conflictivas y dimensionar mejor a
 
 #### 4.1.1. Requisitos de información
 
-Cada requisito describe una entidad y termina con sus relaciones. Usamos un identificador propio en cada entidad; las referencias indicadas como FK servirán para preparar el modelo relacional. En UML se representarán como asociaciones, sin duplicarlas como atributos. En las multiplicidades, `1` significa obligatorio, `0..1` opcional y `0..*` cualquier número de elementos. Salvo que se indique lo contrario, los datos son obligatorios.
-
-Los perfiles, roles, estados y categorías son valores enumerados, no entidades adicionales. El saldo, la edad, la jornada de una lectura y los totales de las consultas se calculan a partir de los datos guardados. Los importes se expresan en euros con dos decimales y las fechas y horas usan la hora local de Sevilla. Una referencia `credencialId` apunta al código único de la credencial. No se borran datos que tengan registros dependientes: las anulaciones y cancelaciones conservan el histórico.
-
 ##### R.I.01. Información sobre usuarios
 
 Como director del festival  
