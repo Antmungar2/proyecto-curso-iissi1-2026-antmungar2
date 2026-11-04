@@ -709,6 +709,67 @@ para no perder ventas ni accesos si falla el servidor.
 - con restricciones.
 
 ### 5.2. Escenarios de prueba
+### RN06: Gestión de saldo y recargas en pulsera
+
+#### Escenario Válido: Recarga exitosa y acumulación de saldo
+* **Identificador:** RN06-Valido
+* **Descripción:** Un asistente con una credencial canjeada y pulsera activa realiza dos recargas acumulando un saldo total disponible de 205,00 €.
+* **Diagrama de Objetos:**
+  ![RN06 Válido](docs/img/escenarios_pruebas/rn06_valido.png)
+
+#### Escenario de Rechazo: Saldo insuficiente en cobro
+* **Identificador:** RN06-Rechazo
+* **Descripción:** Se intenta realizar una consumición de 3 bocadillos (15,00 €) disponiendo únicamente de 10,00 € de saldo. Operación rechazada.
+* **Diagrama de Objetos:**
+  ![RN06 Rechazo](docs/img/escenarios_pruebas/rn06_rechazo.png)
+
+---
+
+### RN07: Restricción de venta de alcohol a menores
+
+#### Escenario de Rechazo: Intento de compra por menor de edad
+* **Identificador:** RN07-Rechazo
+* **Descripción:** Un asistente menor de edad (16 años) intenta adquirir una consumición con contenido alcohólico. El sistema bloquea automáticamente la venta.
+* **Diagrama de Objetos:**
+  ![RN07 Rechazo](docs/img/escenarios_pruebas/rn07_rechazo.png)
+
+#### Escenario Válido: Compra de alcohol por mayor de edad
+* **Identificador:** RN07-Valido
+* **Descripción:** Un asistente mayor de edad (27 años) adquiere una consumición alcohólica teniendo saldo suficiente.
+* **Diagrama de Objetos:**
+  ![RN07 Válido](docs/img/escenarios_pruebas/rn07_valido.png)
+
+---
+
+### RN08: Control de existencias (Stock de productos)
+
+#### Escenario de Rechazo: Stock insuficiente
+* **Identificador:** RN08-Rechazo
+* **Descripción:** Se solicita la compra de 2 unidades de un producto del que solo queda 1 unidad en stock.
+* **Diagrama de Objetos:**
+  ![RN08 Rechazo](docs/img/escenarios_pruebas/rn08_rechazo.png)
+
+#### Escenario Válido: Venta y decremento de stock
+* **Identificador:** RN08-Valido
+* **Descripción:** Compra exitosa de 2 camisetas con stock disponible previo de 10 unidades. Se reduce el stock a 8 y se crea el consumo correspondiente.
+* **Diagrama de Objetos:**
+  ![RN08 Válido](docs/img/escenarios_pruebas/rn08_valido.png)
+
+---
+
+### RN09: Devolución de saldo restante
+
+#### Escenario Válido: Reintegro dentro de plazo
+* **Identificador:** RN09-Valido
+* **Descripción:** Tras la finalización del festival y dentro del plazo establecido, se solicita la devolución de 25,50 € restantes en la pulsera.
+* **Diagrama de Objetos:**
+  ![RN09 Válido](docs/img/escenarios_pruebas/rn09_valido.png)
+
+#### Escenario de Rechazo: Solicitud improcedente
+* **Identificador:** RN09-Rechazo
+* **Descripción:** Intento de tramitar devolución cuando el saldo disponible es 0,00 € o la solicitud se realiza fuera del plazo legal permitido.
+* **Diagrama de Objetos:**
+  ![RN09 Rechazo](docs/img/escenarios_pruebas/rn09_rechazo.png)
 
 - con descripción textual y diagrama de objetos UML.
 
