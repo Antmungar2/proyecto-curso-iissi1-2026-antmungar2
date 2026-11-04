@@ -1,0 +1,121 @@
+@startuml
+!pragma layout smetana
+title E-10.4 · Aforo completo, salida y reintento (límite)
+hide empty members
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam object {
+  BackgroundColor #FEFECE
+  BorderColor #A80036
+  FontSize 13
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #D6B656
+  FontSize 12
+}
+skinparam nodesep 30
+skinparam ranksep 30
+
+object "ed2027 : Edicion" as ed2027 {
+  id = "ED-2027"
+  nombre = "Azahar Sound 2027"
+  anio = 2027
+  fechaInicio = "21/05/2027"
+  fechaFin = "23/05/2027"
+  aforoMaximoJornada = 15000
+}
+object "zcarpa : Zona" as zcarpa {
+  id = "Z-CARPA"
+  nombre = "Carpa Alameda"
+  tipo = "pública"
+  aforoMaximo = 2500
+  ubicacion = "Dentro del recinto general"
+  /ocupacionActual = 2500
+}
+object "tcAG : TipoCredencial" as tcAG {
+  id = "TC-AG-27"
+  nombre = "Abono General 2027"
+  destinatario = "público"
+  validez = "todas las jornadas"
+  perfilAcceso = "general"
+}
+object "lucia : Usuario" as lucia {
+  id = "USR-10D"
+  nombre = "Lucía"
+  fechaNacimiento = "18/11/2000"
+  rol = "asistente"
+}
+object "cr10d : Credencial" as cr10d {
+  codigo = "CR-10D"
+  estado = "canjeada"
+  nfcActual = "NFC-10D"
+  estadoPulsera = "activa"
+  /saldoActual = 0,00 €
+  /saldoDisponible = 0,00 €
+}
+object "mario : Usuario" as mario {
+  id = "USR-10E"
+  nombre = "Mario"
+  fechaNacimiento = "02/03/1999"
+  rol = "asistente"
+}
+object "cr10e : Credencial" as cr10e {
+  codigo = "CR-10E"
+  estado = "canjeada"
+  nfcActual = "NFC-10E"
+  estadoPulsera = "activa"
+  /saldoActual = 0,00 €
+  /saldoDisponible = 0,00 €
+}
+object "sergio : Usuario" as sergio {
+  id = "USR-CTL-01"
+  nombre = "Sergio"
+  fechaNacimiento = "15/06/1994"
+  rol = "personal de control del recinto"
+}
+object "acc10d1 : Acceso" as acc10d1 {
+  id = "ACC-10D-1"
+  fechaHora = "22/05/2027 22:00:00"
+  tipoMovimiento = "entrada"
+  resultado = "denegado"
+  motivo = "aforo completo"
+}
+object "acc10d2 : Acceso" as acc10d2 {
+  id = "ACC-10D-2"
+  fechaHora = "22/05/2027 22:01:00"
+  tipoMovimiento = "salida"
+  resultado = "permitido"
+  motivo = null
+}
+object "acc10d3 : Acceso" as acc10d3 {
+  id = "ACC-10D-3"
+  fechaHora = "22/05/2027 22:02:00"
+  tipoMovimiento = "entrada"
+  resultado = "permitido"
+  motivo = null
+}
+
+ed2027 -- tcAG : edicion
+tcAG -- cr10d : tipoCredencial
+tcAG -- cr10e : tipoCredencial
+lucia -- cr10d : titular
+mario -- cr10e : titular
+acc10d1 -- cr10d : credencial
+acc10d1 -- zcarpa : zona
+acc10d1 -- sergio : validador
+acc10d2 -- cr10e : credencial
+acc10d2 -- zcarpa : zona
+acc10d2 -- sergio : validador
+acc10d3 -- cr10d : credencial
+acc10d3 -- zcarpa : zona
+acc10d3 -- sergio : validador
+
+note bottom of zcarpa
+Antes: 2.500 de 2.500. La entrada de Lucía se deniega por aforo completo.
+Con la salida de Mario la ocupación baja a 2.499 y el reintento de Lucía se permite.
+La ocupación final vuelve a 2.500; nunca se supera el aforo.
+end note
+@enduml

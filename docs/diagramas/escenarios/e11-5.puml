@@ -1,0 +1,61 @@
+@startuml
+!pragma layout smetana
+title E-11.5 · Credencial anulada: pulsera bloqueada y saldo conservado (límite)
+hide empty members
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam object {
+  BackgroundColor #FEFECE
+  BorderColor #A80036
+  FontSize 13
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #D6B656
+  FontSize 12
+}
+skinparam nodesep 30
+skinparam ranksep 30
+
+object "ed2027 : Edicion" as ed2027 {
+  id = "ED-2027"
+  nombre = "Azahar Sound 2027"
+  anio = 2027
+  fechaInicio = "21/05/2027"
+  fechaFin = "23/05/2027"
+  aforoMaximoJornada = 15000
+}
+object "tcAG : TipoCredencial" as tcAG {
+  id = "TC-AG-27"
+  nombre = "Abono General 2027"
+  destinatario = "público"
+  validez = "todas las jornadas"
+  perfilAcceso = "general"
+}
+object "elena : Usuario" as elena {
+  id = "USR-11G"
+  nombre = "Elena"
+  fechaNacimiento = "10/04/2001"
+  rol = "asistente"
+}
+object "cr11g : Credencial" as cr11g {
+  codigo = "CR-11G"
+  estado = "anulada"
+  nfcActual = "NFC-E"
+  estadoPulsera = "bloqueada"
+  /saldoActual = 15,00 €
+  /saldoDisponible = 15,00 €
+  fechaHoraBloqueoPulsera = "22/05/2027 12:00"
+  /estadoDevolucion = "sin solicitar"
+}
+ed2027 -- tcAG : edicion
+tcAG -- cr11g : tipoCredencial
+elena -- cr11g : titular
+
+note bottom of cr11g
+La credencial está anulada: no se permite canje ni reposición y la pulsera queda bloqueada.
+No se reactiva, pero conserva los 15,00 € para poder pedir la devolución (R.N.09).
+end note
+@enduml
