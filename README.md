@@ -716,7 +716,180 @@ para no perder ventas ni accesos si falla el servidor.
 
 ### 5.1. Diagramas de clases UML
 
-- con restricciones.
+```mermaid
+%%{init: {"theme":"base","class":{"hideEmptyMembersBox":true},"flowchart":{"nodeSpacing":30,"rankSpacing":140},"themeVariables":{"primaryColor":"#f5f7fa","primaryTextColor":"#17212b","primaryBorderColor":"#53677a","lineColor":"#34495e","noteBkgColor":"#fff9e8","noteTextColor":"#17212b","noteBorderColor":"#998653","fontFamily":"Arial","fontSize":"16px"}}}%%
+classDiagram
+direction TB
+accTitle: Modelo conceptual de Backstage
+accDescr: Trece entidades con atributos, multiplicidades, roles y restricciones básicas y referencias a los RI y RN de la sección 4.1. Los dominios de los atributos enumerados se definen en los requisitos de información.
+
+class Edicion {
+    idEdicion
+    nombre
+    anio
+    fechaInicio
+    fechaFin
+    aforoAutorizado
+    /fechaHoraCierre
+}
+
+class Zona {
+    idZona
+    nombre
+    tipo : TipoZona
+    aforoMaximo
+    ubicacion
+    /ocupacionActual
+}
+
+class Acceso {
+    idAcceso
+    fechaHora
+    sentido : SentidoAcceso
+    resultado : ResultadoAcceso
+    motivoDenegacion [0..1]
+}
+
+class Actuacion {
+    idActuacion
+    fechaHoraInicio
+    fechaHoraFin
+    esCabezaCartel
+    estado : EstadoActuacion
+}
+
+class Escenario {
+    idEscenario
+    nombre
+}
+
+class PuntoVenta {
+    idPuntoVenta
+    nombre
+    tipo : TipoPuntoVenta
+}
+
+class Artista {
+    idArtista
+    nombreArtistico
+    generoMusical
+    paisOrigen
+}
+
+class Credencial {
+    codigo
+    fechaHoraEmision
+    precioPagado
+    estado : EstadoCredencial
+    fechaHoraPrimerCanje [0..1]
+    enlaceAutorizacion [0..1]
+    codigoNFC [0..1]
+    estadoPulsera : EstadoPulsera [0..1]
+    fechaHoraAsignacion [0..1]
+    fechaHoraBloqueo [0..1]
+    fechaHoraSolicitud [0..1]
+    importeDevolucion [0..1]
+    fechaHoraPago [0..1]
+    /estadoDevolucion : EstadoDevolucion
+    /saldoActual
+    /saldoDisponible
+}
+
+class Usuario {
+    idUsuario
+    correo
+    hashContrasena
+    nombre
+    apellidos
+    documentoIdentidad
+    fechaNacimiento
+    telefono [0..1]
+    fechaAlta
+    esAsistente
+    esProfesional
+    empresa [0..1]
+    rolOperativo : RolOperativo [0..1]
+}
+
+class MovimientoSaldo {
+    idMovimiento
+    fechaHora
+    tipo : TipoMovimiento
+    importeRecarga [0..1]
+    canalRecarga : CanalRecarga [0..1]
+    cantidad [0..1]
+    precioUnitario [0..1]
+    /importe
+}
+
+class Incidencia {
+    idIncidencia
+    fechaHora
+    tipo : TipoIncidencia
+    gravedad : Gravedad
+    descripcion
+}
+
+class TipoCredencial {
+    idTipoCredencial
+    nombre
+    destinatario : Destinatario
+    jornadaValidez [0..1]
+    perfilAcceso : PerfilAcceso
+    precioActual
+    cupoMaximo
+}
+
+class Producto {
+    idProducto
+    nombre
+    categoria : CategoriaProducto
+    precioActual
+    llevaAlcohol
+    stockDisponible
+    stockMinimo
+}
+
+Escenario "1" -- "*" Actuacion
+Credencial "*" -- "0..1 adulto" Usuario : ▲ tiene adulto responsable
+Credencial "1" -- "*" MovimientoSaldo
+Acceso "*" -- "1 validador" Usuario
+Credencial "*" -- "1" TipoCredencial
+Actuacion "*" -- "1" Artista
+Usuario "0..1 tramitador" -- "*" Credencial : tramita la devolución de
+Acceso "*" -- "1" Zona
+PuntoVenta "*" -- "1" Edicion
+PuntoVenta "1" -- "*" Producto
+Edicion "1" *-- "*" Actuacion
+Usuario "0..1 responsable" -- "*" Escenario
+Usuario "0..1 comprador" -- "*" Credencial : compra
+Edicion "1" *-- "*" TipoCredencial
+Edicion "1" -- "*" Incidencia
+Zona "1" -- "*" Escenario
+PuntoVenta "*" -- "1 responsable" Usuario
+Incidencia "*" -- "1 registrador" Usuario
+Usuario "1 titular" -- "*" Credencial : es titular de
+Zona "1" -- "*" Incidencia
+Acceso "*" -- "0..1" Credencial
+Usuario "0..1 vendedor" -- "*" MovimientoSaldo
+Producto "0..1" -- "*" MovimientoSaldo
+PuntoVenta "*" -- "1" Zona
+
+note "{Identificadores únicos; / derivado; [0..1] opcional.}<br/>{RI y RN: restricciones definidas en la sección 4.1.}"
+note for Usuario "{RI01: correo y documentoIdentidad únicos.}<br/>{esAsistente o esProfesional, o ambos.}<br/>{rolOperativo ⇒ esProfesional.}"
+note for Edicion "{RI02: anio único; fechaInicio ≤ fechaFin.}<br/>{0 < aforoAutorizado ≤ aforo del recinto.}<br/>{RN04: reservas por jornada ≤ aforoAutorizado.}<br/>{Una credencial no anulada por titular y jornada.}"
+note for Zona "{RI03: nombre único; un recinto general.}<br/>{aforoMaximo > 0.}<br/>{RN10: 0 ≤ ocupacionActual ≤ aforoMaximo.}<br/>{/ocupacionActual = entradas permitidas<br/>− salidas permitidas.}"
+note for Escenario "{RI04: nombre único.}<br/>{Responsable con rol de programación.}"
+note for Artista "{RI05: nombreArtistico único.}"
+note for Actuacion "{RN01: duración entre 30 y 180 minutos.}<br/>{Dentro de una jornada de su edición.}<br/>{Mismo escenario: separación ≥ 30 minutos.}<br/>{Mismo artista: sin solapes. Canceladas excluidas.}"
+note for TipoCredencial "{RI07: nombre único por edición.}<br/>{RN02: precio público > 0; profesional = 0.}<br/>{cupoMaximo entero > 0.}<br/>{Credenciales no anuladas ≤ cupoMaximo.}"
+note for Credencial "{RI08: codigoNFC único cuando existe.}<br/>{RN02: tipo y precioPagado inmutables.}<br/>{RN03: ≤ 4 entradas por comprador y edición;<br/>no cuentan las anuladas.}<br/>{RN05: menor de 16 ⇒ adulto ≥ 18 y autorización.}<br/>{RN09: devolución única del saldo completo;<br/>sin comisión, desde el cierre.}<br/>{RN11: una pulsera actual; anulación irreversible.}"
+note for PuntoVenta "{RI09: nombre único por edición.}<br/>{Responsable con rol de punto de venta.}"
+note for Producto "{RI10: nombre único por punto; precioActual > 0.}<br/>{stockDisponible y stockMinimo enteros ≥ 0.}<br/>{RN07: venta de alcohol ⇒ titular ≥ 18 años.}<br/>{RN08: cantidad entera; 0 < cantidad ≤ stock previo.}"
+note for MovimientoSaldo "{RI11: recarga o consumo, excluyentes.}<br/>{/importe = importeRecarga o cantidad × precioUnitario.}<br/>{RN06: saldo ≥ 0; consumo ≤ saldoDisponible.}<br/>{5 ≤ importeRecarga ≤ 200 EUR.}"
+note for Acceso "{RI12: credencial nula ⇒ denegado.}<br/>{Denegado ⇒ motivoDenegacion obligatorio.}<br/>{RN10: validar pulsera, jornada, perfil y aforo;<br/>alternar entrada y salida por titular y zona.}"
+note for Incidencia "{RI13: fecha dentro de una jornada de su edición.}<br/>{Registrador con rol de control o programación.}"
+```
 
 ### 5.2. Escenarios de prueba
 
