@@ -1,0 +1,67 @@
+@startuml
+!pragma layout smetana
+title E-11.2 · Pago con la pulsera A ya sustituida (rechazo)
+hide empty members
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam object {
+  BackgroundColor #FEFECE
+  BorderColor #A80036
+  FontSize 13
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #D6B656
+  FontSize 12
+}
+skinparam nodesep 30
+skinparam ranksep 30
+
+object "ed2027 : Edicion" as ed2027 {
+  id = "ED-2027"
+  nombre = "Azahar Sound 2027"
+  anio = 2027
+  fechaInicio = "21/05/2027"
+  fechaFin = "23/05/2027"
+  aforoMaximoJornada = 15000
+}
+object "pv01 : PuntoVenta" as pv01 {
+  id = "PV-01"
+  nombre = "Barra Azahar"
+  tipo = "barra"
+}
+object "prCerveza : Producto" as prCerveza {
+  id = "PR-002"
+  nombre = "Cerveza"
+  categoria = "bebida"
+  precioActual = 3,50 €
+  llevaAlcohol = true
+  stock = 50
+  stockMinimo = 10
+}
+object "elena : Usuario" as elena {
+  id = "USR-11B"
+  nombre = "Elena"
+  fechaNacimiento = "10/04/2001"
+  rol = "asistente"
+}
+object "cr11b : Credencial" as cr11b {
+  codigo = "CR-11B"
+  estado = "canjeada"
+  nfcActual = "NFC-B"
+  estadoPulsera = "activa"
+  /saldoActual = 15,00 €
+  /saldoDisponible = 15,00 €
+}
+ed2027 -- pv01 : edicion
+pv01 -- prCerveza : productos
+elena -- cr11b : titular
+
+note bottom of cr11b
+Alguien encuentra NFC-A, la pulsera sustituida, e intenta pagar una cerveza.
+El lector compara el código leído con nfcActual = NFC-B; no coincide y rechaza el cobro.
+No se crea MovimientoSaldo: el saldo sigue en 15,00 € y el stock en 50.
+end note
+@enduml

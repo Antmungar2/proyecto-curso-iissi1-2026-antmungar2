@@ -1,0 +1,95 @@
+@startuml
+!pragma layout smetana
+title E-10.5 · Salida asistida con pulsera bloqueada y reentrada denegada (límite)
+hide empty members
+left to right direction
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam object {
+  BackgroundColor #FEFECE
+  BorderColor #A80036
+  FontSize 13
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #D6B656
+  FontSize 12
+}
+skinparam nodesep 30
+skinparam ranksep 30
+
+object "ed2027 : Edicion" as ed2027 {
+  id = "ED-2027"
+  nombre = "Azahar Sound 2027"
+  anio = 2027
+  fechaInicio = "21/05/2027"
+  fechaFin = "23/05/2027"
+  aforoMaximoJornada = 15000
+}
+object "zgen : Zona" as zgen {
+  id = "Z-GEN"
+  nombre = "Recinto general"
+  tipo = "recinto general"
+  aforoMaximo = 15000
+  ubicacion = "Recinto Azahar"
+  /ocupacionActual = 9999
+}
+object "tcAG : TipoCredencial" as tcAG {
+  id = "TC-AG-27"
+  nombre = "Abono General 2027"
+  destinatario = "público"
+  validez = "todas las jornadas"
+  perfilAcceso = "general"
+}
+object "elena : Usuario" as elena {
+  id = "USR-10F"
+  nombre = "Elena"
+  fechaNacimiento = "10/04/2001"
+  rol = "asistente"
+}
+object "cr10f : Credencial" as cr10f {
+  codigo = "CR-10F"
+  estado = "canjeada"
+  nfcActual = "NFC-10F"
+  estadoPulsera = "bloqueada"
+  /saldoActual = 0,00 €
+  /saldoDisponible = 0,00 €
+  fechaHoraBloqueoPulsera = "21/05/2027 23:00"
+}
+object "sergio : Usuario" as sergio {
+  id = "USR-CTL-01"
+  nombre = "Sergio"
+  fechaNacimiento = "15/06/1994"
+  rol = "personal de control del recinto"
+}
+object "acc10f1 : Acceso" as acc10f1 {
+  id = "ACC-10F-1"
+  fechaHora = "21/05/2027 23:00:00"
+  tipoMovimiento = "salida"
+  resultado = "permitido"
+  motivo = "salida asistida"
+}
+object "acc10f2 : Acceso" as acc10f2 {
+  id = "ACC-10F-2"
+  fechaHora = "21/05/2027 23:05:00"
+  tipoMovimiento = "entrada"
+  resultado = "denegado"
+  motivo = "pulsera bloqueada"
+}
+
+ed2027 -- tcAG : edicion
+tcAG -- cr10f : tipoCredencial
+elena -- cr10f : titular
+acc10f1 -- cr10f : credencial
+acc10f1 -- zgen : zona
+acc10f1 -- sergio : validador
+acc10f2 -- cr10f : credencial
+acc10f2 -- zgen : zona
+acc10f2 -- sergio : validador
+
+note bottom of zgen
+Elena pierde la pulsera y el personal la bloquea. La salida se permite con ayuda: la ocupación baja de 10.000 a 9.999.
+La reentrada con la pulsera bloqueada se deniega y el intento queda registrado.
+end note
+@enduml
