@@ -1,6 +1,6 @@
 # Backstage: sistema de información para la gestión de un festival de música
 
-![Backstage, sistema de información para la gestión de un festival de música](docs/img/portada/banner.png)
+![Backstage, sistema de información para la gestión de un festival de música](docs/img/portada/banner.png.drawio.png)
 
 ## Miembros del grupo L8-AM-2
 
@@ -36,7 +36,7 @@ Azahar Sound lo organiza una pequeña promotora sevillana. Es un festival de pop
 
 Así es el recinto, con sus zonas, sus escenarios, los puntos de venta y los controles de acceso:
 
-![Mapa del recinto con las zonas, los escenarios, los puntos de venta y los controles de acceso](docs/img/introduccion/mapa-recinto.png)
+![Mapa del recinto con las zonas, los escenarios, los puntos de venta y los controles de acceso](docs/img/introduccion/mapa-recinto.png.drawio.png)
 
 **Usuarios**
 
@@ -60,11 +60,11 @@ Cuando termina el festival, alguien de la promotora se pasa una semana cruzando 
 
 Así ve hoy la promotora las ventas, en el panel de la ticketera. Para cruzarlas con cualquier otra cosa hay que exportarlas:
 
-![Panel de ventas de la ticketera externa con las entradas vendidas de 2026 por tipo y fase](docs/img/introduccion/panel-ticketera-2026.png)
+![Panel de ventas de la ticketera externa con las entradas vendidas de 2026 por tipo y fase](docs/img/introduccion/panel-ticketera-2026.png.drawio.png)
 
 Y así le llegan los datos de las barras: un informe en PDF que manda el proveedor de las pulseras cuando ya ha pasado el festival.
 
-![Informe de cierre del proveedor de pulseras con lo recargado, lo consumido y lo vendido por cada punto de venta](docs/img/introduccion/informe-cashless-2026.png)
+![Informe de cierre del proveedor de pulseras con lo recargado, lo consumido y lo vendido por cada punto de venta](docs/img/introduccion/informe-cashless-2026.png.drawio.png)
 
 **Problemas**
 
@@ -715,13 +715,13 @@ para no perder ventas ni accesos si falla el servidor.
 * **Identificador:** RN06-Valido
 * **Descripción:** Un asistente con una credencial canjeada y pulsera activa realiza dos recargas acumulando un saldo total disponible de 205,00 €.
 * **Diagrama de Objetos:**
-  ![RN06 Válido](docs/img/escenarios_pruebas/rn06_valido.png)
+  ![RN06 Válido](docs/img/escenarios_pruebas/rn06_valido.png.drawio.png)
 
 #### Escenario de Rechazo: Saldo insuficiente en cobro
 * **Identificador:** RN06-Rechazo
 * **Descripción:** Se intenta realizar una consumición de 3 bocadillos (15,00 €) disponiendo únicamente de 10,00 € de saldo. Operación rechazada.
 * **Diagrama de Objetos:**
-  ![RN06 Rechazo](docs/img/escenarios_pruebas/rn06_rechazo.png)
+  ![RN06 Rechazo](docs/img/escenarios_pruebas/rn06_rechazo.png.drawio.png)
 
 ---
 
@@ -731,13 +731,13 @@ para no perder ventas ni accesos si falla el servidor.
 * **Identificador:** RN07-Rechazo
 * **Descripción:** Un asistente menor de edad (16 años) intenta adquirir una consumición con contenido alcohólico. El sistema bloquea automáticamente la venta.
 * **Diagrama de Objetos:**
-  ![RN07 Rechazo](docs/img/escenarios_pruebas/rn07_rechazo.png)
+  ![RN07 Rechazo](docs/img/escenarios_pruebas/rn07_rechazo.png.drawio.png)
 
 #### Escenario Válido: Compra de alcohol por mayor de edad
 * **Identificador:** RN07-Valido
 * **Descripción:** Un asistente mayor de edad (27 años) adquiere una consumición alcohólica teniendo saldo suficiente.
 * **Diagrama de Objetos:**
-  ![RN07 Válido](docs/img/escenarios_pruebas/rn07_valido.png)
+  ![RN07 Válido](docs/img/escenarios_pruebas/rn07_valido.png.drawio.png)
 
 ---
 
@@ -747,13 +747,13 @@ para no perder ventas ni accesos si falla el servidor.
 * **Identificador:** RN08-Rechazo
 * **Descripción:** Se solicita la compra de 2 unidades de un producto del que solo queda 1 unidad en stock.
 * **Diagrama de Objetos:**
-  ![RN08 Rechazo](docs/img/escenarios_pruebas/rn08_rechazo.png)
+  ![RN08 Rechazo](docs/img/escenarios_pruebas/rn08_rechazo.png.drawio.png)
 
 #### Escenario Válido: Venta y decremento de stock
 * **Identificador:** RN08-Valido
 * **Descripción:** Compra exitosa de 2 camisetas con stock disponible previo de 10 unidades. Se reduce el stock a 8 y se crea el consumo correspondiente.
 * **Diagrama de Objetos:**
-  ![RN08 Válido](docs/img/escenarios_pruebas/rn08_valido.png)
+  ![RN08 Válido](docs/img/escenarios_pruebas/rn08_valido.png.drawio.png)
 
 ---
 
@@ -763,13 +763,13 @@ para no perder ventas ni accesos si falla el servidor.
 * **Identificador:** RN09-Valido
 * **Descripción:** Tras la finalización del festival y dentro del plazo establecido, se solicita la devolución de 25,50 € restantes en la pulsera.
 * **Diagrama de Objetos:**
-  ![RN09 Válido](docs/img/escenarios_pruebas/rn09_valido.png)
+  ![RN09 Válido](docs/img/escenarios_pruebas/rn09_valido.png.drawio.png)
 
 #### Escenario de Rechazo: Solicitud improcedente
 * **Identificador:** RN09-Rechazo
 * **Descripción:** Intento de tramitar devolución cuando el saldo disponible es 0,00 € o la solicitud se realiza fuera del plazo legal permitido.
 * **Diagrama de Objetos:**
-  ![RN09 Rechazo](docs/img/escenarios_pruebas/rn09_rechazo.png)
+  ![RN09 Rechazo](docs/img/escenarios_pruebas/rn09_rechazo.png.drawio.png)
 
 - con descripción textual y diagrama de objetos UML.
 
