@@ -1,84 +1,54 @@
 @startuml
 !pragma layout smetana
-title E-10.3 · Entrada de viernes usada el sábado (rechazo)
 hide empty members
-left to right direction
 skinparam backgroundColor #FFFFFF
+skinparam shadowing false
 skinparam defaultFontName Helvetica
-skinparam defaultFontSize 13
+skinparam defaultFontSize 14
 skinparam object {
-  BackgroundColor #FEFECE
-  BorderColor #A80036
-  FontSize 13
+  BackgroundColor #F1F1F1
+  BorderColor #181818
+  FontSize 14
 }
 skinparam note {
-  BackgroundColor #FFF2CC
-  BorderColor #D6B656
-  FontSize 12
+  BackgroundColor #FEFFDD
+  BorderColor #181818
+  FontSize 13
 }
 skinparam nodesep 30
-skinparam ranksep 30
+skinparam ranksep 35
+left to right direction
 
-object "ed2027 : Edicion" as ed2027 {
-  id = "ED-2027"
-  nombre = "Azahar Sound 2027"
-  anio = 2027
-  fechaInicio = "21/05/2027"
-  fechaFin = "23/05/2027"
-  aforoMaximoJornada = 15000
-}
-object "zgen : Zona" as zgen {
-  id = "Z-GEN"
-  nombre = "Recinto general"
-  tipo = "recinto general"
-  aforoMaximo = 15000
-  ubicacion = "Recinto Azahar"
-  /ocupacionActual = 10000
-}
-object "tcEV : TipoCredencial" as tcEV {
-  id = "TC-EV-27"
-  nombre = "Entrada de viernes 2027"
-  destinatario = "público"
-  validez = "21/05/2027"
-  perfilAcceso = "general"
-}
-object "carmen : Usuario" as carmen {
-  id = "USR-10C"
-  nombre = "Carmen"
-  fechaNacimiento = "07/07/1997"
-  rol = "asistente"
-}
-object "cr10c : Credencial" as cr10c {
+object "<u>cr10c : Credencial</u>" as cr10c {
   codigo = "CR-10C"
   estado = "canjeada"
   nfcActual = "NFC-10C"
   estadoPulsera = "activa"
-  /saldoActual = 0,00 €
-  /saldoDisponible = 0,00 €
 }
-object "sergio : Usuario" as sergio {
-  id = "USR-CTL-01"
-  nombre = "Sergio"
-  fechaNacimiento = "15/06/1994"
-  rol = "personal de control del recinto"
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  nombre = "Entrada de viernes 2027"
+  perfilAcceso = "general"
+  validez = "21/05/2027"
 }
-object "acc10c1 : Acceso" as acc10c1 {
+object "<u>zgen : Zona</u>" as zgen {
+  nombre = "Recinto general"
+  aforoMaximo = 15000
+  /ocupacionActual = 10000
+}
+object "<u>acc10c1 : Acceso</u>" as acc10c1 {
   id = "ACC-10C-1"
-  fechaHora = "22/05/2027 18:00:00"
+  fechaHora = "22/05/2027 18:00"
   tipoMovimiento = "entrada"
   resultado = "denegado"
   motivo = "credencial fuera de su jornada"
 }
 
-ed2027 -- tcEV : edicion
-tcEV -- cr10c : tipoCredencial
-carmen -- cr10c : titular
+cr10c -- tcEV : tipoCredencial
 acc10c1 -- cr10c : credencial
 acc10c1 -- zgen : zona
-acc10c1 -- sergio : validador
 
-note bottom of acc10c1
-La entrada solo es válida el 21/05/2027; el 22/05/2027 no cubre la jornada.
-El acceso se deniega y queda registrado; la ocupación del recinto no cambia.
+note bottom of tcEV
+Entrada de viernes usada el sábado: la jornada
+no está cubierta. Acceso denegado.
 end note
 @enduml

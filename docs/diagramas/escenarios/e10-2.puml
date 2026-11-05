@@ -1,102 +1,53 @@
 @startuml
 !pragma layout smetana
-title E-10.2 · Perfil general intenta entrar en el Patio VIP (rechazo)
 hide empty members
-left to right direction
 skinparam backgroundColor #FFFFFF
+skinparam shadowing false
 skinparam defaultFontName Helvetica
-skinparam defaultFontSize 13
+skinparam defaultFontSize 14
 skinparam object {
-  BackgroundColor #FEFECE
-  BorderColor #A80036
-  FontSize 13
+  BackgroundColor #F1F1F1
+  BorderColor #181818
+  FontSize 14
 }
 skinparam note {
-  BackgroundColor #FFF2CC
-  BorderColor #D6B656
-  FontSize 12
+  BackgroundColor #FEFFDD
+  BorderColor #181818
+  FontSize 13
 }
 skinparam nodesep 30
-skinparam ranksep 30
+skinparam ranksep 35
+left to right direction
 
-object "ed2027 : Edicion" as ed2027 {
-  id = "ED-2027"
-  nombre = "Azahar Sound 2027"
-  anio = 2027
-  fechaInicio = "21/05/2027"
-  fechaFin = "23/05/2027"
-  aforoMaximoJornada = 15000
-}
-object "zgen : Zona" as zgen {
-  id = "Z-GEN"
-  nombre = "Recinto general"
-  tipo = "recinto general"
-  aforoMaximo = 15000
-  ubicacion = "Recinto Azahar"
-  /ocupacionActual = 10000
-}
-object "zvip : Zona" as zvip {
-  id = "Z-VIP"
-  nombre = "Patio VIP"
-  tipo = "VIP"
-  aforoMaximo = 1200
-  ubicacion = "Dentro del recinto general"
-  /ocupacionActual = 800
-}
-object "tcAG : TipoCredencial" as tcAG {
-  id = "TC-AG-27"
-  nombre = "Abono General 2027"
-  destinatario = "público"
-  validez = "todas las jornadas"
-  perfilAcceso = "general"
-}
-object "lucia : Usuario" as lucia {
-  id = "USR-10B"
-  nombre = "Lucía"
-  fechaNacimiento = "18/11/2000"
-  rol = "asistente"
-}
-object "cr10b : Credencial" as cr10b {
+object "<u>cr10b : Credencial</u>" as cr10b {
   codigo = "CR-10B"
   estado = "canjeada"
   nfcActual = "NFC-10B"
   estadoPulsera = "activa"
-  /saldoActual = 0,00 €
-  /saldoDisponible = 0,00 €
 }
-object "sergio : Usuario" as sergio {
-  id = "USR-CTL-01"
-  nombre = "Sergio"
-  fechaNacimiento = "15/06/1994"
-  rol = "personal de control del recinto"
+object "<u>tcAG : TipoCredencial</u>" as tcAG {
+  nombre = "Abono General 2027"
+  perfilAcceso = "general"
+  validez = "todas las jornadas"
 }
-object "acc10b0 : Acceso" as acc10b0 {
-  id = "ACC-10B-0"
-  fechaHora = "21/05/2027 17:50:00"
-  tipoMovimiento = "entrada"
-  resultado = "permitido"
-  motivo = null
+object "<u>zvip : Zona</u>" as zvip {
+  nombre = "Patio VIP"
+  aforoMaximo = 1200
+  /ocupacionActual = 800
 }
-object "acc10b1 : Acceso" as acc10b1 {
+object "<u>acc10b1 : Acceso</u>" as acc10b1 {
   id = "ACC-10B-1"
-  fechaHora = "21/05/2027 18:10:00"
   tipoMovimiento = "entrada"
   resultado = "denegado"
   motivo = "perfil general sin acceso a zona VIP"
 }
 
-ed2027 -- tcAG : edicion
-tcAG -- cr10b : tipoCredencial
-lucia -- cr10b : titular
-acc10b0 -- cr10b : credencial
-acc10b0 -- zgen : zona
-acc10b0 -- sergio : validador
+cr10b -- tcAG : tipoCredencial
 acc10b1 -- cr10b : credencial
 acc10b1 -- zvip : zona
-acc10b1 -- sergio : validador
 
-note bottom of acc10b1
-La credencial es válida y la pulsera está activa, pero el perfil general no permite la zona VIP.
-Se registra la lectura denegada con su motivo; la ocupación del Patio VIP no cambia (800).
+note bottom of zvip
+Perfil general en una zona VIP: acceso denegado.
+La ocupación del Patio VIP no cambia.
 end note
 @enduml

@@ -1,103 +1,52 @@
 @startuml
 !pragma layout smetana
-title E-10.1 · Entrada al Patio VIP con perfil VIP y aforo disponible (válido, límite)
 hide empty members
-left to right direction
 skinparam backgroundColor #FFFFFF
+skinparam shadowing false
 skinparam defaultFontName Helvetica
-skinparam defaultFontSize 13
+skinparam defaultFontSize 14
 skinparam object {
-  BackgroundColor #FEFECE
-  BorderColor #A80036
-  FontSize 13
+  BackgroundColor #F1F1F1
+  BorderColor #181818
+  FontSize 14
 }
 skinparam note {
-  BackgroundColor #FFF2CC
-  BorderColor #D6B656
-  FontSize 12
+  BackgroundColor #FEFFDD
+  BorderColor #181818
+  FontSize 13
 }
 skinparam nodesep 30
-skinparam ranksep 30
+skinparam ranksep 35
+left to right direction
 
-object "ed2027 : Edicion" as ed2027 {
-  id = "ED-2027"
-  nombre = "Azahar Sound 2027"
-  anio = 2027
-  fechaInicio = "21/05/2027"
-  fechaFin = "23/05/2027"
-  aforoMaximoJornada = 15000
-}
-object "zgen : Zona" as zgen {
-  id = "Z-GEN"
-  nombre = "Recinto general"
-  tipo = "recinto general"
-  aforoMaximo = 15000
-  ubicacion = "Recinto Azahar"
-  /ocupacionActual = 10000
-}
-object "zvip : Zona" as zvip {
-  id = "Z-VIP"
-  nombre = "Patio VIP"
-  tipo = "VIP"
-  aforoMaximo = 1200
-  ubicacion = "Dentro del recinto general"
-  /ocupacionActual = 1200
-}
-object "tcAV : TipoCredencial" as tcAV {
-  id = "TC-AV-27"
-  nombre = "Abono VIP 2027"
-  destinatario = "público"
-  validez = "todas las jornadas"
-  perfilAcceso = "VIP"
-}
-object "elena : Usuario" as elena {
-  id = "USR-10A"
-  nombre = "Elena"
-  fechaNacimiento = "10/04/2001"
-  rol = "asistente"
-}
-object "cr10a : Credencial" as cr10a {
+object "<u>cr10a : Credencial</u>" as cr10a {
   codigo = "CR-10A"
   estado = "canjeada"
   nfcActual = "NFC-10A"
   estadoPulsera = "activa"
-  /saldoActual = 0,00 €
-  /saldoDisponible = 0,00 €
 }
-object "sergio : Usuario" as sergio {
-  id = "USR-CTL-01"
-  nombre = "Sergio"
-  fechaNacimiento = "15/06/1994"
-  rol = "personal de control del recinto"
+object "<u>tcAV : TipoCredencial</u>" as tcAV {
+  nombre = "Abono VIP 2027"
+  perfilAcceso = "VIP"
+  validez = "todas las jornadas"
 }
-object "acc10a0 : Acceso" as acc10a0 {
-  id = "ACC-10A-0"
-  fechaHora = "21/05/2027 17:55:00"
-  tipoMovimiento = "entrada"
-  resultado = "permitido"
-  motivo = null
+object "<u>zvip : Zona</u>" as zvip {
+  nombre = "Patio VIP"
+  aforoMaximo = 1200
+  /ocupacionActual = 1200
 }
-object "acc10a1 : Acceso" as acc10a1 {
+object "<u>acc10a1 : Acceso</u>" as acc10a1 {
   id = "ACC-10A-1"
-  fechaHora = "21/05/2027 18:00:00"
   tipoMovimiento = "entrada"
   resultado = "permitido"
-  motivo = null
 }
 
-ed2027 -- tcAV : edicion
-tcAV -- cr10a : tipoCredencial
-elena -- cr10a : titular
-acc10a0 -- cr10a : credencial
-acc10a0 -- zgen : zona
-acc10a0 -- sergio : validador
+cr10a -- tcAV : tipoCredencial
 acc10a1 -- cr10a : credencial
 acc10a1 -- zvip : zona
-acc10a1 -- sergio : validador
 
 note bottom of zvip
-Antes: /ocupacionActual = 1.199 de 1.200.
-La entrada permitida alcanza 1.200: justo el aforo, no lo supera.
-ACC-10A-0 acredita que Elena ya está dentro del recinto general, requisito para entrar en una zona interior.
+Entrada permitida: perfil VIP, pulsera activa
+y 1.199/1.200 de aforo. La ocupación queda en 1.200.
 end note
 @enduml
