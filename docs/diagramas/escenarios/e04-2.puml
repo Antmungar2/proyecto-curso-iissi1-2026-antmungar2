@@ -1,0 +1,43 @@
+@startuml e04-2
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+  aforoMaximoJornada = 15000
+}
+
+object "<u>tcAG : TipoCredencial</u>" as tcAG {
+  id = "TC-AG-27"
+  nombre = "Abono General 2027"
+  destinatario = publico
+  validez = "todas las jornadas"
+  perfilAcceso = general
+}
+
+object "<u>carlos : Usuario</u>" as carlos {
+  id = "USR-CARLOS"
+  nombre = "Carlos"
+}
+
+object "<u>c2 : Credencial</u>" as c2 #FFDDDD {
+  codigo = "CR-04B"
+  estado = emitida
+}
+
+tcAG -- ed27 : <u>perteneceA</u>
+c2 -- tcAG : <u>esDeTipo</u>
+carlos -- c2 : <u>titular</u>
+carlos -- c2 : <u>comprador</u>
+
+note as N1
+  Credenciales no anuladas (no se dibujan):
+  viernes 15.000, sábado 12.000, domingo 11.500.
+  c2 es un abono y cuenta los tres días: se rechaza
+  por el viernes, aunque haya sitio el sábado y el domingo.
+end note
+c2 .. N1
+@enduml

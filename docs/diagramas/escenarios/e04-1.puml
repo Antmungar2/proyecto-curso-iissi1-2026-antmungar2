@@ -1,0 +1,41 @@
+@startuml e04-1
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+  aforoMaximoJornada = 15000
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+}
+
+object "<u>marta : Usuario</u>" as marta {
+  id = "USR-MARTA"
+  nombre = "Marta"
+}
+
+object "<u>c1 : Credencial</u>" as c1 {
+  codigo = "CR-04A"
+  estado = emitida
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+c1 -- tcEV : <u>esDeTipo</u>
+marta -- c1 : <u>titular</u>
+marta -- c1 : <u>comprador</u>
+
+note as N1
+  El viernes 21 ya tiene 14.999 credenciales no anuladas
+  (no se dibujan). Con c1 son 15.000, justo el aforo (límite).
+end note
+ed27 .. N1
+@enduml

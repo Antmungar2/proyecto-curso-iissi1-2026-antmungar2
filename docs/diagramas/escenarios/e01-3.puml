@@ -1,0 +1,72 @@
+@startuml e01-3
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>escGuad : Escenario</u>" as escGuad {
+  id = "ESC-GUAD"
+  nombre = "Escenario Guadalquivir"
+}
+
+object "<u>escPatio : Escenario</u>" as escPatio {
+  id = "ESC-PATIO"
+  nombre = "Escenario Patio"
+}
+
+object "<u>saiko : Artista</u>" as saiko {
+  id = "ART-SAIKO"
+  nombreArtistico = "Saiko"
+}
+
+object "<u>mafalda : Artista</u>" as mafalda {
+  id = "ART-MAFALDA"
+  nombreArtistico = "Mafalda Cardenal"
+}
+
+object "<u>a1 : Actuacion</u>" as a1 {
+  id = "ACT-01G"
+  fechaHoraInicio = 2027-05-21 20:30
+  fechaHoraFin = 2027-05-21 21:40
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a2 : Actuacion</u>" as a2 {
+  id = "ACT-01H"
+  fechaHoraInicio = 2027-05-21 21:00
+  fechaHoraFin = 2027-05-21 22:00
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a3 : Actuacion</u>" as a3 #FFDDDD {
+  id = "ACT-01I"
+  fechaHoraInicio = 2027-05-21 21:00
+  fechaHoraFin = 2027-05-21 22:00
+  cabezaDeCartel = false
+  estado = programada
+}
+
+saiko -- a1 : <u>actua</u>
+a1 -- escGuad : <u>seCelebraEn</u>
+a1 -- ed27 : <u>perteneceA</u>
+mafalda -- a2 : <u>actua</u>
+a2 -- escPatio : <u>seCelebraEn</u>
+a2 -- ed27 : <u>perteneceA</u>
+saiko -- a3 : <u>actua</u>
+a3 -- escPatio : <u>seCelebraEn</u>
+a3 -- ed27 : <u>perteneceA</u>
+
+note as N1
+  a2 es válida: otro escenario y otro artista.
+  a3 se rechaza: Saiko ya actúa a esa hora en el
+  Escenario Guadalquivir (a1).
+end note
+a3 .. N1
+@enduml

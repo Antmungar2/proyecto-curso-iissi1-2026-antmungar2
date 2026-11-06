@@ -1,0 +1,68 @@
+@startuml e03-3
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcAG : TipoCredencial</u>" as tcAG {
+  id = "TC-AG-27"
+  nombre = "Abono General 2027"
+  destinatario = publico
+  validez = "todas las jornadas"
+  perfilAcceso = general
+}
+
+object "<u>elena : Usuario</u>" as elena {
+  id = "USR-ELENA"
+  nombre = "Elena"
+}
+
+object "<u>c1 : Credencial</u>" as c1 {
+  codigo = "CR-03A"
+  estado = canjeada
+}
+
+object "<u>c2 : Credencial</u>" as c2 {
+  codigo = "CR-03B"
+  estado = canjeada
+}
+
+object "<u>c3 : Credencial</u>" as c3 {
+  codigo = "CR-03C"
+  estado = emitida
+}
+
+object "<u>c4 : Credencial</u>" as c4 {
+  codigo = "CR-03D"
+  estado = anulada
+}
+
+object "<u>c5 : Credencial</u>" as c5 {
+  codigo = "CR-03E"
+  estado = emitida
+}
+
+tcAG -- ed27 : <u>perteneceA</u>
+c1 -- tcAG : <u>esDeTipo</u>
+elena -- c1 : <u>comprador</u>
+c2 -- tcAG : <u>esDeTipo</u>
+elena -- c2 : <u>comprador</u>
+c3 -- tcAG : <u>esDeTipo</u>
+elena -- c3 : <u>comprador</u>
+c4 -- tcAG : <u>esDeTipo</u>
+elena -- c4 : <u>comprador</u>
+c5 -- tcAG : <u>esDeTipo</u>
+elena -- c5 : <u>comprador</u>
+
+note as N1
+  c4 está anulada y no cuenta: Elena tiene 3
+  entradas no anuladas, así que c5 se acepta
+  y vuelve a llegar a 4 (límite).
+end note
+c4 .. N1
+@enduml

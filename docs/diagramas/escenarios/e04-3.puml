@@ -1,0 +1,48 @@
+@startuml e04-3
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+  aforoMaximoJornada = 15000
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+}
+
+object "<u>marta : Usuario</u>" as marta {
+  id = "USR-MARTA"
+  nombre = "Marta"
+}
+
+object "<u>c3 : Credencial</u>" as c3 {
+  codigo = "CR-04X"
+  estado = anulada
+}
+
+object "<u>c4 : Credencial</u>" as c4 {
+  codigo = "CR-04C"
+  estado = emitida
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+c3 -- tcEV : <u>esDeTipo</u>
+c4 -- tcEV : <u>esDeTipo</u>
+marta -- c4 : <u>titular</u>
+marta -- c4 : <u>comprador</u>
+
+note as N1
+  El viernes tenía 15.000 credenciales (no se dibujan).
+  c3 está anulada y no cuenta: quedan 14.999,
+  así que c4 se acepta y vuelve a llegar a 15.000.
+end note
+c3 .. N1
+@enduml

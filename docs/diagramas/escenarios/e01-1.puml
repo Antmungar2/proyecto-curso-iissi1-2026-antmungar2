@@ -1,0 +1,95 @@
+@startuml e01-1
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>zgen : Zona</u>" as zgen {
+  id = "Z-GEN"
+  nombre = "Recinto general"
+}
+
+object "<u>escGuad : Escenario</u>" as escGuad {
+  id = "ESC-GUAD"
+  nombre = "Escenario Guadalquivir"
+}
+
+object "<u>mafalda : Artista</u>" as mafalda {
+  id = "ART-MAFALDA"
+  nombreArtistico = "Mafalda Cardenal"
+}
+
+object "<u>saiko : Artista</u>" as saiko {
+  id = "ART-SAIKO"
+  nombreArtistico = "Saiko"
+}
+
+object "<u>alvaro : Artista</u>" as alvaro {
+  id = "ART-ALVARO"
+  nombreArtistico = "Álvaro de Luna"
+}
+
+object "<u>plazuela : Artista</u>" as plazuela {
+  id = "ART-PLAZUELA"
+  nombreArtistico = "La Plazuela"
+}
+
+object "<u>a1 : Actuacion</u>" as a1 {
+  id = "ACT-01A"
+  fechaHoraInicio = 2027-05-21 19:30
+  fechaHoraFin = 2027-05-21 20:00
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a2 : Actuacion</u>" as a2 {
+  id = "ACT-01B"
+  fechaHoraInicio = 2027-05-21 20:30
+  fechaHoraFin = 2027-05-21 21:40
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a3 : Actuacion</u>" as a3 {
+  id = "ACT-01C"
+  fechaHoraInicio = 2027-05-21 22:10
+  fechaHoraFin = 2027-05-21 23:10
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a4 : Actuacion</u>" as a4 {
+  id = "ACT-01D"
+  fechaHoraInicio = 2027-05-22 03:00
+  fechaHoraFin = 2027-05-22 06:00
+  cabezaDeCartel = false
+  estado = programada
+}
+
+escGuad -- zgen : <u>perteneceA</u>
+mafalda -- a1 : <u>actua</u>
+a1 -- escGuad : <u>seCelebraEn</u>
+a1 -- ed27 : <u>perteneceA</u>
+saiko -- a2 : <u>actua</u>
+a2 -- escGuad : <u>seCelebraEn</u>
+a2 -- ed27 : <u>perteneceA</u>
+alvaro -- a3 : <u>actua</u>
+a3 -- escGuad : <u>seCelebraEn</u>
+a3 -- ed27 : <u>perteneceA</u>
+plazuela -- a4 : <u>actua</u>
+a4 -- escGuad : <u>seCelebraEn</u>
+a4 -- ed27 : <u>perteneceA</u>
+
+note as N1
+  a1 dura 30 min (límite) y a4 dura 3 h (límite).
+  Cambio entre actuaciones: 30 min, 30 min y 3 h 50 min.
+  a4 acaba a las 06:00 del sábado y sigue en la
+  jornada del viernes 21 (límite).
+end note
+escGuad .. N1
+@enduml

@@ -1,0 +1,42 @@
+@startuml e05-3
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+}
+
+object "<u>sofia : Usuario</u>" as sofia {
+  id = "USR-SOFIA"
+  nombre = "Sofía"
+  fechaNacimiento = 2011-05-21
+}
+
+object "<u>cS : Credencial</u>" as cS {
+  codigo = "CR-05D"
+  estado = emitida
+  autorizacionFirmada = false
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+cS -- tcEV : <u>esDeTipo</u>
+sofia -- cS : <u>titular</u>
+
+note as N1
+  Sofía cumple 16 el 21/05/2027, el primer día en que
+  vale su entrada (límite): ya no necesita adulto
+  responsable ni autorización.
+end note
+sofia .. N1
+@enduml

@@ -1,0 +1,57 @@
+@startuml e05-1
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+}
+
+object "<u>elena : Usuario</u>" as elena {
+  id = "USR-ELENA"
+  nombre = "Elena"
+  fechaNacimiento = 1988-09-02
+}
+
+object "<u>martin : Usuario</u>" as martin {
+  id = "USR-MARTIN"
+  nombre = "Martín"
+  fechaNacimiento = 2012-03-14
+}
+
+object "<u>cE : Credencial</u>" as cE {
+  codigo = "CR-05A"
+  estado = emitida
+}
+
+object "<u>cM : Credencial</u>" as cM {
+  codigo = "CR-05B"
+  estado = emitida
+  autorizacionFirmada = true
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+cE -- tcEV : <u>esDeTipo</u>
+cM -- tcEV : <u>esDeTipo</u>
+elena -- cE : <u>titular</u>
+martin -- cM : <u>titular</u>
+elena -- cM : <u>adultoResponsable</u>
+
+note as N1
+  Martín tiene 15 años el 21/05/2027.
+  La credencial de Elena (cE) se registró antes que la suya.
+  Cumple todo: adulta, credencial para el mismo día
+  y autorización firmada.
+end note
+martin .. N1
+@enduml

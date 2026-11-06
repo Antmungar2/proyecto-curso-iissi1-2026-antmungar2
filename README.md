@@ -719,6 +719,406 @@ para no perder ventas ni accesos si falla el servidor.
 - con restricciones.
 
 ### 5.2. Escenarios de prueba
+
+#### 5.2.1. Escenarios de R.N.01. Programación de las actuaciones
+
+La regla combina cuatro comprobaciones: que la actuación dure entre 30 minutos y 3 horas, que caiga entera dentro de una jornada de la edición, que en un mismo escenario haya al menos 30 minutos entre una actuación y la siguiente, y que un artista no actúe a la vez en dos escenarios. Las actuaciones canceladas no cuentan.
+
+**Datos comunes.**
+
+| Objeto | Valores |
+|:--|:--|
+| `ed27 : Edicion` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027 |
+| `zgen : Zona` | `Z-GEN`, «Recinto general» |
+| `zvip : Zona` | `Z-VIP`, «Patio VIP» |
+| `escGuad : Escenario` | `ESC-GUAD`, «Escenario Guadalquivir», en `zgen` |
+| `escPatio : Escenario` | `ESC-PATIO`, «Escenario Patio», en `zvip` |
+| Artistas | Saiko, Mafalda Cardenal, Álvaro de Luna y La Plazuela |
+
+**Coherencia con el modelo conceptual.**
+
+| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
+|:--|:--|:--|:--|
+| R.N.01 | R.I.02, R.I.04, R.I.05, R.I.06 | `Actuacion`–`Artista`, `Actuacion`–`Escenario`, `Actuacion`–`Edicion`, `Escenario`–`Zona`; atributos `fechaHoraInicio`, `fechaHoraFin` y `estado` | Duración entre 30 minutos y 3 horas; actuación entera dentro de una jornada; 30 minutos de margen en el mismo escenario; un artista no actúa a la vez en dos escenarios |
+
+**Casos cubiertos.**
+
+| Caso | Operación | Resultado | Escenario |
+|:--|:--|:--|:--|
+| Cambios de 30 minutos y duraciones de 30 minutos y de 3 horas | Cuatro altas | Todas permitidas | E-01.1 |
+| Actuación que empieza 10 minutos después de otra | Alta | Rechazada | E-01.2 |
+| Mismo artista en dos escenarios a la vez | Dos altas | Permitida la de otro artista y rechazada la del mismo | E-01.3 |
+
+##### E-01.1. Cuatro actuaciones con cambios y duraciones límite (válido, límite)
+
+**Contexto.** El Escenario Guadalquivir no tiene actuaciones el viernes 21 de mayo de 2027.
+
+**Operación.** Se programan, por este orden, Mafalda Cardenal de 19:30 a 20:00, Saiko de 20:30 a 21:40, Álvaro de Luna de 22:10 a 23:10 y La Plazuela del sábado 22 de 03:00 a 06:00.
+
+**Resultado esperado.** Se aceptan las cuatro. La de Mafalda dura 30 minutos, que es lo mínimo. Saiko empieza 30 minutos después de que acabe Mafalda, y Álvaro de Luna 30 minutos después de que acabe Saiko, que es el cambio mínimo. La de La Plazuela dura 3 horas, que es lo máximo, y acaba a las 06:00 del sábado, el último instante de la jornada del viernes.
+
+![Diagrama de objetos E-01.1](docs/img/escenarios/e01-1.svg)
+
+**Comprobación.** Se cumple `fechaHoraFin > fechaHoraInicio`, la duración está entre 30 minutos y 3 horas y entre actuaciones del mismo escenario hay al menos 30 minutos. Entre `a3` y `a4` hay 3 horas y 50 minutos. Una actuación de madrugada pertenece a la jornada del día anterior.
+
+##### E-01.2. Cambio de solo 10 minutos (rechazo)
+
+**Contexto.** El Escenario Guadalquivir tiene el viernes 21 una actuación de Saiko de 20:30 a 21:40.
+
+**Operación.** Se intenta programar a Álvaro de Luna de 21:50 a 22:50 en el mismo escenario.
+
+**Resultado esperado.** La operación se rechaza porque entre las dos actuaciones solo hay 10 minutos y hacen falta al menos 30. No se crea ninguna actuación y la de Saiko no cambia.
+
+![Diagrama de objetos E-01.2](docs/img/escenarios/e01-2.svg)
+
+**Comprobación.** La actuación rechazada dura 60 minutos y cae dentro de la jornada, así que el rechazo es solo por el margen entre actuaciones. Si se intentara programar de 21:00 a 22:00 también se rechazaría, por solapamiento.
+
+##### E-01.3. Mismo artista en dos escenarios a la vez (rechazo)
+
+**Contexto.** Saiko actúa el viernes 21 en el Escenario Guadalquivir de 20:30 a 21:40. El Escenario Patio no tiene actuaciones esa noche.
+
+**Operación.** Se programa a Mafalda Cardenal en el Escenario Patio de 21:00 a 22:00 y, después, se intenta programar a Saiko en el Escenario Patio a la misma hora.
+
+**Resultado esperado.** La actuación de Mafalda se acepta: es otro escenario y otro artista, y el margen de 30 minutos solo se exige entre actuaciones del mismo escenario. La de Saiko se rechaza porque ya actúa a esa hora en el Guadalquivir.
+
+![Diagrama de objetos E-01.3](docs/img/escenarios/e01-3.svg)
+
+**Comprobación.** El rechazo no depende del escenario, sino del artista: `a3` y `a1` son del mismo `Artista` y sus horarios se solapan.
+
+**Otros casos de R.N.01.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
+
+| Caso | Resultado esperado |
+|:--|:--|
+| Actuación de 20 minutos | Rechazada; dura menos de 30 minutos |
+| Actuación de 3 horas y media | Rechazada; dura más de 3 horas |
+| Actuación que termina antes de empezar | Rechazada |
+| Actuación el viernes 21 de 10:00 a 11:00 | Rechazada; está antes de que empiece la primera jornada |
+| Actuación el sábado 22 de 08:00 a 09:00 | Rechazada; entre las 06:00 y las 12:00 no hay jornada |
+| Actuación el sábado 22 de 05:00 a 06:30 | Rechazada; se sale de la jornada del viernes |
+| Actuación el lunes 24 de 20:00 a 21:00 | Rechazada; el festival ya ha terminado |
+| Cambiar una actuación de 20:30 a 21:40 para que acabe a las 22:00 cuando hay otra a las 22:10 | Rechazada; solo quedarían 10 minutos |
+| Actuación solapada con otra del mismo escenario que está cancelada | Permitida; las canceladas no cuentan |
+| Misma hora en otro escenario con otro artista | Permitida |
+
+#### 5.2.2. Escenarios de R.N.02. Precio y cupo de las credenciales
+
+La regla dice que no se emiten más credenciales de un tipo que su cupo, contando las no anuladas, y que el precio pagado por cada una se queda como estaba cuando se emitió, aunque luego cambie el precio del tipo.
+
+**Datos comunes.**
+
+| Objeto | Valores |
+|:--|:--|
+| `ed27 : Edicion` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027 |
+| `tcEV : TipoCredencial` | `TC-EV-27`, «Entrada de viernes 2027», público, válida el 21/05/2027, perfil general, precio 55,00 € y cupo 3.000 |
+| Usuarios | Marta, Carlos y Elena |
+
+**Coherencia con el modelo conceptual.**
+
+| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
+|:--|:--|:--|:--|
+| R.N.02 | R.I.02, R.I.07, R.I.08 | `Credencial`–`TipoCredencial`, `TipoCredencial`–`Edicion`, `Credencial`–`Usuario` (titular y comprador); atributos `precio` y `cupo` del tipo, `estado` y `precioPagado` de la credencial | No se emite por encima del cupo; el precio pagado no cambia; el precio del tipo puede actualizarse para las nuevas emisiones |
+
+**Casos cubiertos.**
+
+| Caso | Operación | Resultado | Escenario |
+|:--|:--|:--|:--|
+| Credencial número 3.000 de un cupo de 3.000 | Emisión | Permitida | E-02.1 |
+| Credencial número 3.001 | Emisión | Rechazada | E-02.2 |
+| Cambio de precio del tipo después de emitir | Actualización y emisión | La credencial vieja conserva su precio y la nueva paga el nuevo | E-02.3 |
+
+##### E-02.1. Última credencial del cupo (válido, límite)
+
+**Contexto.** El tipo «Entrada de viernes 2027» tiene un cupo de 3.000 y 2.999 credenciales no anuladas. Marta quiere comprar una.
+
+**Operación.** Se emite la credencial `CR-02A` a nombre de Marta.
+
+**Resultado esperado.** La emisión se acepta y Marta paga 55,00 €. El tipo llega a 3.000 credenciales no anuladas, justo su cupo, sin superarlo.
+
+![Diagrama de objetos E-02.1](docs/img/escenarios/e02-1.svg)
+
+**Comprobación.** El cupo se compara con las credenciales no anuladas del tipo, y la nueva queda con `precioPagado` igual al `precio` del tipo en ese momento.
+
+##### E-02.2. Cupo completo (rechazo)
+
+**Contexto.** El mismo tipo tiene ya 3.000 credenciales no anuladas. Carlos quiere comprar una.
+
+**Operación.** Se intenta emitir la credencial `CR-02B` a nombre de Carlos.
+
+**Resultado esperado.** La operación se rechaza porque el cupo está completo. No se crea ninguna credencial y el tipo sigue con 3.000.
+
+![Diagrama de objetos E-02.2](docs/img/escenarios/e02-2.svg)
+
+**Comprobación.** El rechazo solo depende del cupo: Carlos no tiene ningún otro impedimento. Si se anulara una de las 3.000, la emisión sí se aceptaría.
+
+##### E-02.3. Cambio de precio después de emitir (válido)
+
+**Contexto.** Elena compró `CR-02C` cuando el precio del tipo era de 55,00 €.
+
+**Operación.** Se actualiza el precio del tipo a 65,00 € y, después, Marta compra `CR-02D`.
+
+**Resultado esperado.** El cambio de precio se acepta. `CR-02C` sigue con un precio pagado de 55,00 € y `CR-02D` se emite con 65,00 €.
+
+![Diagrama de objetos E-02.3](docs/img/escenarios/e02-3.svg)
+
+**Comprobación.** El precio pagado se guarda en cada credencial en el momento de la emisión, por eso no cambia aunque cambie el `precio` del tipo.
+
+**Otros casos de R.N.02.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
+
+| Caso | Resultado esperado |
+|:--|:--|
+| Emitir con el cupo completo cuando una credencial está anulada | Permitido; las anuladas no cuentan |
+| Reducir el cupo a 2.999 cuando hay 3.000 credenciales no anuladas | Rechazado; el cupo no puede quedar por debajo de las no anuladas |
+| Cambiar el precio pagado de una credencial ya emitida | Rechazado; el precio pagado no cambia |
+| Subir el cupo de 3.000 a 3.500 | Permitido; se pueden emitir 500 más |
+
+#### 5.2.3. Escenarios de R.N.03. Límite de compras por comprador y edición
+
+La regla dice que un comprador no puede tener más de cuatro entradas de público no anuladas en una misma edición. Las acreditaciones no cuentan, anular una entrada libera una plaza y el comprador de una entrada no se cambia.
+
+**Datos comunes.**
+
+| Objeto | Valores |
+|:--|:--|
+| `ed27 : Edicion` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027 |
+| `tcAG : TipoCredencial` | `TC-AG-27`, «Abono General 2027», público, todas las jornadas, perfil general |
+| `elena : Usuario` | `USR-ELENA`, «Elena», compradora |
+
+**Coherencia con el modelo conceptual.**
+
+| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
+|:--|:--|:--|:--|
+| R.N.03 | R.I.01, R.I.02, R.I.07, R.I.08 | `Credencial`–`Usuario` (comprador), `Credencial`–`TipoCredencial`, `TipoCredencial`–`Edicion`; atributo `estado` | Máximo 4 entradas de público no anuladas por comprador y edición; las acreditaciones no cuentan; una anulación libera plaza; el comprador no cambia |
+
+**Casos cubiertos.**
+
+| Caso | Operación | Resultado | Escenario |
+|:--|:--|:--|:--|
+| Cuarta entrada de Elena en la edición | Compra | Permitida | E-03.1 |
+| Quinta entrada de Elena en la edición | Compra | Rechazada | E-03.2 |
+| Quinta compra después de anular una entrada | Compra | Permitida | E-03.3 |
+
+##### E-03.1. Cuarta entrada del comprador (válido, límite)
+
+**Contexto.** Elena tiene tres abonos no anulados de 2027: `CR-03A`, `CR-03B` y `CR-03C`.
+
+**Operación.** Elena compra un cuarto abono, `CR-03D`.
+
+**Resultado esperado.** La compra se acepta. Elena llega a cuatro entradas no anuladas en la edición, que es el máximo.
+
+![Diagrama de objetos E-03.1](docs/img/escenarios/e03-1.svg)
+
+**Comprobación.** El límite se cuenta por comprador y edición, no por titular. Las cuatro entradas pueden tener titulares distintos.
+
+##### E-03.2. Quinta entrada del comprador (rechazo)
+
+**Contexto.** Elena tiene cuatro abonos no anulados de 2027: `CR-03A`, `CR-03B`, `CR-03C` y `CR-03D`.
+
+**Operación.** Elena intenta comprar un quinto abono, `CR-03E`.
+
+**Resultado esperado.** La compra se rechaza porque superaría el máximo de cuatro. No se crea la credencial y Elena sigue con cuatro.
+
+![Diagrama de objetos E-03.2](docs/img/escenarios/e03-2.svg)
+
+**Comprobación.** El rechazo se produce aunque el titular de la quinta entrada sea otra persona, porque el límite es del comprador.
+
+##### E-03.3. Anulación que libera una plaza (límite)
+
+**Contexto.** Elena tenía cuatro abonos y anula `CR-03D`. Ahora tiene tres entradas no anuladas, `CR-03A`, `CR-03B` y `CR-03C`.
+
+**Operación.** Elena compra un nuevo abono, `CR-03E`.
+
+**Resultado esperado.** La compra se acepta, porque la entrada anulada no cuenta, y Elena vuelve a tener cuatro entradas no anuladas.
+
+![Diagrama de objetos E-03.3](docs/img/escenarios/e03-3.svg)
+
+**Comprobación.** Se cuentan solo las credenciales con `estado` distinto de anulada. La credencial anulada se conserva, pero ya no ocupa una de las cuatro plazas.
+
+**Otros casos de R.N.03.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
+
+| Caso | Resultado esperado |
+|:--|:--|
+| Elena tiene cuatro entradas en 2027 y compra una de la edición de 2026 | Permitida; el límite es por edición |
+| Otra compradora distinta compra sus propias cuatro entradas en 2027 | Permitido; el límite es por comprador |
+| Un profesional recibe una acreditación | Permitido; las acreditaciones no cuentan |
+| Cambiar el comprador de una entrada ya emitida | Rechazado; el comprador no cambia |
+
+#### 5.2.4. Escenarios de R.N.04. Aforo máximo de cada jornada
+
+La regla dice que, para cada jornada, las credenciales no anuladas que valen para ella no pueden superar el aforo de la edición. Los abonos cuentan en todas las jornadas. Además, un titular no puede tener dos credenciales no anuladas para la misma jornada.
+
+**Datos comunes.**
+
+| Objeto | Valores |
+|:--|:--|
+| `ed27 : Edicion` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027, aforo máximo 15.000 por jornada |
+| `tcEV : TipoCredencial` | `TC-EV-27`, «Entrada de viernes 2027», público, válida el 21/05/2027, perfil general |
+| `tcAG : TipoCredencial` | `TC-AG-27`, «Abono General 2027», público, todas las jornadas, perfil general |
+| Usuarios | Marta, Carlos y Lucía |
+
+**Coherencia con el modelo conceptual.**
+
+| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
+|:--|:--|:--|:--|
+| R.N.04 | R.I.02, R.I.07, R.I.08 | `Credencial`–`TipoCredencial`, `TipoCredencial`–`Edicion`, `Credencial`–`Usuario` (titular); atributos `aforoMaximoJornada` y `validez` | La suma de credenciales no anuladas de una jornada no supera el aforo; un titular no tiene dos credenciales no anuladas para la misma jornada |
+
+**Casos cubiertos.**
+
+| Caso | Operación | Resultado | Escenario |
+|:--|:--|:--|:--|
+| Entrada de viernes con 14.999 de 15.000 | Emisión | Permitida; el viernes llega a 15.000 | E-04.1 |
+| Abono con el viernes completo y el sábado y el domingo con sitio | Emisión | Rechazada | E-04.2 |
+| Entrada de viernes después de anular una de las 15.000 | Emisión | Permitida | E-04.3 |
+| Entrada de viernes a quien ya tiene un abono | Emisión | Rechazada | E-04.4 |
+
+##### E-04.1. Última plaza del viernes (válido, límite)
+
+**Contexto.** El viernes 21 tiene 14.999 credenciales no anuladas. Marta quiere una entrada de viernes.
+
+**Operación.** Se emite la credencial `CR-04A` a nombre de Marta.
+
+**Resultado esperado.** La emisión se acepta y el viernes llega a 15.000 credenciales, justo el aforo, sin superarlo.
+
+![Diagrama de objetos E-04.1](docs/img/escenarios/e04-1.svg)
+
+**Comprobación.** Se cumple que la suma de credenciales no anuladas de la jornada es menor o igual que `aforoMaximoJornada`. Las 14.999 anteriores no se dibujan una a una.
+
+##### E-04.2. Abono con el viernes completo (rechazo)
+
+**Contexto.** El viernes tiene 15.000 credenciales no anuladas, el sábado 12.000 y el domingo 11.500. Carlos quiere un abono.
+
+**Operación.** Se intenta emitir el abono `CR-04B` a nombre de Carlos.
+
+**Resultado esperado.** La operación se rechaza porque el abono vale para las tres jornadas y el viernes no tiene plazas, aunque el sábado y el domingo sí. No se crea la credencial.
+
+![Diagrama de objetos E-04.2](docs/img/escenarios/e04-2.svg)
+
+**Comprobación.** La comprobación se hace en cada jornada para la que vale la credencial, y basta con que falle una. La validez del abono es `"todas las jornadas"`.
+
+##### E-04.3. Anulación que libera una plaza (límite)
+
+**Contexto.** El viernes tenía 15.000 credenciales no anuladas. Se anula `CR-04X`, que era una de ellas, y quedan 14.999. Marta quiere una entrada de viernes.
+
+**Operación.** Se emite la credencial `CR-04C` a nombre de Marta.
+
+**Resultado esperado.** La emisión se acepta y el viernes vuelve a quedar en 15.000.
+
+![Diagrama de objetos E-04.3](docs/img/escenarios/e04-3.svg)
+
+**Comprobación.** Las credenciales anuladas no cuentan para el aforo, igual que en R.N.02 y R.N.03.
+
+##### E-04.4. Dos credenciales para la misma jornada (rechazo)
+
+**Contexto.** Lucía tiene el abono `CR-04L`, canjeado y válido para las tres jornadas. Hay aforo disponible el viernes.
+
+**Operación.** Se intenta emitir a Lucía la entrada de viernes `CR-04M`.
+
+**Resultado esperado.** La operación se rechaza porque Lucía ya tiene una credencial no anulada para el viernes. No se crea la credencial.
+
+![Diagrama de objetos E-04.4](docs/img/escenarios/e04-4.svg)
+
+**Comprobación.** Este rechazo no depende del aforo, sino del titular. Si Lucía no tuviera el abono, la entrada se aceptaría.
+
+**Otros casos de R.N.04.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
+
+| Caso | Resultado esperado |
+|:--|:--|
+| Conceder una acreditación cuando el viernes tiene 14.999 | Permitido; las acreditaciones también cuentan |
+| Entrada de sábado con el sábado en 15.000 | Rechazada |
+| Reducir el aforo autorizado a 14.000 cuando hay 14.500 credenciales para una jornada | Rechazado; no se puede bajar por debajo de lo reservado |
+| Fijar un aforo autorizado de 16.000 | Rechazado; no puede superar el aforo físico del recinto general |
+
+#### 5.2.5. Escenarios de R.N.05. Menores de 16 años con adulto responsable
+
+La regla dice que, si el titular tiene menos de 16 años, la credencial necesita un adulto responsable de al menos 18 años que tenga credencial para las mismas jornadas y la autorización firmada antes del canje. La credencial del adulto se registra primero.
+
+**Datos comunes.**
+
+| Objeto | Valores |
+|:--|:--|
+| `ed27 : Edicion` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027 |
+| `tcEV : TipoCredencial` | `TC-EV-27`, «Entrada de viernes 2027», público, válida el 21/05/2027, perfil general |
+| `elena : Usuario` | `USR-ELENA`, «Elena», nacida el 02/09/1988 (38 años) |
+| `martin : Usuario` | `USR-MARTIN`, «Martín», nacido el 14/03/2012 (15 años) |
+| `daniel : Usuario` | `USR-DANIEL`, «Daniel», nacido el 22/05/2011 (15 años el 21/05/2027) |
+| `sofia : Usuario` | `USR-SOFIA`, «Sofía», nacida el 21/05/2011 (16 años el 21/05/2027) |
+
+La edad se mira el primer día en que vale la credencial, que en estos escenarios es el viernes 21/05/2027.
+
+**Coherencia con el modelo conceptual.**
+
+| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
+|:--|:--|:--|:--|
+| R.N.05 | R.I.01, R.I.08 | `Credencial`–`Usuario` (titular y adulto responsable), `Credencial`–`TipoCredencial`; atributos `fechaNacimiento`, `estado` y `autorizacionFirmada` | Un titular menor de 16 años exige un adulto de al menos 18 con credencial para las mismas jornadas y la autorización firmada antes del canje |
+
+**Casos cubiertos.**
+
+| Caso | Operación | Resultado | Escenario |
+|:--|:--|:--|:--|
+| Menor de 15 años con adulto, credencial del adulto y autorización | Emisión | Permitida | E-05.1 |
+| Menor de 15 años, a un día de cumplir 16, sin adulto | Emisión | Rechazada | E-05.2 |
+| Titular que cumple 16 años el primer día de validez, sin adulto | Emisión | Permitida | E-05.3 |
+| Menor con adulto que todavía no tiene credencial | Emisión | Rechazada | E-05.4 |
+
+##### E-05.1. Menor con adulto responsable (válido)
+
+**Contexto.** Elena tiene la credencial `CR-05A` para el viernes 21. Martín tiene 15 años ese día.
+
+**Operación.** Se emite la credencial `CR-05B` a nombre de Martín, con Elena como adulto responsable y la autorización firmada.
+
+**Resultado esperado.** La emisión se acepta: Elena es mayor de 18 años, ya tiene credencial para la misma jornada y la autorización está firmada.
+
+![Diagrama de objetos E-05.1](docs/img/escenarios/e05-1.svg)
+
+**Comprobación.** Se usa `Credencial.titular` para Martín y `Credencial.adultoResponsable` para Elena. La credencial de Elena se registró antes que la del menor.
+
+##### E-05.2. Menor a un día de cumplir 16 años sin adulto (rechazo, límite)
+
+**Contexto.** Daniel nace el 22/05/2011 y cumple 16 años el sábado 22, un día después de que empiece a valer su entrada. El viernes 21 tiene 15 años.
+
+**Operación.** Se intenta emitir la credencial `CR-05C` a nombre de Daniel, sin adulto responsable.
+
+**Resultado esperado.** La operación se rechaza porque, con 15 años, necesita un adulto responsable y la autorización firmada. No se crea la credencial.
+
+![Diagrama de objetos E-05.2](docs/img/escenarios/e05-2.svg)
+
+**Comprobación.** Es el límite por debajo: faltando un solo día para cumplir 16 años, la regla se aplica.
+
+##### E-05.3. Titular que cumple 16 años el primer día (válido, límite)
+
+**Contexto.** Sofía nace el 21/05/2011 y cumple 16 años el viernes 21, el primer día en que vale su entrada.
+
+**Operación.** Se emite la credencial `CR-05D` a nombre de Sofía, sin adulto responsable y sin autorización.
+
+**Resultado esperado.** La emisión se acepta: ese día ya tiene 16 años y no necesita adulto responsable.
+
+![Diagrama de objetos E-05.3](docs/img/escenarios/e05-3.svg)
+
+**Comprobación.** Es el límite por encima: con 16 años cumplidos el primer día de validez, la regla no se aplica.
+
+##### E-05.4. Adulto responsable sin credencial (rechazo)
+
+**Contexto.** Martín tiene 15 años y su madre, Elena, ha firmado la autorización, pero Elena todavía no tiene ninguna credencial para el viernes 21.
+
+**Operación.** Se intenta emitir la credencial `CR-05E` a nombre de Martín, con Elena como adulto responsable.
+
+**Resultado esperado.** La operación se rechaza porque el adulto responsable no tiene credencial para la misma jornada. No se crea la credencial. La emisión se acepta cuando Elena ya tiene la suya, como en E-05.1.
+
+![Diagrama de objetos E-05.4](docs/img/escenarios/e05-4.svg)
+
+**Comprobación.** Por eso la credencial del adulto se registra primero. El resto de condiciones, como la edad de Elena y la autorización, sí se cumplen.
+
+**Otros casos de R.N.05.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
+
+| Caso | Resultado esperado |
+|:--|:--|
+| Menor de 16 años con adulto, pero con la autorización sin firmar | Rechazado |
+| Canje de la credencial de un menor sin la autorización firmada | Rechazado; la autorización se firma antes del canje |
+| Adulto responsable de 17 años | Rechazado; tiene que tener al menos 18 |
+| Adulto responsable cuya credencial está anulada | Rechazado |
+| Menor con un abono y adulto con solo la entrada de viernes | Rechazado; el adulto tiene que tener credencial para las mismas jornadas |
+| Titular de 16 años o más sin adulto responsable | Permitido |
+
+
 ### RN06: Gestión de saldo y recargas en pulsera
 
 #### Escenario Válido: Recarga exitosa y acumulación de saldo
@@ -1119,6 +1519,23 @@ Se incluyen las once reglas de negocio, no solo R.N.10 y R.N.11, porque comparte
 
 | Escenario | Regla | Restricciones que comprueba | Elementos del MC utilizados |
 |:--|:--|:--|:--|
+| E-01.1 | R.N.01 | C18, C06 | `Actuacion`, `Artista`, `Escenario`, `Zona`, `Edicion` |
+| E-01.2 | R.N.01 | C18, C06 | `Actuacion`, `Artista`, `Escenario`, `Edicion` |
+| E-01.3 | R.N.01 | C18, C06 | `Actuacion`, `Artista`, `Escenario`, `Edicion` |
+| E-02.1 | R.N.02 | C19, C07, C08 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-02.2 | R.N.02 | C19, C07, C08 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-02.3 | R.N.02 | C19, C07 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-03.1 | R.N.03 | C20 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-03.2 | R.N.03 | C20 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-03.3 | R.N.03 | C20 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-04.1 | R.N.04 | C21, C02 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-04.2 | R.N.04 | C21, C02 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-04.3 | R.N.04 | C21, C02 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-04.4 | R.N.04 | C21 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-05.1 | R.N.05 | C22 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-05.2 | R.N.05 | C22 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-05.3 | R.N.05 | C22 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
+| E-05.4 | R.N.05 | C22 | `Credencial`, `TipoCredencial`, `Usuario`, `Edicion` |
 | E-10.1 | R.N.10 | C27, C09, C11 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial`, `Edicion`, `Usuario` |
 | E-10.2 | R.N.10 | C27 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial`, `Edicion`, `Usuario` |
 | E-10.3 | R.N.10 | C27, C09 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial`, `Edicion`, `Usuario` |

@@ -1,0 +1,42 @@
+@startuml e05-2
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+}
+
+object "<u>daniel : Usuario</u>" as daniel {
+  id = "USR-DANIEL"
+  nombre = "Daniel"
+  fechaNacimiento = 2011-05-22
+}
+
+object "<u>cD : Credencial</u>" as cD #FFDDDD {
+  codigo = "CR-05C"
+  estado = emitida
+  autorizacionFirmada = false
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+cD -- tcEV : <u>esDeTipo</u>
+daniel -- cD : <u>titular</u>
+
+note as N1
+  Daniel cumple 16 el 22/05/2027, un día después de que
+  empiece a valer su entrada. Con 15 años necesita adulto
+  responsable: cD se rechaza y no llega a crearse.
+end note
+cD .. N1
+@enduml
