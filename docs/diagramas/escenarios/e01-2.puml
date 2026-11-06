@@ -1,0 +1,55 @@
+@startuml e01-2
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>escGuad : Escenario</u>" as escGuad {
+  id = "ESC-GUAD"
+  nombre = "Escenario Guadalquivir"
+}
+
+object "<u>saiko : Artista</u>" as saiko {
+  id = "ART-SAIKO"
+  nombreArtistico = "Saiko"
+}
+
+object "<u>alvaro : Artista</u>" as alvaro {
+  id = "ART-ALVARO"
+  nombreArtistico = "Álvaro de Luna"
+}
+
+object "<u>a1 : Actuacion</u>" as a1 {
+  id = "ACT-01E"
+  fechaHoraInicio = 2027-05-21 20:30
+  fechaHoraFin = 2027-05-21 21:40
+  cabezaDeCartel = false
+  estado = programada
+}
+
+object "<u>a2 : Actuacion</u>" as a2 #FFDDDD {
+  id = "ACT-01F"
+  fechaHoraInicio = 2027-05-21 21:50
+  fechaHoraFin = 2027-05-21 22:50
+  cabezaDeCartel = false
+  estado = programada
+}
+
+saiko -- a1 : <u>actua</u>
+a1 -- escGuad : <u>seCelebraEn</u>
+a1 -- ed27 : <u>perteneceA</u>
+alvaro -- a2 : <u>actua</u>
+a2 -- escGuad : <u>seCelebraEn</u>
+a2 -- ed27 : <u>perteneceA</u>
+
+note as N1
+  a2 se rechaza: empieza 10 minutos después de que
+  acabe a1 y hacen falta al menos 30.
+end note
+a2 .. N1
+@enduml

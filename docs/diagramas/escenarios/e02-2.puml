@@ -1,0 +1,44 @@
+@startuml e02-2
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+  precio = 55.00
+  cupo = 3000
+}
+
+object "<u>carlos : Usuario</u>" as carlos {
+  id = "USR-CARLOS"
+  nombre = "Carlos"
+}
+
+object "<u>c2 : Credencial</u>" as c2 #FFDDDD {
+  codigo = "CR-02B"
+  estado = emitida
+  precioPagado = 55.00
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+c2 -- tcEV : <u>esDeTipo</u>
+carlos -- c2 : <u>titular</u>
+carlos -- c2 : <u>comprador</u>
+
+note as N1
+  El tipo ya tiene 3.000 credenciales no anuladas
+  (no se dibujan): el cupo está completo.
+  c2 se rechaza y no llega a crearse.
+end note
+c2 .. N1
+@enduml

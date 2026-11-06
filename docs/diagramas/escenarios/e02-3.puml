@@ -1,0 +1,57 @@
+@startuml e02-3
+hide circle
+hide methods
+skinparam classAttributeIconSize 0
+
+object "<u>ed27 : Edicion</u>" as ed27 {
+  id = "ED-2027"
+  fechaInicio = 2027-05-21
+  fechaFin = 2027-05-23
+}
+
+object "<u>tcEV : TipoCredencial</u>" as tcEV {
+  id = "TC-EV-27"
+  nombre = "Entrada de viernes 2027"
+  destinatario = publico
+  validez = "21/05/2027"
+  perfilAcceso = general
+  precio = 65.00
+  cupo = 3000
+}
+
+object "<u>elena : Usuario</u>" as elena {
+  id = "USR-ELENA"
+  nombre = "Elena"
+}
+
+object "<u>marta : Usuario</u>" as marta {
+  id = "USR-MARTA"
+  nombre = "Marta"
+}
+
+object "<u>c3 : Credencial</u>" as c3 {
+  codigo = "CR-02C"
+  estado = emitida
+  precioPagado = 55.00
+}
+
+object "<u>c4 : Credencial</u>" as c4 {
+  codigo = "CR-02D"
+  estado = emitida
+  precioPagado = 65.00
+}
+
+tcEV -- ed27 : <u>perteneceA</u>
+c3 -- tcEV : <u>esDeTipo</u>
+c4 -- tcEV : <u>esDeTipo</u>
+elena -- c3 : <u>titular</u>
+elena -- c3 : <u>comprador</u>
+marta -- c4 : <u>titular</u>
+marta -- c4 : <u>comprador</u>
+
+note as N1
+  El precio del tipo se actualizó de 55 a 65 después de
+  emitir c3. c3 sigue en 55 y la nueva emisión c4 paga 65.
+end note
+tcEV .. N1
+@enduml
