@@ -1,67 +1,46 @@
 @startuml
 !pragma layout smetana
-title E-11.2 · Pago con la pulsera A ya sustituida (rechazo)
 hide empty members
-left to right direction
 skinparam backgroundColor #FFFFFF
+skinparam shadowing false
 skinparam defaultFontName Helvetica
-skinparam defaultFontSize 13
+skinparam defaultFontSize 14
 skinparam object {
-  BackgroundColor #FEFECE
-  BorderColor #A80036
-  FontSize 13
+  BackgroundColor #F1F1F1
+  BorderColor #181818
+  FontSize 14
 }
 skinparam note {
-  BackgroundColor #FFF2CC
-  BorderColor #D6B656
-  FontSize 12
+  BackgroundColor #FEFFDD
+  BorderColor #181818
+  FontSize 13
 }
 skinparam nodesep 30
-skinparam ranksep 30
+skinparam ranksep 35
+left to right direction
 
-object "ed2027 : Edicion" as ed2027 {
-  id = "ED-2027"
-  nombre = "Azahar Sound 2027"
-  anio = 2027
-  fechaInicio = "21/05/2027"
-  fechaFin = "23/05/2027"
-  aforoMaximoJornada = 15000
-}
-object "pv01 : PuntoVenta" as pv01 {
-  id = "PV-01"
-  nombre = "Barra Azahar"
-  tipo = "barra"
-}
-object "prCerveza : Producto" as prCerveza {
-  id = "PR-002"
-  nombre = "Cerveza"
-  categoria = "bebida"
-  precioActual = 3,50 €
-  llevaAlcohol = true
-  stock = 50
-  stockMinimo = 10
-}
-object "elena : Usuario" as elena {
-  id = "USR-11B"
-  nombre = "Elena"
-  fechaNacimiento = "10/04/2001"
-  rol = "asistente"
-}
-object "cr11b : Credencial" as cr11b {
+object "<u>cr11b : Credencial</u>" as cr11b {
   codigo = "CR-11B"
   estado = "canjeada"
   nfcActual = "NFC-B"
   estadoPulsera = "activa"
-  /saldoActual = 15,00 €
-  /saldoDisponible = 15,00 €
+  /saldoActual = 15.00
 }
-ed2027 -- pv01 : edicion
+object "<u>prCerveza : Producto</u>" as prCerveza {
+  nombre = "Cerveza"
+  precioActual = 3.50
+  stock = 50
+}
+object "<u>pv01 : PuntoVenta</u>" as pv01 {
+  nombre = "Barra Azahar"
+  tipo = "barra"
+}
+
 pv01 -- prCerveza : productos
-elena -- cr11b : titular
 
 note bottom of cr11b
-Alguien encuentra NFC-A, la pulsera sustituida, e intenta pagar una cerveza.
-El lector compara el código leído con nfcActual = NFC-B; no coincide y rechaza el cobro.
-No se crea MovimientoSaldo: el saldo sigue en 15,00 € y el stock en 50.
+Se lee la pulsera antigua NFC-A, que ya no es
+la actual. Cobro rechazado: no se crea
+MovimientoSaldo y el stock no cambia.
 end note
 @enduml

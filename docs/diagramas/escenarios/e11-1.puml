@@ -1,79 +1,53 @@
 @startuml
 !pragma layout smetana
-title E-11.1 · Reposición de la pulsera A por la pulsera B (válido)
 hide empty members
-top to bottom direction
 skinparam backgroundColor #FFFFFF
+skinparam shadowing false
 skinparam defaultFontName Helvetica
-skinparam defaultFontSize 13
+skinparam defaultFontSize 14
 skinparam object {
-  BackgroundColor #FEFECE
-  BorderColor #A80036
-  FontSize 13
+  BackgroundColor #F1F1F1
+  BorderColor #181818
+  FontSize 14
 }
 skinparam note {
-  BackgroundColor #FFF2CC
-  BorderColor #D6B656
-  FontSize 12
+  BackgroundColor #FEFFDD
+  BorderColor #181818
+  FontSize 13
 }
 skinparam nodesep 30
-skinparam ranksep 30
+skinparam ranksep 35
+left to right direction
 
-object "ed2027 : Edicion" as ed2027 {
-  id = "ED-2027"
-  nombre = "Azahar Sound 2027"
-  anio = 2027
-  fechaInicio = "21/05/2027"
-  fechaFin = "23/05/2027"
-  aforoMaximoJornada = 15000
-}
-object "zcarpa : Zona" as zcarpa {
-  id = "Z-CARPA"
-  nombre = "Carpa Alameda"
-  tipo = "pública"
-  aforoMaximo = 2500
-  ubicacion = "Dentro del recinto general"
-  /ocupacionActual = 1200
-}
-object "tcAG : TipoCredencial" as tcAG {
-  id = "TC-AG-27"
-  nombre = "Abono General 2027"
-  destinatario = "público"
-  validez = "todas las jornadas"
-  perfilAcceso = "general"
-}
-object "elena : Usuario" as elena {
+object "<u>elena : Usuario</u>" as elena {
   id = "USR-11A"
   nombre = "Elena"
-  fechaNacimiento = "10/04/2001"
-  rol = "asistente"
 }
-object "cr11a : Credencial" as cr11a {
+object "<u>cr11a : Credencial</u>" as cr11a {
   codigo = "CR-11A"
   estado = "canjeada"
   nfcActual = "NFC-B"
   estadoPulsera = "activa"
-  /saldoActual = 15,00 €
-  /saldoDisponible = 15,00 €
-  fechaHoraAsignacionPulsera = "21/05/2027 23:10"
+  /saldoActual = 15.00
 }
-object "acc11a0 : Acceso" as acc11a0 {
+object "<u>acc11a0 : Acceso</u>" as acc11a0 {
   id = "ACC-11A-0"
-  fechaHora = "21/05/2027 22:00:00"
   tipoMovimiento = "entrada"
   resultado = "permitido"
-  motivo = null
+}
+object "<u>zcarpa : Zona</u>" as zcarpa {
+  nombre = "Carpa Alameda"
+  aforoMaximo = 2500
+  /ocupacionActual = 1800
 }
 
-ed2027 -- tcAG : edicion
-tcAG -- cr11a : tipoCredencial
 elena -- cr11a : titular
-cr11a -- acc11a0 : credencial
+cr11a -- acc11a0 : accesos
 acc11a0 -- zcarpa : zona
 
 note bottom of cr11a
-Antes: nfcActual = NFC-A, 15,00 € y presencia en la Carpa (ACC-11A-0).
-Se verifica la identidad y se asigna NFC-B: nfcActual pasa a NFC-B y sigue activa.
-NFC-A deja de ser la pulsera actual; el saldo y la presencia en la Carpa se mantienen.
+Antes la pulsera era NFC-A. La reposición deja
+NFC-B activa; el saldo y la presencia en la Carpa
+se mantienen.
 end note
 @enduml
