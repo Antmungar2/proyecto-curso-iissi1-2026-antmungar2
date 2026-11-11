@@ -1,6 +1,6 @@
 # Backstage: sistema de información para la gestión de un festival de música
 
-![Backstage, sistema de información para la gestión de un festival de música](docs/img/portada/banner.png.drawio.png)
+![Backstage, sistema de información para la gestión de un festival de música](docs/img/portada/banner.png)
 
 ## Miembros del grupo L8-AM-2
 
@@ -36,7 +36,7 @@ Azahar Sound lo organiza una pequeña promotora sevillana. Es un festival de pop
 
 Así es el recinto, con sus zonas, sus escenarios, los puntos de venta y los controles de acceso:
 
-![Mapa del recinto con las zonas, los escenarios, los puntos de venta y los controles de acceso](docs/img/introduccion/mapa-recinto.png.drawio.png)
+![Mapa del recinto con las zonas, los escenarios, los puntos de venta y los controles de acceso](docs/img/introduccion/mapa-recinto.png)
 
 **Usuarios**
 
@@ -60,11 +60,11 @@ Cuando termina el festival, alguien de la promotora se pasa una semana cruzando 
 
 Así ve hoy la promotora las ventas, en el panel de la ticketera. Para cruzarlas con cualquier otra cosa hay que exportarlas:
 
-![Panel de ventas de la ticketera externa con las entradas vendidas de 2026 por tipo y fase](docs/img/introduccion/panel-ticketera-2026.png.drawio.png)
+![Panel de ventas de la ticketera externa con las entradas vendidas de 2026 por tipo y fase](docs/img/introduccion/panel-ticketera-2026.png)
 
 Y así le llegan los datos de las barras: un informe en PDF que manda el proveedor de las pulseras cuando ya ha pasado el festival.
 
-![Informe de cierre del proveedor de pulseras con lo recargado, lo consumido y lo vendido por cada punto de venta](docs/img/introduccion/informe-cashless-2026.png.drawio.png)
+![Informe de cierre del proveedor de pulseras con lo recargado, lo consumido y lo vendido por cada punto de venta](docs/img/introduccion/informe-cashless-2026.png)
 
 **Problemas**
 
@@ -716,694 +716,324 @@ para no perder ventas ni accesos si falla el servidor.
 
 ### 5.1. Diagramas de clases UML
 
+El siguiente diagrama integra en una única vista las entidades, relaciones y reglas principales del sistema Backstage para la gestión del festival Azahar Sound.
+
 ```mermaid
-%%{init: {"theme":"base","class":{"hideEmptyMembersBox":true},"flowchart":{"nodeSpacing":30,"rankSpacing":140},"themeVariables":{"primaryColor":"#f5f7fa","primaryTextColor":"#17212b","primaryBorderColor":"#53677a","lineColor":"#34495e","noteBkgColor":"#fff9e8","noteTextColor":"#17212b","noteBorderColor":"#998653","fontFamily":"Arial","fontSize":"16px"}}}%%
 classDiagram
-direction TB
-accTitle: Modelo conceptual de Backstage
-accDescr: Trece entidades con atributos, multiplicidades, roles y restricciones básicas y referencias a los RI y RN de la sección 4.1. Los dominios de los atributos enumerados se definen en los requisitos de información.
-
-class Edicion {
-    idEdicion
-    nombre
-    anio
-    fechaInicio
-    fechaFin
-    aforoAutorizado
-    /fechaHoraCierre
-}
-
-class Zona {
-    idZona
-    nombre
-    tipo : TipoZona
-    aforoMaximo
-    ubicacion
-    /ocupacionActual
-}
-
-class Acceso {
-    idAcceso
-    fechaHora
-    sentido : SentidoAcceso
-    resultado : ResultadoAcceso
-    motivoDenegacion [0..1]
-}
-
-class Actuacion {
-    idActuacion
-    fechaHoraInicio
-    fechaHoraFin
-    esCabezaCartel
-    estado : EstadoActuacion
-}
-
-class Escenario {
-    idEscenario
-    nombre
-}
-
-class PuntoVenta {
-    idPuntoVenta
-    nombre
-    tipo : TipoPuntoVenta
-}
-
-class Artista {
-    idArtista
-    nombreArtistico
-    generoMusical
-    paisOrigen
-}
-
-class Credencial {
-    codigo
-    fechaHoraEmision
-    precioPagado
-    estado : EstadoCredencial
-    fechaHoraPrimerCanje [0..1]
-    enlaceAutorizacion [0..1]
-    codigoNFC [0..1]
-    estadoPulsera : EstadoPulsera [0..1]
-    fechaHoraAsignacion [0..1]
-    fechaHoraBloqueo [0..1]
-    fechaHoraSolicitud [0..1]
-    importeDevolucion [0..1]
-    fechaHoraPago [0..1]
-    /estadoDevolucion : EstadoDevolucion
-    /saldoActual
-    /saldoDisponible
-}
+direction LR
+accTitle: Modelo de clases de Backstage
+accDescr: Diagrama integrado de clases, relaciones y reglas principales del sistema de gestión del festival Azahar Sound.
 
 class Usuario {
-    idUsuario
-    correo
-    hashContrasena
-    nombre
-    apellidos
-    documentoIdentidad
-    fechaNacimiento
-    telefono [0..1]
-    fechaAlta
-    esAsistente
-    esProfesional
-    empresa [0..1]
-    rolOperativo : RolOperativo [0..1]
+  +idUsuario
+  +email
+  +nombre
+  +apellidos
+  +fechaNacimiento
+  +documentoIdentidad
 }
-
-class MovimientoSaldo {
-    idMovimiento
-    fechaHora
-    tipo : TipoMovimiento
-    importeRecarga [0..1]
-    canalRecarga : CanalRecarga [0..1]
-    cantidad [0..1]
-    precioUnitario [0..1]
-    /importe
+class Asistente
+class Profesional {
+  +rolOperativo
 }
-
-class Incidencia {
-    idIncidencia
-    fechaHora
-    tipo : TipoIncidencia
-    gravedad : Gravedad
-    descripcion
+class Edicion {
+  +idEdicion
+  +nombre
+  +anio
+  +fechaInicio
+  +fechaFin
+  +aforoAutorizado
 }
-
+class Zona {
+  +idZona
+  +nombre
+  +tipo
+  +aforoMaximo
+  +/ocupacionActual
+}
+class Escenario {
+  +idEscenario
+  +nombre
+}
+class Actuacion {
+  +idActuacion
+  +fechaHoraInicio
+  +fechaHoraFin
+  +estado
+}
+class Artista {
+  +idArtista
+  +nombreArtistico
+}
 class TipoCredencial {
-    idTipoCredencial
-    nombre
-    destinatario : Destinatario
-    jornadaValidez [0..1]
-    perfilAcceso : PerfilAcceso
-    precioActual
-    cupoMaximo
+  +idTipoCredencial
+  +nombre
+  +precioActual
+  +cupoMaximo
+  +perfilAcceso
 }
-
+class Credencial {
+  +codigo
+  +estado
+  +nfcActual
+  +/saldoActual
+}
+class MovimientoSaldo {
+  +idMovimiento
+  +fechaHora
+  +tipoMovimiento
+  +importe
+  +cantidad
+}
+class PuntoVenta {
+  +idPuntoVenta
+  +nombre
+  +tipo
+}
 class Producto {
-    idProducto
-    nombre
-    categoria : CategoriaProducto
-    precioActual
-    llevaAlcohol
-    stockDisponible
-    stockMinimo
+  +idProducto
+  +nombre
+  +precioActual
+  +llevaAlcohol
+  +stockDisponible
+}
+class Acceso {
+  +idAcceso
+  +fechaHora
+  +resultado
 }
 
-Escenario "1" -- "*" Actuacion
-Credencial "*" -- "0..1 adulto" Usuario : ▲ tiene adulto responsable
-Credencial "1" -- "*" MovimientoSaldo
-Acceso "*" -- "1 validador" Usuario
-Credencial "*" -- "1" TipoCredencial
-Actuacion "*" -- "1" Artista
-Usuario "0..1 tramitador" -- "*" Credencial : tramita la devolución de
-Acceso "*" -- "1" Zona
-PuntoVenta "*" -- "1" Edicion
-PuntoVenta "1" -- "*" Producto
-Edicion "1" *-- "*" Actuacion
-Usuario "0..1 responsable" -- "*" Escenario
-Usuario "0..1 comprador" -- "*" Credencial : compra
-Edicion "1" *-- "*" TipoCredencial
-Edicion "1" -- "*" Incidencia
-Zona "1" -- "*" Escenario
-PuntoVenta "*" -- "1 responsable" Usuario
-Incidencia "*" -- "1 registrador" Usuario
-Usuario "1 titular" -- "*" Credencial : es titular de
-Zona "1" -- "*" Incidencia
-Acceso "*" -- "0..1" Credencial
-Usuario "0..1 vendedor" -- "*" MovimientoSaldo
-Producto "0..1" -- "*" MovimientoSaldo
-PuntoVenta "*" -- "1" Zona
+Usuario <|-- Asistente
+Usuario <|-- Profesional
 
-note "{Identificadores únicos; / derivado; [0..1] opcional.}<br/>{RI y RN: restricciones definidas en la sección 4.1.}"
-note for Usuario "{RI01: correo y documentoIdentidad únicos.}<br/>{esAsistente o esProfesional, o ambos.}<br/>{rolOperativo ⇒ esProfesional.}"
-note for Edicion "{RI02: anio único; fechaInicio ≤ fechaFin.}<br/>{0 < aforoAutorizado ≤ aforo del recinto.}<br/>{RN04: reservas por jornada ≤ aforoAutorizado.}<br/>{Una credencial no anulada por titular y jornada.}"
-note for Zona "{RI03: nombre único; un recinto general.}<br/>{aforoMaximo > 0.}<br/>{RN10: 0 ≤ ocupacionActual ≤ aforoMaximo.}<br/>{/ocupacionActual = entradas permitidas<br/>− salidas permitidas.}"
-note for Escenario "{RI04: nombre único.}<br/>{Responsable con rol de programación.}"
-note for Artista "{RI05: nombreArtistico único.}"
-note for Actuacion "{RN01: duración entre 30 y 180 minutos.}<br/>{Dentro de una jornada de su edición.}<br/>{Mismo escenario: separación ≥ 30 minutos.}<br/>{Mismo artista: sin solapes. Canceladas excluidas.}"
-note for TipoCredencial "{RI07: nombre único por edición.}<br/>{RN02: precio público > 0; profesional = 0.}<br/>{cupoMaximo entero > 0.}<br/>{Credenciales no anuladas ≤ cupoMaximo.}"
-note for Credencial "{RI08: codigoNFC único cuando existe.}<br/>{RN02: tipo y precioPagado inmutables.}<br/>{RN03: ≤ 4 entradas por comprador y edición;<br/>no cuentan las anuladas.}<br/>{RN05: menor de 16 ⇒ adulto ≥ 18 y autorización.}<br/>{RN09: devolución única del saldo completo;<br/>sin comisión, desde el cierre.}<br/>{RN11: una pulsera actual; anulación irreversible.}"
-note for PuntoVenta "{RI09: nombre único por edición.}<br/>{Responsable con rol de punto de venta.}"
-note for Producto "{RI10: nombre único por punto; precioActual > 0.}<br/>{stockDisponible y stockMinimo enteros ≥ 0.}<br/>{RN07: venta de alcohol ⇒ titular ≥ 18 años.}<br/>{RN08: cantidad entera; 0 < cantidad ≤ stock previo.}"
-note for MovimientoSaldo "{RI11: recarga o consumo, excluyentes.}<br/>{/importe = importeRecarga o cantidad × precioUnitario.}<br/>{RN06: saldo ≥ 0; consumo ≤ saldoDisponible.}<br/>{5 ≤ importeRecarga ≤ 200 EUR.}"
-note for Acceso "{RI12: credencial nula ⇒ denegado.}<br/>{Denegado ⇒ motivoDenegacion obligatorio.}<br/>{RN10: validar pulsera, jornada, perfil y aforo;<br/>alternar entrada y salida por titular y zona.}"
-note for Incidencia "{RI13: fecha dentro de una jornada de su edición.}<br/>{Registrador con rol de control o programación.}"
+Edicion "1" *-- "*" Zona : contiene
+Edicion "1" *-- "*" Actuacion : programa
+Zona "1" o-- "*" Escenario : contiene
+Escenario "1" -- "*" Actuacion : acoge
+Artista "1" -- "*" Actuacion : realiza
+
+TipoCredencial "1" -- "*" Credencial : define
+Usuario "1" -- "*" Credencial : es titular
+Credencial "1" -- "*" Acceso : genera
+Zona "1" -- "*" Acceso : registra
+
+PuntoVenta "1" -- "*" Producto : ofrece
+Credencial "1" *-- "*" MovimientoSaldo : acumula
+Producto "1" -- "*" MovimientoSaldo : se refiere a
+
+note for Usuario "Menor de 16: requiere adulto responsable<br/>Menor de 18: no puede comprar alcohol"
+note for Actuacion "Sin solapes en el mismo escenario<br/>Dentro de las fechas de la edición"
+note for Zona "La ocupación no supera el aforo máximo<br/>El acceso depende del perfil de la credencial"
+note for TipoCredencial "Precio y cupo coherentes<br/>El cupo no baja de credenciales no anuladas"
+note for Credencial "El saldo nunca es negativo<br/>Una sola pulsera activa por credencial"
+note for MovimientoSaldo "Importe = cantidad x precio unitario<br/>Recargas entre 5 € y 200 €"
+note for Producto "No se vende más cantidad que el stock<br/>Alcohol solo a mayores de 18"
+note for Acceso "Entradas y salidas alternas<br/>Respeta el aforo de la zona"
 ```
 
 ### 5.2. Escenarios de prueba
-### RN06: Gestión de saldo y recargas en pulsera
 
-#### Escenario Válido: Recarga exitosa y acumulación de saldo
-* **Identificador:** RN06-Valido
-* **Descripción:** Un asistente con una credencial canjeada y pulsera activa realiza dos recargas acumulando un saldo total disponible de 205,00 €.
-* **Diagrama de Objetos:**
-  ![RN06 Válido](docs/img/escenarios_pruebas/rn06_valido.png.drawio.png)
-
-#### Escenario de Rechazo: Saldo insuficiente en cobro
-* **Identificador:** RN06-Rechazo
-* **Descripción:** Se intenta realizar una consumición de 3 bocadillos (15,00 €) disponiendo únicamente de 10,00 € de saldo. Operación rechazada.
-* **Diagrama de Objetos:**
-  ![RN06 Rechazo](docs/img/escenarios_pruebas/rn06_rechazo.png.drawio.png)
-
----
-
-### RN07: Restricción de venta de alcohol a menores
-
-#### Escenario de Rechazo: Intento de compra por menor de edad
-* **Identificador:** RN07-Rechazo
-* **Descripción:** Un asistente menor de edad (16 años) intenta adquirir una consumición con contenido alcohólico. El sistema bloquea automáticamente la venta.
-* **Diagrama de Objetos:**
-  ![RN07 Rechazo](docs/img/escenarios_pruebas/rn07_rechazo.png.drawio.png)
-
-#### Escenario Válido: Compra de alcohol por mayor de edad
-* **Identificador:** RN07-Valido
-* **Descripción:** Un asistente mayor de edad (27 años) adquiere una consumición alcohólica teniendo saldo suficiente.
-* **Diagrama de Objetos:**
-  ![RN07 Válido](docs/img/escenarios_pruebas/rn07_valido.png.drawio.png)
-
----
-
-### RN08: Control de existencias (Stock de productos)
-
-#### Escenario de Rechazo: Stock insuficiente
-* **Identificador:** RN08-Rechazo
-* **Descripción:** Se solicita la compra de 2 unidades de un producto del que solo queda 1 unidad en stock.
-* **Diagrama de Objetos:**
-  ![RN08 Rechazo](docs/img/escenarios_pruebas/rn08_rechazo.png.drawio.png)
-
-#### Escenario Válido: Venta y decremento de stock
-* **Identificador:** RN08-Valido
-* **Descripción:** Compra exitosa de 2 camisetas con stock disponible previo de 10 unidades. Se reduce el stock a 8 y se crea el consumo correspondiente.
-* **Diagrama de Objetos:**
-  ![RN08 Válido](docs/img/escenarios_pruebas/rn08_valido.png.drawio.png)
-
----
-
-### RN09: Devolución de saldo restante
-
-#### Escenario Válido: Reintegro dentro de plazo
-* **Identificador:** RN09-Valido
-* **Descripción:** Tras la finalización del festival y dentro del plazo establecido, se solicita la devolución de 25,50 € restantes en la pulsera.
-* **Diagrama de Objetos:**
-  ![RN09 Válido](docs/img/escenarios_pruebas/rn09_valido.png.drawio.png)
-
-#### Escenario de Rechazo: Solicitud improcedente
-* **Identificador:** RN09-Rechazo
-* **Descripción:** Intento de tramitar devolución cuando el saldo disponible es 0,00 € o la solicitud se realiza fuera del plazo legal permitido.
-* **Diagrama de Objetos:**
-  ![RN09 Rechazo](docs/img/escenarios_pruebas/rn09_rechazo.png.drawio.png)
-
-Esta parte de la sección recoge los escenarios de las reglas **R.N.10** (acceso permitido y aforo de cada zona) y **R.N.11** (una sola pulsera activa por credencial). Cada escenario describe el estado inicial, la operación que se intenta y el resultado esperado, con casos válidos, rechazos y límites, y se acompaña de un diagrama de objetos UML.
-
-Los diagramas utilizan las clases, atributos, asociaciones y restricciones del modelo conceptual de 5.1 y de los requisitos de información R.I.01–R.I.13. Se marcan con `/` los atributos derivados. En particular, `/ocupacionActual` de una zona no se almacena: se calcula a partir de los accesos permitidos (entradas menos salidas), tal como recoge R.F.11. Los objetos `Acceso` son inmutables: las lecturas permitidas y denegadas se conservan y solo las permitidas modifican la ocupación (R.I.12). Las fuentes PlantUML se guardan en `docs/diagramas/escenarios/` y los PNG renderizados en `docs/img/escenarios/`.
-
-#### 5.2.10. Escenarios de R.N.10. Acceso permitido y aforo de cada zona
-
-La regla combina tres comprobaciones: que la credencial sea válida para la jornada, que su perfil de acceso permita el tipo de zona y que la zona tenga aforo disponible. Además, las entradas y salidas deben alternarse, para acceder a una zona interior hay que estar dentro del recinto general y las salidas se permiten incluso con la pulsera bloqueada o fuera de horario.
-
-**Datos comunes.**
-
-| Objeto | Valores |
-|:--|:--|
-| `E-EDI` | `ED-2027`, «Azahar Sound 2027», del 21/05/2027 al 23/05/2027, aforo máximo 15.000 por jornada |
-| `zgen : Zona` | `Z-GEN`, «Recinto general», tipo recinto general, aforo 15.000 |
-| `zcarpa : Zona` | `Z-CARPA`, «Carpa Alameda», tipo pública, aforo 2.500 |
-| `zvip : Zona` | `Z-VIP`, «Patio VIP», tipo VIP, aforo 1.200 |
-| `zback : Zona` | `Z-BACK`, «Backstage», tipo profesional, aforo 300 |
-| `tcAG : TipoCredencial` | `TC-AG-27`, «Abono General 2027», público, todas las jornadas, perfil general |
-| `tcAV : TipoCredencial` | `TC-AV-27`, «Abono VIP 2027», público, todas las jornadas, perfil VIP |
-| `tcEV : TipoCredencial` | `TC-EV-27`, «Entrada de viernes 2027», público, 21/05/2027, perfil general |
-| `tcOP : TipoCredencial` | `TC-OP-27`, «Acreditación operativa 2027», profesional, todas las jornadas, perfil operativo |
-| `tcCO : TipoCredencial` | `TC-CO-27`, «Acreditación completa 2027», profesional, todas las jornadas, perfil completo |
-| `sergio : Usuario` | `USR-CTL-01`, «Sergio», rol personal de control del recinto |
-
-Los perfiles de acceso se interpretan según la tabla de R.N.10: el general entra en el recinto general y en las zonas públicas; el VIP añade el Patio VIP; el operativo añade el *backstage*; y el completo entra en todas.
-
-**Coherencia con el modelo conceptual.**
-
-| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
-|:--|:--|:--|:--|
-| R.N.10 | R.I.02, R.I.03, R.I.07, R.I.08, R.I.12 | `Acceso`–`Credencial`, `Acceso`–`Zona`, `Acceso`–`Usuario` (validador), `Credencial`–`TipoCredencial`, `TipoCredencial`–`Edicion`; atributos `fechaHora`, `tipoMovimiento`, `resultado`, `motivo`, `perfilAcceso`, `validez` | El acceso exige credencial canjeada, pulsera actual activa, jornada cubierta y perfil compatible; la zona no puede superar su aforo; las entradas y salidas se alternan; una zona interior exige estar dentro del recinto general |
-
-**Casos cubiertos.**
-
-| Caso | Operación | Resultado | Escenario |
-|:--|:--|:--|:--|
-| Perfil VIP entra en el Patio VIP con 1.199 de 1.200 | Entrada | Permitida; ocupación 1.200 | E-10.1 |
-| Perfil general intenta entrar en el Patio VIP | Entrada | Denegada; ocupación no cambia | E-10.2 |
-| Entrada de viernes usada el sábado | Entrada | Denegada; jornada no cubierta | E-10.3 |
-| Carpa con 2.500 de 2.500; una salida y un reintento | Entrada, salida y entrada | Denegada, permitida y permitida | E-10.4 |
-| Pulsera bloqueada: salida asistida y reentrada | Salida y entrada | Salida permitida; entrada denegada | E-10.5 |
-
-##### E-10.1. Entrada al Patio VIP con perfil VIP y aforo disponible (válido, límite)
-
-**Contexto.** Elena tiene un abono VIP canjeado y su pulsera `NFC-10A` está activa. A las 17:55 entra en el recinto general y a las 18:00 intenta entrar en el Patio VIP. En ese momento hay 1.199 personas dentro del Patio VIP, cuyo aforo es 1.200.
-
-**Operación.** Se lee `NFC-10A` en el control de acceso del Patio VIP como una entrada.
-
-**Resultado esperado.** El acceso se permite porque el perfil VIP incluye la zona VIP, la credencial es válida para la jornada, la pulsera es la actual y está activa, y hay una plaza libre. Se crea un `Acceso` permitido y la ocupación del Patio VIP pasa de 1.199 a 1.200, justo el aforo, sin superarlo. El acceso previo al recinto general queda registrado y es lo que permite entrar en la zona interior.
-
-![Diagrama de objetos E-10.1](docs/img/escenarios/e10-1.png)
-
-**Comprobación.** El escenario usa `TipoCredencial.perfilAcceso = "VIP"`, `Credencial.estado = "canjeada"` y `Credencial.estadoPulsera = "activa"`. La ocupación se calcula con los accesos permitidos: el acceso `ACC-10A-1` es una entrada permitida al Patio VIP y respeta `{ocupacionActual < aforoMaximo}`. El acceso previo al recinto general, que no se dibuja, es el que habilita la entrada en la zona interior.
-
-##### E-10.2. Perfil general intenta entrar en el Patio VIP (rechazo)
-
-**Contexto.** Lucía tiene un abono general canjeado y su pulsera `NFC-10B` está activa. Ya está dentro del recinto general, pero a las 18:10 intenta entrar en el Patio VIP. Hay 800 personas en el Patio VIP, por debajo de su aforo.
-
-**Operación.** Se lee `NFC-10B` en el control del Patio VIP como una entrada.
-
-**Resultado esperado.** El acceso se deniega porque el perfil general no incluye la zona VIP, aunque la credencial sea válida y haya aforo. Se crea un `Acceso` con resultado denegado y motivo `"perfil general sin acceso a zona VIP"`. La ocupación del Patio VIP sigue en 800 y la credencial no cambia.
-
-![Diagrama de objetos E-10.2](docs/img/escenarios/e10-2.png)
-
-**Comprobación.** El rechazo no depende del aforo: se produce antes de comprobarlo, por incompatibilidad de perfil. El `Acceso` denegado queda registrado, pero no cuenta para la ocupación (R.I.12).
-
-##### E-10.3. Entrada de viernes usada el sábado (rechazo)
-
-**Contexto.** Carmen tiene una entrada de viernes canjeada y su pulsera `NFC-10C` está activa. El 22/05/2027 a las 18:00 intenta entrar en el recinto general.
-
-**Operación.** Se lee `NFC-10C` en el control de acceso del recinto general como una entrada.
-
-**Resultado esperado.** El acceso se deniega porque el tipo de credencial solo es válido el 21/05/2027 y la jornada del 22/05/2027 no está cubierta. Se crea un `Acceso` denegado con motivo `"credencial fuera de su jornada"`. La ocupación del recinto no cambia.
-
-![Diagrama de objetos E-10.3](docs/img/escenarios/e10-3.png)
-
-**Comprobación.** Se usa `TipoCredencial.validez = "21/05/2027"` y `Acceso.fechaHora`. La comprobación es por jornada, no por el estado de la credencial: la entrada sigue siendo válida para el viernes, pero no para el sábado.
-
-##### E-10.4. Aforo completo, salida y reintento (límite)
-
-**Contexto.** La Carpa Alameda tiene un aforo de 2.500 personas y está llena: 2.500 dentro. Lucía, con la credencial `CR-10D` y la pulsera `NFC-10D` activa, intenta entrar a las 22:00. Mario, que está dentro con `CR-10E`, sale un minuto después. Lucía lo intenta de nuevo a las 22:02.
-
-**Operación.** Se registran tres lecturas: entrada de Lucía, salida de Mario y entrada de Lucía.
-
-**Resultado esperado.** La primera entrada de Lucía se deniega por aforo completo y no modifica la ocupación. La salida de Mario se permite y baja la ocupación a 2.499. El reintento de Lucía se permite y la ocupación vuelve a 2.500. El aforo nunca se supera y las tres lecturas quedan registradas.
-
-![Diagrama de objetos E-10.4](docs/img/escenarios/e10-4.png)
-
-**Comprobación.** Se cumple `{ocupacionActual < aforoMaximo}` para permitir una entrada. La salida se registra como `tipoMovimiento = "salida"` y la entrada denegada no cuenta; por eso el reintento es válido. La secuencia respeta la alternancia entrada/salida.
-
-##### E-10.5. Salida asistida con pulsera bloqueada y reentrada denegada (límite)
-
-**Contexto.** Elena está dentro del recinto general con la credencial `CR-10F`. A las 23:00 pierde la pulsera `NFC-10F` y el personal la bloquea. La ocupación del recinto general es 10.000. Elena intenta volver a entrar a las 23:05 con la misma pulsera bloqueada.
-
-**Operación.** Se registra una salida asistida y, después, un intento de entrada con la pulsera bloqueada.
-
-**Resultado esperado.** La salida se permite aunque la pulsera esté bloqueada, porque las salidas siempre se permiten con ayuda del personal; la ocupación baja de 10.000 a 9.999. La reentrada se deniega por pulsera bloqueada y el intento queda registrado con su motivo. La ocupación no cambia.
-
-![Diagrama de objetos E-10.5](docs/img/escenarios/e10-5.png)
-
-**Comprobación.** El escenario separa la salida (siempre permitida) de la entrada (rechazada por `estadoPulsera = "bloqueada"`). La credencial sigue canjeada y conserva su saldo; la reposición de la pulsera se trata en R.N.11.
-
-**Otros casos de R.N.10.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
-
-| Caso | Resultado esperado |
-|:--|:--|
-| Entrada a una zona interior sin haber entrado antes en el recinto general | Denegada; primero hay que estar dentro del recinto general |
-| Entrada con una credencial en estado `emitida` (sin canjear) | Denegada; se exige una credencial canjeada y una pulsera actual activa |
-| Entrada con una credencial `anulada` | Denegada; la credencial no se reactiva |
-| Entrada entre las 06:00 y las 12:00 | Denegada; fuera del horario de las jornadas |
-| Salida fuera de horario o con la pulsera bloqueada | Permitida con ayuda del personal |
-| Reentrada después de una salida | Permitida sin recargo, con las mismas condiciones que la primera entrada |
-| Cambio de una zona interior a otra | Se registra la salida de la zona anterior y la entrada en la nueva |
-| Aforo del recinto general | Se aplica el menor entre el aforo físico y el autorizado para la edición |
-
-#### 5.2.11. Escenarios de R.N.11. Una sola pulsera activa por credencial
-
-La regla exige que cada credencial tenga una única pulsera actual. Al reponer una pulsera por pérdida, rotura o robo, la anterior deja de servir; el saldo y los accesos siguen asociados a la credencial. El canje pasa la credencial de `emitida` a `canjeada`, el código NFC es único y el titular no se cambia después del primer canje ni de registrar movimientos de saldo.
-
-**Coherencia con el modelo conceptual.**
-
-| Regla | R.I. | Elementos del MC que se comprueban | Restricción |
-|:--|:--|:--|:--|
-| R.N.11 | R.I.01, R.I.08, R.I.11, R.I.12 | `Credencial` y sus atributos `estado`, `nfcActual`, `estadoPulsera`, `fechaHoraAsignacionPulsera` y `fechaHoraBloqueoPulsera`; `Credencial`–`Usuario` (titular), `Credencial`–`MovimientoSaldo`, `Acceso`–`Credencial` | Una sola pulsera activa por credencial; el código NFC es único; la reposición invalida la pulsera anterior; no se cambia el titular después del canje o de un movimiento; una credencial anulada bloquea su pulsera y conserva el saldo |
-
-**Casos cubiertos.**
-
-| Caso | Operación | Resultado | Escenario |
-|:--|:--|:--|:--|
-| Reposición de la pulsera A por la B, con saldo y presencia en la Carpa | Reposición | Permitida; B activa y A invalidada | E-11.1 |
-| Pago con la pulsera A ya sustituida | Consumo | Rechazado; no hay movimiento | E-11.2 |
-| Asignar la pulsera B a otra credencial | Reposición | Rechazada; NFC duplicado | E-11.3 |
-| Cambio de titular antes del canje y después del canje | Cambio de titular | Permitido y rechazado, respectivamente | E-11.4 |
-| Anulación de una credencial con saldo | Anulación | Pulsera bloqueada; saldo conservado | E-11.5 |
-
-##### E-11.1. Reposición de la pulsera A por la pulsera B (válido)
-
-**Contexto.** Elena tiene la credencial `CR-11A` canjeada, con la pulsera `NFC-A` activa y 15,00 € de saldo. Está dentro de la Carpa Alameda. A las 23:10 acude a atención al cliente porque la pulsera se ha roto; se verifica su identidad y se le asigna la pulsera `NFC-B`.
-
-**Operación.** Se repone la pulsera de la credencial.
-
-**Resultado esperado.** La credencial pasa a tener `nfcActual = "NFC-B"` y `estadoPulsera = "activa"`, con la nueva fecha de asignación. La pulsera `NFC-A` deja de ser la actual y cualquier lector la rechaza. El saldo sigue en 15,00 € y la presencia en la Carpa se mantiene: la reposición no registra una salida ni una entrada y el historial de accesos se conserva.
-
-![Diagrama de objetos E-11.1](docs/img/escenarios/e11-1.png)
-
-**Comprobación.** Se actualizan los atributos de pulsera de `Credencial` (R.I.08) sin crear una nueva credencial ni un nuevo movimiento de saldo. El `Acceso` anterior sigue apuntando a la misma credencial, por lo que la presencia en la zona no se pierde.
-
-##### E-11.2. Pago con la pulsera A ya sustituida (rechazo)
-
-**Contexto.** La credencial `CR-11B` tiene actualmente `NFC-B` activa y 15,00 € de saldo. Alguien encuentra la antigua pulsera `NFC-A` e intenta pagar una cerveza de 3,50 € en la Barra Azahar.
-
-**Operación.** Se lee `NFC-A` en el lector del punto de venta.
-
-**Resultado esperado.** El cobro se rechaza porque el código leído no coincide con la pulsera actual de ninguna credencial. No se crea ningún `MovimientoSaldo`, el saldo sigue en 15,00 € y el stock de cerveza sigue en 50.
-
-![Diagrama de objetos E-11.2](docs/img/escenarios/e11-2.png)
-
-**Comprobación.** El lector busca el código NFC en `Credencial.nfcActual`; `NFC-A` ya no figura como actual. El rechazo no altera el saldo ni el stock, de acuerdo con R.N.06 y R.N.08.
-
-##### E-11.3. Asignar la pulsera B a otra credencial (rechazo)
-
-**Contexto.** `CR-11C` tiene la pulsera `NFC-B` activa. `CR-11D` tiene la pulsera `NFC-C` activa. Se intenta asignar `NFC-B` a `CR-11D`.
-
-**Operación.** Se intenta reponer `CR-11D` con el código `NFC-B`.
-
-**Resultado esperado.** La operación se rechaza porque `NFC-B` ya está asignada a `CR-11C`. El código NFC es único cuando existe, esté la pulsera activa o bloqueada. `CR-11C` conserva `NFC-B` y `CR-11D` conserva `NFC-C`.
-
-![Diagrama de objetos E-11.3](docs/img/escenarios/e11-3.png)
-
-**Comprobación.** Se respeta la unicidad de `Credencial.nfcActual` de R.I.08. La operación es atómica: no se modifica ninguna de las dos credenciales.
-
-##### E-11.4. Cambio de titular antes del canje (válido) y después (rechazo)
-
-**Contexto.** `CR-11E` está emitida, no tiene pulsera y no ha registrado movimientos; su titular es Lucía y se quiere cambiar a Marta. `CR-11F` ya está canjeada, tiene la pulsera `NFC-F` y una recarga de 5,00 €; se intenta cambiar su titular.
-
-**Operación.** Se cambia el titular de `CR-11E` y se intenta el cambio en `CR-11F`.
-
-**Resultado esperado.** El cambio de `CR-11E` se acepta si se cumplen R.N.03 y R.N.05, porque la credencial no se ha canjeado ni tiene movimientos. El cambio de `CR-11F` se rechaza porque ya tiene canje y una recarga registrada. El titular de una credencial canjeada o con movimientos no se modifica.
-
-![Diagrama de objetos E-11.4](docs/img/escenarios/e11-4.png)
-
-**Comprobación.** El escenario usa `Credencial.estado`, `fechaHoraPrimerCanje` y la existencia de `MovimientoSaldo`. La restricción es independiente del saldo: basta con que haya un movimiento o un canje para bloquear el cambio.
-
-##### E-11.5. Credencial anulada: pulsera bloqueada y saldo conservado (límite)
-
-**Contexto.** La credencial `CR-11G` está anulada, su pulsera `NFC-E` está bloqueada y conserva 15,00 € de saldo. Se intenta canjearla de nuevo y reponer su pulsera.
-
-**Operación.** Se intenta reactivar el canje y asignar una pulsera nueva.
-
-**Resultado esperado.** Las dos operaciones se rechazan: una credencial anulada no se reactiva, no permite un nuevo canje y no admite la reposición de su pulsera. El saldo se conserva para que el titular pueda pedir la devolución según R.N.09.
-
-![Diagrama de objetos E-11.5](docs/img/escenarios/e11-5.png)
-
-**Comprobación.** El diagrama muestra `estado = "anulada"` y `estadoPulsera = "bloqueada"`. La anulación no borra el saldo ni los movimientos; solo impide el uso de la pulsera y el canje.
-
-**Otros casos de R.N.11.** Estos casos se comprueban con el mismo modelo y no necesitan un diagrama adicional:
-
-| Caso | Resultado esperado |
-|:--|:--|
-| Asignar una pulsera nueva a una credencial `emitida` sin canjear | Rechazado; primero hay que hacer el canje |
-| Reponer la pulsera de una credencial no canjeada | Rechazado; solo se repone una credencial canjeada |
-| Cambiar el titular después de una recarga de 5 € sin canje | Rechazado; ya hay un movimiento de saldo |
-| Usar una pulsera bloqueada para acceder o pagar | Rechazado; no es una pulsera actual activa |
-| Reutilizar el código NFC de una pulsera bloqueada en otra credencial | Rechazado; el código sigue siendo único |
-| Asignar una pulsera a una credencial anulada | Rechazado; la credencial no se reactiva, pero conserva el saldo |
-
-## 6. Matrices de trazabilidad
-
-Esta sección relaciona cada requisito de información (R.I.01–R.I.13) y cada regla de negocio (R.N.01–R.N.11) con los elementos del modelo conceptual: entidades, asociaciones y restricciones. La matriz se lee en los dos sentidos: cada fila indica qué elementos del modelo materializan un requisito y cada elemento puede rastrearse hasta los requisitos que lo originan.
-
-Se incluyen las once reglas de negocio, no solo R.N.10 y R.N.11, porque comparten entidades y asociaciones con el resto del modelo y porque la sección 6 debe ser coherente con todo el catálogo. Los escenarios de 5.2 se refieren expresamente a R.N.10 y R.N.11; el resto de reglas se traza aquí sin necesitar un escenario propio en esta entrega.
-
-### 6.1. Criterios y leyenda
-
-- **Entidad (E).** Clase del modelo conceptual con identidad propia. Se incluye en la fila de un requisito cuando este define sus atributos, su identificador o una invariante sobre ellos.
-- **Asociación (A).** Relación entre dos entidades, con su cardinalidad y su obligatoriedad. Se incluye cuando el requisito fija esa cardinalidad o una regla que la recorre.
-- **Restricción (C).** Invariante o regla que limita los valores o las combinaciones de un elemento. Se incluye cuando el requisito la define o la necesita para comprobarse.
-- **Atributo derivado.** Se representa con `/`, como `/saldoActual`, `/saldoDisponible` y `/ocupacionActual`. No se almacena: se calcula a partir de los movimientos o de los accesos, tal como exigen R.I.08, R.I.11 y R.I.12.
-- **Trazabilidad de escenarios.** Los escenarios E-10.1 a E-10.5 y E-11.1 a E-11.5 de 5.2 se asocian en 6.4 con las restricciones concretas que comprueban.
-
-**Entidades del modelo conceptual.**
-
-| Código | Entidad | R.I. de origen | Atributos relevantes |
-|:--|:--|:--|:--|
-| E01 | `Usuario` | R.I.01 | `id`, `email`, `documentoIdentidad`, `fechaNacimiento`, `tipo`, `rol` |
-| E02 | `Edicion` | R.I.02 | `id`, `anio`, `fechaInicio`, `fechaFin`, `aforoMaximoJornada` |
-| E03 | `Zona` | R.I.03 | `id`, `nombre`, `tipo`, `aforoMaximo`, `/ocupacionActual` |
-| E04 | `Escenario` | R.I.04 | `id`, `nombre` |
-| E05 | `Artista` | R.I.05 | `id`, `nombreArtistico`, `genero`, `paisOrigen` |
-| E06 | `Actuacion` | R.I.06 | `id`, `fechaHoraInicio`, `fechaHoraFin`, `cabezaDeCartel`, `estado` |
-| E07 | `TipoCredencial` | R.I.07 | `id`, `nombre`, `destinatario`, `validez`, `perfilAcceso`, `precio`, `cupo` |
-| E08 | `Credencial` | R.I.08 | `codigo`, `estado`, `fechaHoraPrimerCanje`, `nfcActual`, `estadoPulsera`, `/saldoActual`, `/saldoDisponible` |
-| E09 | `PuntoVenta` | R.I.09 | `id`, `nombre`, `tipo` |
-| E10 | `Producto` | R.I.10 | `id`, `nombre`, `categoria`, `precioActual`, `llevaAlcohol`, `stock`, `stockMinimo` |
-| E11 | `MovimientoSaldo` | R.I.11 | `id`, `fechaHora`, `tipoMovimiento`, `importe`, `cantidad`, `precioUnitario` |
-| E12 | `Acceso` | R.I.12 | `id`, `fechaHora`, `tipoMovimiento`, `resultado`, `motivo` |
-| E13 | `Incidencia` | R.I.13 | `id`, `fechaHora`, `tipo`, `gravedad`, `descripcion` |
-
-**Asociaciones del modelo conceptual.**
-
-| Código | Asociación | Cardinalidad | R.I. de origen |
-|:--|:--|:--|:--|
-| A01 | `Escenario`–`Zona` (`perteneceA`) | `0..*`–`1` | R.I.04 |
-| A02 | `Escenario`–`Usuario` (`responsable`) | `0..*`–`0..1` | R.I.04 |
-| A03 | `Actuacion`–`Artista` (`actua`) | `0..*`–`1` | R.I.06 |
-| A04 | `Actuacion`–`Escenario` (`seCelebraEn`) | `0..*`–`1` | R.I.06 |
-| A05 | `Actuacion`–`Edicion` (`perteneceA`) | `0..*`–`1` | R.I.06 |
-| A06 | `TipoCredencial`–`Edicion` (`perteneceA`) | `0..*`–`1` | R.I.07 |
-| A07 | `Credencial`–`TipoCredencial` (`esDeTipo`) | `0..*`–`1` | R.I.08 |
-| A08 | `Credencial`–`Usuario` (`titular`) | `0..*`–`1` | R.I.08 |
-| A09 | `Credencial`–`Usuario` (`comprador`) | `0..*`–`0..1` | R.I.08 |
-| A10 | `Credencial`–`Usuario` (`adultoResponsable`) | `0..*`–`0..1` | R.I.08 |
-| A11 | `Credencial`–`Usuario` (`tramitadorDevolucion`) | `0..*`–`0..1` | R.I.08 |
-| A12 | `PuntoVenta`–`Edicion` (`perteneceA`) | `0..*`–`1` | R.I.09 |
-| A13 | `PuntoVenta`–`Zona` (`estaEn`) | `0..*`–`1` | R.I.09 |
-| A14 | `PuntoVenta`–`Usuario` (`responsable`) | `0..*`–`1` | R.I.09 |
-| A15 | `Producto`–`PuntoVenta` (`seVendeEn`) | `0..*`–`1` | R.I.10 |
-| A16 | `MovimientoSaldo`–`Credencial` (`perteneceA`) | `0..*`–`1` | R.I.11 |
-| A17 | `MovimientoSaldo`–`Producto` (`sobreProducto`) | `0..*`–`0..1` | R.I.11 |
-| A18 | `MovimientoSaldo`–`Usuario` (`vendedor`) | `0..*`–`0..1` | R.I.11 |
-| A19 | `Acceso`–`Credencial` (`identifica`) | `0..*`–`0..1` | R.I.12 |
-| A20 | `Acceso`–`Zona` (`afectaA`) | `0..*`–`1` | R.I.12 |
-| A21 | `Acceso`–`Usuario` (`validador`) | `0..*`–`1` | R.I.12 |
-| A22 | `Incidencia`–`Edicion` (`perteneceA`) | `0..*`–`1` | R.I.13 |
-| A23 | `Incidencia`–`Zona` (`ocurreEn`) | `0..*`–`1` | R.I.13 |
-| A24 | `Incidencia`–`Usuario` (`registrador`) | `0..*`–`1` | R.I.13 |
-
-**Restricciones del modelo conceptual.**
-
-| Código | Restricción | R.I./R.N. de origen |
-|:--|:--|:--|
-| C01 | `Usuario`: `email` y `documentoIdentidad` únicos; todo usuario es asistente, profesional o ambos; el rol solo existe para profesionales y pertenece al enumerado. | R.I.01 |
-| C02 | `Edicion`: `anio` único; `fechaInicio` no posterior a `fechaFin` y ambas del año; aforo autorizado positivo y no superior al aforo físico del recinto general. | R.I.02, R.N.04 |
-| C03 | `Zona`: `nombre` único; `aforoMaximo > 0`; `tipo` del enumerado; exactamente una zona de tipo recinto general y el resto interiores dentro de ella. | R.I.03 |
-| C04 | `Escenario`: `nombre` único; el responsable, si existe, tiene rol de responsable de programación. | R.I.04 |
-| C05 | `Artista`: `nombreArtistico` único. | R.I.05 |
-| C06 | `Actuacion`: `fechaHoraFin > fechaHoraInicio`; `estado` programada, realizada o cancelada. | R.I.06, R.N.01 |
-| C07 | `TipoCredencial`: `nombre` único por edición; destinatario, validez y perfil coherentes con la edición; precio mayor que cero para público e igual a cero para profesional; cupo entero positivo. | R.I.07, R.N.02 |
-| C08 | `TipoCredencial`: edición, destinatario, validez y perfil inmutables si ya tiene credenciales; el cupo no puede quedar por debajo de las no anuladas. | R.I.07, R.N.02 |
-| C09 | `Credencial`: `codigo` único; `estado` emitida, canjeada o anulada; una anulada no se reactiva; `fechaHoraPrimerCanje` se conserva. | R.I.08, R.N.11 |
-| C10 | `Credencial`: titular y comprador coherentes con el destinatario; comprador obligatorio solo en entradas de público; las acreditaciones son gratuitas. | R.I.08 |
-| C11 | `Credencial`: `nfcActual` único cuando existe; `estadoPulsera` activa o bloqueada; fechas de asignación y bloqueo coherentes; sin valor antes del canje. | R.I.08, R.N.10, R.N.11 |
-| C12 | `Credencial`: `/saldoActual` = recargas − consumos − devolución pagada; `/saldoDisponible` = 0 si hay devolución solicitada; datos de devolución coherentes y una sola solicitud. | R.I.08, R.N.06, R.N.09 |
-| C13 | `PuntoVenta`: `nombre` único por edición; `tipo` barra, *food truck* o tienda; responsable con rol de punto de venta; edición inmutable si ya tiene productos. | R.I.09 |
-| C14 | `Producto`: `nombre` único por punto de venta; categoría del enumerado; `precioActual > 0`; `stock` y `stockMinimo` no negativos; punto de venta inmutable si ya tiene consumos. | R.I.10 |
-| C15 | `MovimientoSaldo`: `cantidad` entera positiva; `precioUnitario` histórico; `importe = cantidad × precioUnitario`; campos exclusivos según el tipo; confirmado e inmutable; identificador idempotente. | R.I.11 |
-| C16 | `Acceso`: identificador único; tipo entrada o salida; resultado permitido o denegado; motivo obligatorio si se deniega; fecha con segundos; lectura inmutable; credencial opcional solo para código desconocido; validador con rol de control. | R.I.12 |
-| C17 | `Incidencia`: tipo sanitaria, seguridad o técnica; gravedad leve, grave o muy grave; fecha dentro de una jornada; sin datos clínicos ni identidad de pacientes. | R.I.13 |
-| C18 | Programación: duración entre 30 minutos y 3 horas; actuación entera dentro de una jornada; sin solapes en el mismo escenario y con 30 minutos de margen; un artista no actúa simultáneamente en dos escenarios. | R.N.01 |
-| C19 | Precio y cupo: no se emite por encima del cupo; el precio pagado no cambia; el precio del tipo puede actualizarse para nuevas emisiones. | R.N.02 |
-| C20 | Compra: máximo 4 entradas de público no anuladas por comprador y edición; las acreditaciones no cuentan; una anulación libera plaza; el comprador no cambia. | R.N.03 |
-| C21 | Aforo de jornada: suma de credenciales no anuladas ≤ aforo autorizado; un titular no puede tener dos credenciales no anuladas para la misma jornada; no se reduce el aforo autorizado por debajo de lo reservado o de la ocupación. | R.N.04 |
-| C22 | Menores: titular menor de 16 años exige adulto de al menos 18 con credencial para las mismas jornadas y autorización firmada antes del canje; la entrada del adulto se registra primero. | R.N.05 |
-| C23 | Saldo: nunca negativo; recargas de 5 a 200 €; sin movimientos tras el cierre ni tras solicitar la devolución; el consumo exige credencial canjeada, pulsera actual activa, jornada cubierta y producto de la misma edición. | R.N.06 |
-| C24 | Alcohol: prohibido a titulares menores de 18 años en el momento de la venta; la edad se calcula con la fecha de nacimiento y la fecha y hora local. | R.N.07 |
-| C25 | Stock: no se vende más que el disponible; cantidad entera positiva; un rechazo no descuenta stock ni saldo; el stock nunca queda negativo. | R.N.08 |
-| C26 | Devolución: una por credencial, sin comisión, por el saldo completo positivo desde el fin de la última jornada; importe inmutable; pago único y no anterior a la solicitud. | R.N.09 |
-| C27 | Acceso: credencial canjeada, pulsera actual activa, jornada cubierta y perfil compatible; entradas desde las 12:00 y antes de las 06:00 del día siguiente; no se supera el aforo; entradas y salidas alternadas; zona interior exige estar en el recinto general; la salida siempre se permite; la reentrada no tiene recargo. | R.N.10 |
-| C28 | Pulsera: una sola activa por credencial; NFC único; la reposición invalida la anterior; solo se repone una credencial canjeada; el titular no cambia tras el canje o un movimiento; la anulación bloquea la pulsera y conserva el saldo. | R.N.11 |
-
-### 6.2. Matriz de requisitos de información
-
-| R.I. | Entidades | Asociaciones | Restricciones |
-|:--|:--|:--|:--|
-| R.I.01 | E01 | — | C01 |
-| R.I.02 | E02 | — | C02 |
-| R.I.03 | E03 | — | C03 |
-| R.I.04 | E04, E03, E01 | A01, A02 | C04 |
-| R.I.05 | E05 | — | C05 |
-| R.I.06 | E06, E05, E04, E02 | A03, A04, A05 | C06 |
-| R.I.07 | E07, E02 | A06 | C07, C08 |
-| R.I.08 | E08, E07, E01 | A07, A08, A09, A10, A11 | C09, C10, C11, C12 |
-| R.I.09 | E09, E02, E03, E01 | A12, A13, A14 | C13 |
-| R.I.10 | E10, E09 | A15 | C14 |
-| R.I.11 | E11, E08, E10, E01 | A16, A17, A18 | C15 |
-| R.I.12 | E12, E08, E03, E01 | A19, A20, A21 | C16 |
-| R.I.13 | E13, E02, E03, E01 | A22, A23, A24 | C17 |
-
-### 6.3. Matriz de reglas de negocio
-
-| R.N. | Entidades | Asociaciones | Restricciones |
-|:--|:--|:--|:--|
-| R.N.01 | E06, E04, E05, E02 | A03, A04, A05 | C06, C18 |
-| R.N.02 | E07, E08 | A06, A07 | C07, C08, C19 |
-| R.N.03 | E01, E07, E08, E02 | A06, A07, A08, A09 | C20 |
-| R.N.04 | E02, E07, E08 | A06, A07, A08 | C02, C21 |
-| R.N.05 | E01, E08, E12 | A08, A10, A19 | C22 |
-| R.N.06 | E08, E11, E10, E07, E02 | A07, A16, A17 | C12, C23 |
-| R.N.07 | E01, E08, E10, E11 | A08, A16, A17 | C24 |
-| R.N.08 | E10, E11 | A16, A17 | C25 |
-| R.N.09 | E08, E11 | A11, A16 | C12, C26 |
-| R.N.10 | E08, E12, E03, E07, E02, E01 | A06, A07, A19, A20, A21 | C09, C11, C27 |
-| R.N.11 | E08, E01, E11, E12 | A08, A16, A19 | C09, C11, C12, C28 |
-
-### 6.4. Trazabilidad de los escenarios de 5.2
-
-| Escenario | Regla | Restricciones que comprueba | Elementos del MC utilizados |
-|:--|:--|:--|:--|
-| E-10.1 | R.N.10 | C27, C09, C11 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial` |
-| E-10.2 | R.N.10 | C27 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial` |
-| E-10.3 | R.N.10 | C27, C09 | `Acceso`, `Credencial`, `Zona`, `TipoCredencial` |
-| E-10.4 | R.N.10 | C27 | `Acceso`, `Credencial`, `Zona` |
-| E-10.5 | R.N.10 | C27, C11 | `Acceso`, `Credencial`, `Zona` |
-| E-11.1 | R.N.11 | C28, C11, C12 | `Acceso`, `Credencial`, `Zona`, `Usuario` |
-| E-11.2 | R.N.11 | C28, C11, C25 | `Credencial`, `Producto`, `PuntoVenta` |
-| E-11.3 | R.N.11 | C28, C11 | `Credencial` |
-| E-11.4 | R.N.11 | C28, C09 | `Credencial`, `Usuario`, `MovimientoSaldo` |
-| E-11.5 | R.N.11 | C28, C09, C12 | `Credencial`, `Usuario` |
-
-Los diez escenarios cubren las dos reglas asignadas y sus casos válidos, de rechazo y de límite. E-10.1 y E-10.4 comprueban el límite del aforo; E-10.2, E-10.3 y E-10.5 comprueban rechazos por perfil, jornada y pulsera; E-11.1 y E-11.4 comprueban operaciones válidas; E-11.2, E-11.3 y E-11.5 comprueban rechazos y el límite de la credencial anulada.
-
-### 6.5. Comprobación de cobertura
-
-La cobertura se comprueba en los dos sentidos. Primero, cada requisito tiene al menos una entidad, una asociación o una restricción asociada, salvo R.I.01, R.I.02, R.I.03 y R.I.05, que son entidades raíz y por tanto no tienen asociaciones. Segundo, cada elemento del modelo aparece en al menos un requisito.
-
-**Entidades y requisitos que las utilizan.**
-
-| Entidad | Requisitos |
-|:--|:--|
-| E01 `Usuario` | R.I.01, R.I.04, R.I.08, R.I.09, R.I.11, R.I.12, R.I.13, R.N.03, R.N.05, R.N.07, R.N.10, R.N.11 |
-| E02 `Edicion` | R.I.02, R.I.06, R.I.07, R.I.09, R.I.13, R.N.01, R.N.03, R.N.04, R.N.06, R.N.10 |
-| E03 `Zona` | R.I.03, R.I.04, R.I.09, R.I.12, R.I.13, R.N.10 |
-| E04 `Escenario` | R.I.04, R.I.06, R.N.01 |
-| E05 `Artista` | R.I.05, R.I.06, R.N.01 |
-| E06 `Actuacion` | R.I.06, R.N.01 |
-| E07 `TipoCredencial` | R.I.07, R.I.08, R.N.02, R.N.03, R.N.04, R.N.06, R.N.10 |
-| E08 `Credencial` | R.I.08, R.I.11, R.I.12, R.N.02, R.N.03, R.N.04, R.N.05, R.N.06, R.N.07, R.N.09, R.N.10, R.N.11 |
-| E09 `PuntoVenta` | R.I.09, R.I.10 |
-| E10 `Producto` | R.I.10, R.I.11, R.N.06, R.N.07, R.N.08 |
-| E11 `MovimientoSaldo` | R.I.11, R.N.06, R.N.07, R.N.08, R.N.09, R.N.11 |
-| E12 `Acceso` | R.I.12, R.N.05, R.N.10, R.N.11 |
-| E13 `Incidencia` | R.I.13 |
-
-**Asociaciones y requisitos que las utilizan.**
-
-| Asociación | Requisitos |
-|:--|:--|
-| A01 `Escenario`–`Zona` | R.I.04 |
-| A02 `Escenario`–`Usuario` | R.I.04 |
-| A03 `Actuacion`–`Artista` | R.I.06, R.N.01 |
-| A04 `Actuacion`–`Escenario` | R.I.06, R.N.01 |
-| A05 `Actuacion`–`Edicion` | R.I.06, R.N.01 |
-| A06 `TipoCredencial`–`Edicion` | R.I.07, R.N.02, R.N.03, R.N.04, R.N.06, R.N.10 |
-| A07 `Credencial`–`TipoCredencial` | R.I.08, R.N.02, R.N.03, R.N.04, R.N.06, R.N.10 |
-| A08 `Credencial`–`Usuario` (titular) | R.I.08, R.N.03, R.N.04, R.N.05, R.N.07, R.N.11 |
-| A09 `Credencial`–`Usuario` (comprador) | R.I.08, R.N.03 |
-| A10 `Credencial`–`Usuario` (adulto responsable) | R.I.08, R.N.05 |
-| A11 `Credencial`–`Usuario` (tramitador) | R.I.08, R.N.09 |
-| A12 `PuntoVenta`–`Edicion` | R.I.09 |
-| A13 `PuntoVenta`–`Zona` | R.I.09 |
-| A14 `PuntoVenta`–`Usuario` | R.I.09 |
-| A15 `Producto`–`PuntoVenta` | R.I.10 |
-| A16 `MovimientoSaldo`–`Credencial` | R.I.11, R.N.06, R.N.07, R.N.08, R.N.09, R.N.11 |
-| A17 `MovimientoSaldo`–`Producto` | R.I.11, R.N.06, R.N.07, R.N.08 |
-| A18 `MovimientoSaldo`–`Usuario` | R.I.11 |
-| A19 `Acceso`–`Credencial` | R.I.12, R.N.05, R.N.10, R.N.11 |
-| A20 `Acceso`–`Zona` | R.I.12, R.N.10 |
-| A21 `Acceso`–`Usuario` | R.I.12, R.N.10 |
-| A22 `Incidencia`–`Edicion` | R.I.13 |
-| A23 `Incidencia`–`Zona` | R.I.13 |
-| A24 `Incidencia`–`Usuario` | R.I.13 |
-
-**Restricciones y requisitos que las originan.**
-
-| Restricción | Requisitos |
-|:--|:--|
-| C01 | R.I.01 |
-| C02 | R.I.02, R.N.04 |
-| C03 | R.I.03 |
-| C04 | R.I.04 |
-| C05 | R.I.05 |
-| C06 | R.I.06, R.N.01 |
-| C07 | R.I.07, R.N.02 |
-| C08 | R.I.07, R.N.02 |
-| C09 | R.I.08, R.N.11 |
-| C10 | R.I.08 |
-| C11 | R.I.08, R.N.10, R.N.11 |
-| C12 | R.I.08, R.N.06, R.N.09 |
-| C13 | R.I.09 |
-| C14 | R.I.10 |
-| C15 | R.I.11 |
-| C16 | R.I.12 |
-| C17 | R.I.13 |
-| C18 | R.N.01 |
-| C19 | R.N.02 |
-| C20 | R.N.03 |
-| C21 | R.N.04 |
-| C22 | R.N.05 |
-| C23 | R.N.06 |
-| C24 | R.N.07 |
-| C25 | R.N.08 |
-| C26 | R.N.09 |
-| C27 | R.N.10 |
-| C28 | R.N.11 |
-
-**Resumen de cobertura.**
-
-| Conjunto | Total | Con al menos una referencia | Sin referencia |
-|:--|:-:|:-:|:-:|
-| Requisitos de información | 13 | 13 | 0 |
-| Reglas de negocio | 11 | 11 | 0 |
-| Entidades | 13 | 13 | 0 |
-| Asociaciones | 24 | 24 | 0 |
-| Restricciones | 28 | 28 | 0 |
-| Escenarios de 5.2 | 10 | 10 | 0 |
-
-La cobertura es completa. Las entidades raíz R.I.01–R.I.03 y R.I.05 no necesitan asociaciones porque el propio requisito declara que son independientes; su información se relaciona con el resto a través de las entidades que las referencian en A02, A08, A09, A10, A11, A14, A18, A21 y A24. Las reglas R.N.10 y R.N.11, que son las que se desarrollan con escenarios en 5.2, quedan trazadas con las restricciones C27 y C28, apoyadas en C09, C11 y C12 para la credencial y la pulsera. No queda ningún elemento del modelo sin requisito de origen ni ningún requisito sin elemento que lo materialice.
-
--- fin entregable 2 --
-
+A continuación se recogen los casos principales de éxito de las reglas R.N.06 a R.N.09, representados con diagramas de objetos y una nota de validación en cada uno.
+
+#### R.N.06. Saldo nunca negativo y límites de recarga
+
+Una credencial con 10 € de saldo paga 2 bocadillos de 5 €. El saldo queda en 0 €.
+
+```mermaid
+classDiagram
+direction LR
+
+class Credencial01 {
+  <<Credencial>>
+  codigo = "CRD-2027-00841"
+  estado = "canjeada"
+  saldoAntes = 10.00
+  saldoDespues = 0.00
+}
+class Pulsera01 {
+  <<Pulsera>>
+  estado = "activa"
+}
+class Bocadillo {
+  <<Producto>>
+  nombre = "Bocadillo"
+  precioActual = 5.00
+  stockDisponible = 80
+}
+class Consumo01 {
+  <<MovimientoSaldo>>
+  tipoMovimiento = "consumo"
+  cantidad = 2
+  precioUnitario = 5.00
+  importe = 10.00
+}
+
+Credencial01 -- Pulsera01 : pulsera actual
+Consumo01 -- Credencial01 : acumula
+Consumo01 -- Bocadillo : se refiere a
+
+note for Consumo01 "Calculo: cantidad 2 x precio 5.00 = 10.00"
+note for Credencial01 "Prueba de Aceptación (RN-06):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: importe 10.00 no supera el saldo 10.00.<br/>El saldo queda en 0.00, nunca negativo."
+```
+
+#### R.N.07. Prohibida la venta de alcohol a menores
+
+Martín, nacido el 14/03/2012 (15 años en mayo de 2027), compra un refresco sin alcohol.
+
+```mermaid
+classDiagram
+direction LR
+
+class Martin {
+  <<Usuario>>
+  nombre = "Martín Ruiz Ortega"
+  fechaNacimiento = "14/03/2012"
+}
+class Credencial03 {
+  <<Credencial>>
+  tipo = "Abono General"
+  saldoActual = 20.00
+}
+class Refresco {
+  <<Producto>>
+  nombre = "Refresco"
+  llevaAlcohol = false
+  precioActual = 3.00
+}
+class Consumo02 {
+  <<MovimientoSaldo>>
+  fechaHora = "22/05/2027 20:00"
+  cantidad = 1
+  importe = 3.00
+}
+
+Martin -- Credencial03 : es titular
+Consumo02 -- Credencial03 : acumula
+Consumo02 -- Refresco : se refiere a
+
+note for Consumo02 "Prueba de Aceptación (RN-07):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: el producto no lleva alcohol,<br/>se puede vender a cualquier titular."
+```
+
+#### R.N.08. Control de stock
+
+Se cobran 2 aguas de la «Barra Azahar», que tiene 100 unidades. El stock pasa a 98.
+
+```mermaid
+classDiagram
+direction LR
+
+class BarraAzahar {
+  <<PuntoVenta>>
+  nombre = "Barra Azahar"
+  tipo = "barra"
+}
+class Agua {
+  <<Producto>>
+  nombre = "Agua"
+  precioActual = 2.00
+  stockAntes = 100
+  stockDespues = 98
+}
+class Credencial05 {
+  <<Credencial>>
+  saldoActual = 15.00
+}
+class Consumo03 {
+  <<MovimientoSaldo>>
+  cantidad = 2
+  precioUnitario = 2.00
+  importe = 4.00
+}
+
+BarraAzahar -- Agua : ofrece
+Consumo03 -- Credencial05 : acumula
+Consumo03 -- Agua : se refiere a
+
+note for Agua "Prueba de Aceptación (RN-08):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: cantidad 2 es menor o igual que el stock 100.<br/>Stock final 100 - 2 = 98 (mayor o igual que 0)."
+```
+
+#### R.N.09. Devolución del saldo sin comisión
+
+El lunes 24/05/2027 a las 06:00, justo al terminar la última jornada, se solicita la devolución completa de 11,50 € sin comisión.
+
+```mermaid
+classDiagram
+direction LR
+
+class Edicion2027 {
+  <<Edicion>>
+  nombre = "Azahar Sound 2027"
+  fechaFin = "23/05/2027"
+  cierreEfectivo = "24/05/2027 06:00"
+}
+class Credencial07 {
+  <<Credencial>>
+  saldoActual = 11.50
+  saldoDisponible = 0.00
+}
+class Devolucion01 {
+  <<Devolucion>>
+  fechaSolicitud = "24/05/2027 06:00"
+  importeSolicitado = 11.50
+  comision = 0.00
+  estado = "solicitada"
+}
+class Atencion {
+  <<Usuario>>
+  rol = "Atención al cliente"
+}
+
+Credencial07 -- Edicion2027 : de la edicion
+Devolucion01 -- Credencial07 : integrada en
+Devolucion01 -- Atencion : tramita
+
+note for Devolucion01 "Prueba de Aceptación (RN-09):<br/>La solicitud es VÁLIDA.<br/><br/>Motivo: fecha mayor o igual que el cierre, importe igual al saldo completo,<br/>sin comisión. El saldo disponible queda en 0.00."
+```
+## 6. Matriz de trazabilidad
+
+- Matriz de trazabilidad entre los elementos del modelo conceptual y los requisitos. **Columnas:**
+- **Entidades:** Usu = Usuario · Edi = Edición · Zon = Zona · Esc = Escenario · Art = Artista · Act = Actuación · TCr = TipoCredencial · Cre = Credencial · PV = PuntoVenta · Pro = Producto · Mov = MovimientoSaldo · Acc = Acceso · Inc = Incidencia.
+- **Asociaciones (A01–A21):** A01 Esc–Zona · A02 Esc–Usuario · A03 Act–Artista · A04 Act–Escenario · A05 Act–Edición · A06 TCr–Edición · A07 Cre–TCr · A08 Cre–Usuario (titular, comprador, adulto, tramitador) · A09 PV–Edición · A10 PV–Zona · A11 PV–Usuario · A12 Pro–PV · A13 Mov–Cre · A14 Mov–Pro · A15 Mov–Usuario · A16 Acc–Cre · A17 Acc–Zon · A18 Acc–Usuario · A19 Inc–Edi · A20 Inc–Zon · A21 Inc–Usuario.
+
+| Requisito | Usu | Edi | Zon | Esc | Art | Act | TCr | Cre | PV | Pro | Mov | Acc | Inc | A01 | A02 | A03 | A04 | A05 | A06 | A07 | A08 | A09 | A10 | A11 | A12 | A13 | A14 | A15 | A16 | A17 | A18 | A19 | A20 | A21 |
+|:--|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| **R.I.01** Usuarios | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.02** Ediciones |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.03** Zonas |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.04** Escenarios | x |  | x | x |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.05** Artistas |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.06** Actuaciones |  | x |  | x | x | x |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.07** Tipos de credencial |  | x |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.08** Credenciales | x |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.I.09** Puntos de venta | x | x | x |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |
+| **R.I.10** Productos |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |
+| **R.I.11** Movimientos de saldo | x |  |  |  |  |  |  | x |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |
+| **R.I.12** Accesos | x |  | x |  |  |  |  | x |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |
+| **R.I.13** Incidencias | x | x | x |  |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x | x |
+| **R.F.01** Cartel de una jornada |  | x | x | x | x | x |  |  |  |  |  |  |  | x |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.02** Escaleta de un escenario |  | x |  | x |  | x |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.03** Mis credenciales | x |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.04** Ventas por tipo de credencial |  | x |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.05** Ocupación por jornada |  | x |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.06** Menores y adulto responsable | x | x |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.07** Mi saldo y movimientos |  |  |  |  |  |  |  | x | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |
+| **R.F.08** Ventas de un PV por hora |  |  |  |  |  |  |  | x | x | x | x |  |  |  |  |  |  |  |  |  |  |  | x |  | x | x | x |  |  |  |  |  |  |  |
+| **R.F.09** Productos a reponer |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |
+| **R.F.10** Saldo sin reclamar | x | x |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.F.11** Personas en cada zona |  | x | x |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |
+| **R.F.12** Accesos de una credencial |  |  | x |  |  |  |  | x |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |
+| **R.F.13** Incidencias por zona |  | x | x |  |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x |  |
+| **R.N.01** Programación sin solapes |  | x |  | x | x | x |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.N.02** Precio y cupo |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.N.03** Máximo 4 entradas | x | x |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.N.04** Aforo de la jornada |  | x |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  | x | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| **R.N.05** Menores de 16 | x |  |  |  |  |  |  | x |  |  |  | x |  |  |  |  |  |  |  |  | x |  |  |  |  |  |  |  | x |  |  |  |  |  |
+| **R.N.06** Saldo y recargas |  | x |  |  |  |  | x | x |  | x | x |  |  |  |  |  |  |  |  | x |  |  |  |  |  | x | x |  |  |  |  |  |  |  |
+| **R.N.07** Alcohol y menores | x |  |  |  |  |  |  | x |  | x | x |  |  |  |  |  |  |  |  |  | x |  |  |  |  | x | x |  |  |  |  |  |  |  |
+| **R.N.08** Control de stock |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |
+| **R.N.09** Devolución de saldo |  |  |  |  |  |  |  | x |  |  | x |  |  |  |  |  |  |  |  |  | x |  |  |  |  | x |  |  |  |  |  |  |  |  |
+| **R.N.10** Acceso y aforo de zona | x | x | x |  |  |  | x | x |  |  |  | x |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  | x | x | x |  |  |  |
+| **R.N.11** Pulsera única | x |  |  |  |  |  |  | x |  |  | x | x |  |  |  |  |  |  |  |  | x |  |  |  |  | x |  |  | x |  |  |  |  |  |
 ## 7. Modelo relacional en 3FN
 
 - Relaciones obtenidas al aplicar la transformación del modelo conceptual.
