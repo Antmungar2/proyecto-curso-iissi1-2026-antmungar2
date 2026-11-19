@@ -833,116 +833,117 @@ note for Acceso "Entradas y salidas alternas<br/>Respeta el aforo de la zona"
 
 ### 5.2. Escenarios de prueba
 
-A continuación se divide el modelo conceptual en tres escenarios que cubren todas las clases del diagrama UML del apartado 5.1. Cada escenario presenta un diagrama de objetos con las instancias implicadas, sus clases, atributos y enlaces, junto con varios casos concretos descritos en texto con todos sus atributos.
+A continuación se divide el modelo conceptual en tres escenarios que cubren todas las clases del diagrama UML del apartado 5.1. Cada escenario se desglosa en tres casos concretos, cada uno con su descripción textual y su correspondiente diagrama de objetos con todos los atributos valorados.
+
+---
 
 #### 5.2.1. Escenario 1: Edición, escenarios, actuaciones y artistas
 
+##### Caso 1: Actuación individual (Puro Latino)
+La `edicion1`, Puro Latino, se celebrará en el año 2027 entre el 25 de junio y el 27 de junio con un aforo autorizado de 30.000 asistentes. En el Escenario Principal (`escenario1`) se ha programado la actuación `actuacion1`, actualmente en estado programada, que acogerá al artista Quevedo (`artista1`) el 25 de junio de 2027 desde las 23:00 hasta las 00:30 del día 26.
+
 ```mermaid
 classDiagram
-    class edicion1 {
-        <<Edicion>>
-        +nombre
-        +anio
-        +fechaInicio
-        +fechaFin
-        +aforoAutorizado
+    class edicion1["edicion1 : Edicion"] {
+        nombre = "Puro Latino"
+        anio = 2027
+        fechaInicio = "25/06/2027"
+        fechaFin = "27/06/2027"
+        aforoAutorizado = 30000
     }
-    class edicion2 {
-        <<Edicion>>
-        +nombre
-        +anio
-        +fechaInicio
-        +fechaFin
-        +aforoAutorizado
+    class escenario1["escenario1 : Escenario"] {
+        nombre = "Escenario Principal"
     }
-    class edicion3 {
-        <<Edicion>>
-        +nombre
-        +anio
-        +fechaInicio
-        +fechaFin
-        +aforoAutorizado
+    class actuacion1["actuacion1 : Actuacion"] {
+        fechaHoraInicio = "25/06/2027 23:00"
+        fechaHoraFin = "26/06/2027 00:30"
+        estado = "Programada"
     }
-    class escenario1 {
-        <<Escenario>>
-        +nombre
-    }
-    class escenario2 {
-        <<Escenario>>
-        +nombre
-    }
-    class escenario3 {
-        <<Escenario>>
-        +nombre
-    }
-    class escenario4 {
-        <<Escenario>>
-        +nombre
-    }
-    class actuacion1 {
-        <<Actuacion>>
-        +fechaHoraInicio
-        +fechaHoraFin
-        +estado
-    }
-    class actuacion2 {
-        <<Actuacion>>
-        +fechaHoraInicio
-        +fechaHoraFin
-        +estado
-    }
-    class actuacion3 {
-        <<Actuacion>>
-        +fechaHoraInicio
-        +fechaHoraFin
-        +estado
-    }
-    class actuacion4 {
-        <<Actuacion>>
-        +fechaHoraInicio
-        +fechaHoraFin
-        +estado
-    }
-    class actuacion5 {
-        <<Actuacion>>
-        +fechaHoraInicio
-        +fechaHoraFin
-        +estado
-    }
-    class artista1 {
-        <<Artista>>
-        +nombreArtistico
-    }
-    class artista2 {
-        <<Artista>>
-        +nombreArtistico
-    }
-    class artista3 {
-        <<Artista>>
-        +nombreArtistico
-    }
-    class artista4 {
-        <<Artista>>
-        +nombreArtistico
-    }
-    class artista5 {
-        <<Artista>>
-        +nombreArtistico
-    }
-    class artista6 {
-        <<Artista>>
-        +nombreArtistico
+    class artista1["artista1 : Artista"] {
+        nombreArtistico = "Quevedo"
     }
 
     edicion1 -- actuacion1 : programa
     escenario1 -- actuacion1 : acoge
     artista1 -- actuacion1 : realiza
+```
+
+##### Caso 2: Varios artistas en una misma actuación
+La `edicion2`, Azahar Sound, se celebra en el año 2027 entre el 21 de mayo y el 23 de mayo con un aforo autorizado de 15.000 asistentes. En el Escenario Guadalquivir (`escenario2`) se desarrolla la `actuacion2`, en estado en curso, el 22 de mayo de 2027 desde las 22:00 hasta las 23:30, acogiendo de forma conjunta a tres artistas: Vetusta Morla (`artista2`), Rozalén (`artista3`) y Xoel López (`artista4`).
+
+```mermaid
+classDiagram
+    class edicion2["edicion2 : Edicion"] {
+        nombre = "Azahar Sound"
+        anio = 2027
+        fechaInicio = "21/05/2027"
+        fechaFin = "23/05/2027"
+        aforoAutorizado = 15000
+    }
+    class escenario2["escenario2 : Escenario"] {
+        nombre = "Escenario Guadalquivir"
+    }
+    class actuacion2["actuacion2 : Actuacion"] {
+        fechaHoraInicio = "22/05/2027 22:00"
+        fechaHoraFin = "22/05/2027 23:30"
+        estado = "En curso"
+    }
+    class artista2["artista2 : Artista"] {
+        nombreArtistico = "Vetusta Morla"
+    }
+    class artista3["artista3 : Artista"] {
+        nombreArtistico = "Rozalén"
+    }
+    class artista4["artista4 : Artista"] {
+        nombreArtistico = "Xoel López"
+    }
 
     edicion2 -- actuacion2 : programa
     escenario2 -- actuacion2 : acoge
     artista2 -- actuacion2 : realiza
     artista3 -- actuacion2 : realiza
     artista4 -- actuacion2 : realiza
+```
+
+##### Caso 3: Varias actuaciones en distintos horarios y escenarios
+La `edicion3`, Icónica Fest, tiene lugar en el año 2027 entre el 10 de julio y el 12 de julio con un aforo autorizado de 18.000 asistentes, repartiendo su programación entre el Escenario Central (`escenario3`) y la Carpa Electrónica (`escenario4`). En el Escenario Central se celebran dos actuaciones el 10 de julio de 2027: la `actuacion3`, de 20:00 a 21:30 y en estado finalizada, protagonizada por Nathy Peluso (`artista5`); y la `actuacion4`, de 22:00 a 23:30 en estado en curso, en la que actúan juntos Nathy Peluso y Bizarrap (`artista6`). Por último, en la Carpa Electrónica se programa la `actuacion5`, en estado programada, para el 11 de julio de 2027 de 01:00 a 02:30, con Bizarrap como artista.
+
+```mermaid
+classDiagram
+    class edicion3["edicion3 : Edicion"] {
+        nombre = "Icónica Fest"
+        anio = 2027
+        fechaInicio = "10/07/2027"
+        fechaFin = "12/07/2027"
+        aforoAutorizado = 18000
+    }
+    class escenario3["escenario3 : Escenario"] {
+        nombre = "Escenario Central"
+    }
+    class escenario4["escenario4 : Escenario"] {
+        nombre = "Carpa Electrónica"
+    }
+    class actuacion3["actuacion3 : Actuacion"] {
+        fechaHoraInicio = "10/07/2027 20:00"
+        fechaHoraFin = "10/07/2027 21:30"
+        estado = "Finalizada"
+    }
+    class actuacion4["actuacion4 : Actuacion"] {
+        fechaHoraInicio = "10/07/2027 22:00"
+        fechaHoraFin = "10/07/2027 23:30"
+        estado = "En curso"
+    }
+    class actuacion5["actuacion5 : Actuacion"] {
+        fechaHoraInicio = "11/07/2027 01:00"
+        fechaHoraFin = "11/07/2027 02:30"
+        estado = "Programada"
+    }
+    class artista5["artista5 : Artista"] {
+        nombreArtistico = "Nathy Peluso"
+    }
+    class artista6["artista6 : Artista"] {
+        nombreArtistico = "Bizarrap"
+    }
 
     edicion3 -- actuacion3 : programa
     edicion3 -- actuacion4 : programa
@@ -956,357 +957,330 @@ classDiagram
     artista6 -- actuacion5 : realiza
 ```
 
-**Caso 1: Actuación individual (Puro Latino)**  
-La `edicion1`, Puro Latino, se celebrará en el año 2027 entre el 25 de junio y el 27 de junio con un aforo autorizado de 30.000 asistentes.  
-En el Escenario Principal (`escenario1`) se ha programado la actuación `actuacion1`, actualmente en estado programada, que acogerá al artista Quevedo (`artista1`) el 25 de junio de 2027 desde las 23:00 hasta las 00:30 del día 26.
-
-**Caso 2: Varios artistas en una misma actuación**  
-La `edicion2`, Azahar Sound, se celebra en el año 2027 entre el 21 de mayo y el 23 de mayo con un aforo autorizado de 15.000 asistentes.  
-En el Escenario Guadalquivir (`escenario2`) se desarrolla la `actuacion2`, en estado en curso, el 22 de mayo de 2027 desde las 22:00 hasta las 23:30, acogiendo de forma conjunta a tres artistas: Vetusta Morla (`artista2`), Rozalén (`artista3`) y Xoel López (`artista4`).
-
-**Caso 3: Varias actuaciones en distintos horarios y escenarios**  
-La `edicion3`, Icónica Fest, tiene lugar en el año 2027 entre el 10 de julio y el 12 de julio con un aforo autorizado de 18.000 asistentes, repartiendo su programación entre el Escenario Central (`escenario3`) y la Carpa Electrónica (`escenario4`).  
-En el Escenario Central se celebran dos actuaciones el 10 de julio de 2027: la `actuacion3`, de 20:00 a 21:30 y en estado finalizada, protagonizada por Nathy Peluso (`artista5`); y la `actuacion4`, de 22:00 a 23:30 en estado en curso, en la que actúan juntos Nathy Peluso y Bizarrap (`artista6`).  
-Por último, en la Carpa Electrónica se programa la `actuacion5`, en estado programada, para el 11 de julio de 2027 de 01:00 a 02:30, con Bizarrap como artista.
-
 ---
 
 #### 5.2.2. Escenario 2: Usuarios, credenciales, accesos y zonas
 
+##### Caso 1: Acceso de un asistente a una zona pública
+La asistente Laura Mendoza Gil (`asistente1`), nacida el 14 de marzo de 1999, con documento de identidad 48123901A y correo electrónico `laura.m@mail.com`, es titular de la credencial `CRD-2027-0101` (`credencial1`), correspondiente al tipo de credencial Abono General (`tipo1`), cuyo precio actual es de 75,00 €, con un cupo máximo de 10.000 unidades y perfil de acceso a zonas públicas. Su credencial está en estado activa, tiene vinculada la pulsera `NFC-4410` y cuenta con un saldo actual de 45,00 €. El 21 de mayo de 2027 a las 19:15 genera el `acceso1` con resultado permitido en la zona Pista General (`zona1`), una zona de tipo pública con un aforo máximo de 10.000 personas y una ocupación actual de 6.200 asistentes.
+
 ```mermaid
 classDiagram
-    class asistente1 {
-        <<Asistente>>
-        +email
-        +nombre
-        +apellidos
-        +fechaNacimiento
-        +documentoIdentidad
+    class asistente1["asistente1 : Asistente"] {
+        email = "laura.m@mail.com"
+        nombre = "Laura"
+        apellidos = "Mendoza Gil"
+        fechaNacimiento = "14/03/1999"
+        documentoIdentidad = "48123901A"
     }
-    class profesional1 {
-        <<Profesional>>
-        +email
-        +nombre
-        +apellidos
-        +fechaNacimiento
-        +documentoIdentidad
-        +rolOperativo
+    class tipo1["tipo1 : TipoCredencial"] {
+        nombre = "Abono General"
+        precioActual = 75.00
+        cupoMaximo = 10000
+        perfilAcceso = "Zonas Públicas"
     }
-    class asistente2 {
-        <<Asistente>>
-        +email
-        +nombre
-        +apellidos
-        +fechaNacimiento
-        +documentoIdentidad
+    class credencial1["credencial1 : Credencial"] {
+        codigo = "CRD-2027-0101"
+        estado = "Activa"
+        nfcActual = "NFC-4410"
+        saldoActual = 45.00
     }
-    class asistente3 {
-        <<Asistente>>
-        +email
-        +nombre
-        +apellidos
-        +fechaNacimiento
-        +documentoIdentidad
+    class acceso1["acceso1 : Acceso"] {
+        fechaHora = "21/05/2027 19:15"
+        resultado = "Permitido"
     }
-    class tipo1 {
-        <<TipoCredencial>>
-        +nombre
-        +precioActual
-        +cupoMaximo
-        +perfilAcceso
-    }
-    class tipo2 {
-        <<TipoCredencial>>
-        +nombre
-        +precioActual
-        +cupoMaximo
-        +perfilAcceso
-    }
-    class tipo3 {
-        <<TipoCredencial>>
-        +nombre
-        +precioActual
-        +cupoMaximo
-        +perfilAcceso
-    }
-    class credencial1 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class credencial2 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class credencial3 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class credencial4 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class acceso1 {
-        <<Acceso>>
-        +fechaHora
-        +resultado
-    }
-    class acceso2 {
-        <<Acceso>>
-        +fechaHora
-        +resultado
-    }
-    class acceso3 {
-        <<Acceso>>
-        +fechaHora
-        +resultado
-    }
-    class acceso4 {
-        <<Acceso>>
-        +fechaHora
-        +resultado
-    }
-    class acceso5 {
-        <<Acceso>>
-        +fechaHora
-        +resultado
-    }
-    class zona1 {
-        <<Zona>>
-        +nombre
-        +tipo
-        +aforoMaximo
-        +ocupacionActual
-    }
-    class zona2 {
-        <<Zona>>
-        +nombre
-        +tipo
-        +aforoMaximo
-        +ocupacionActual
-    }
-    class zona3 {
-        <<Zona>>
-        +nombre
-        +tipo
-        +aforoMaximo
-        +ocupacionActual
+    class zona1["zona1 : Zona"] {
+        nombre = "Pista General"
+        tipo = "Pública"
+        aforoMaximo = 10000
+        ocupacionActual = 6200
     }
 
     asistente1 -- credencial1 : es titular
-    profesional1 -- credencial2 : es titular
-    asistente2 -- credencial3 : es titular
-    asistente3 -- credencial4 : es titular
-
     tipo1 -- credencial1 : define
-    tipo2 -- credencial2 : define
-    tipo3 -- credencial3 : define
-    tipo1 -- credencial4 : define
-
     credencial1 -- acceso1 : genera
+    zona1 -- acceso1 : registra
+```
+
+##### Caso 2: Varios accesos de un profesional entre distintas zonas
+El profesional Carlos Ruiz Navarro (`profesional1`), nacido el 8 de septiembre de 1988, con documento de identidad 29456123K, correo electrónico `carlos.r@azahar.es` y rol operativo de Seguridad, es titular de la credencial `CRD-2027-9004` (`credencial2`), definida por el tipo de credencial Pase Staff (`tipo2`), con un precio actual de 0,00 €, un cupo máximo de 300 unidades y perfil de acceso total. Esta credencial se encuentra en estado activa, tiene asignada la pulsera `NFC-9004` y dispone de un saldo actual de 0,00 €. El 21 de mayo de 2027 registra dos accesos con resultado permitido: el `acceso2` a las 17:00 en la zona Backstage Técnico (`zona2`), de tipo restringida, con aforo máximo de 250 personas y ocupación actual de 95; y el `acceso3` a las 20:30 en la zona Pista General (`zona1`), de tipo pública, con aforo máximo de 10.000 personas y ocupación actual de 6.200.
+
+```mermaid
+classDiagram
+    class profesional1["profesional1 : Profesional"] {
+        email = "carlos.r@azahar.es"
+        nombre = "Carlos"
+        apellidos = "Ruiz Navarro"
+        fechaNacimiento = "08/09/1988"
+        documentoIdentidad = "29456123K"
+        rolOperativo = "Seguridad"
+    }
+    class tipo2["tipo2 : TipoCredencial"] {
+        nombre = "Pase Staff"
+        precioActual = 0.00
+        cupoMaximo = 300
+        perfilAcceso = "Acceso Total"
+    }
+    class credencial2["credencial2 : Credencial"] {
+        codigo = "CRD-2027-9004"
+        estado = "Activa"
+        nfcActual = "NFC-9004"
+        saldoActual = 0.00
+    }
+    class acceso2["acceso2 : Acceso"] {
+        fechaHora = "21/05/2027 17:00"
+        resultado = "Permitido"
+    }
+    class acceso3["acceso3 : Acceso"] {
+        fechaHora = "21/05/2027 20:30"
+        resultado = "Permitido"
+    }
+    class zona2["zona2 : Zona"] {
+        nombre = "Backstage Técnico"
+        tipo = "Restringida"
+        aforoMaximo = 250
+        ocupacionActual = 95
+    }
+    class zona1["zona1 : Zona"] {
+        nombre = "Pista General"
+        tipo = "Pública"
+        aforoMaximo = 10000
+        ocupacionActual = 6200
+    }
+
+    profesional1 -- credencial2 : es titular
+    tipo2 -- credencial2 : define
     credencial2 -- acceso2 : genera
     credencial2 -- acceso3 : genera
-    credencial3 -- acceso4 : genera
-    credencial4 -- acceso5 : genera
-
-    zona1 -- acceso1 : registra
     zona2 -- acceso2 : registra
     zona1 -- acceso3 : registra
+```
+
+##### Caso 3: Varios asistentes con distintos tipos de credencial y resultados de acceso
+El asistente Javier Serrano Ortiz (`asistente2`), nacido el 2 de noviembre de 1995, con documento de identidad 77890234M y correo `javier.s@mail.com`, posee la credencial `CRD-2027-0452` (`credencial3`) del tipo de credencial Abono VIP (`tipo3`), con precio actual de 140,00 €, cupo máximo de 1.500 y perfil de acceso a zonas públicas y VIP; la credencial está en estado activa, vinculada a `NFC-7821` y con un saldo actual de 110,50 €. Por otro lado, la asistente Marta Blanco Díaz (`asistente3`), nacida el 19 de julio de 2002, con documento de identidad 53901842L y correo `marta.b@mail.com`, posee la credencial `CRD-2027-0889` (`credencial4`) del tipo Abono General (`tipo1`, precio actual de 75,00 €, cupo máximo de 10.000 y perfil de zonas públicas), en estado activa, con pulsera `NFC-3302` y saldo actual de 30,00 €. El 21 de mayo de 2027 ambos pasan por el control de la Terraza VIP (`zona3`), una zona de tipo exclusiva con aforo máximo de 1.500 personas y ocupación actual de 410: Javier registra a las 20:10 el `acceso4` con resultado permitido, mientras que Marta registra a las 20:12 el `acceso5` con resultado denegado.
+
+```mermaid
+classDiagram
+    class asistente2["asistente2 : Asistente"] {
+        email = "javier.s@mail.com"
+        nombre = "Javier"
+        apellidos = "Serrano Ortiz"
+        fechaNacimiento = "02/11/1995"
+        documentoIdentidad = "77890234M"
+    }
+    class asistente3["asistente3 : Asistente"] {
+        email = "marta.b@mail.com"
+        nombre = "Marta"
+        apellidos = "Blanco Díaz"
+        fechaNacimiento = "19/07/2002"
+        documentoIdentidad = "53901842L"
+    }
+    class tipo3["tipo3 : TipoCredencial"] {
+        nombre = "Abono VIP"
+        precioActual = 140.00
+        cupoMaximo = 1500
+        perfilAcceso = "Zonas Públicas y VIP"
+    }
+    class tipo1["tipo1 : TipoCredencial"] {
+        nombre = "Abono General"
+        precioActual = 75.00
+        cupoMaximo = 10000
+        perfilAcceso = "Zonas Públicas"
+    }
+    class credencial3["credencial3 : Credencial"] {
+        codigo = "CRD-2027-0452"
+        estado = "Activa"
+        nfcActual = "NFC-7821"
+        saldoActual = 110.50
+    }
+    class credencial4["credencial4 : Credencial"] {
+        codigo = "CRD-2027-0889"
+        estado = "Activa"
+        nfcActual = "NFC-3302"
+        saldoActual = 30.00
+    }
+    class acceso4["acceso4 : Acceso"] {
+        fechaHora = "21/05/2027 20:10"
+        resultado = "Permitido"
+    }
+    class acceso5["acceso5 : Acceso"] {
+        fechaHora = "21/05/2027 20:12"
+        resultado = "Denegado"
+    }
+    class zona3["zona3 : Zona"] {
+        nombre = "Terraza VIP"
+        tipo = "Exclusiva"
+        aforoMaximo = 1500
+        ocupacionActual = 410
+    }
+
+    asistente2 -- credencial3 : es titular
+    asistente3 -- credencial4 : es titular
+    tipo3 -- credencial3 : define
+    tipo1 -- credencial4 : define
+    credencial3 -- acceso4 : genera
+    credencial4 -- acceso5 : genera
     zona3 -- acceso4 : registra
     zona3 -- acceso5 : registra
 ```
-
-**Caso 1: Acceso de un asistente a una zona pública**  
-La asistente Laura Mendoza Gil (`asistente1`), nacida el 14 de marzo de 1999, con documento de identidad 48123901A y correo electrónico `laura.m@mail.com`, es titular de la credencial `CRD-2027-0101` (`credencial1`), correspondiente al tipo de credencial Abono General (`tipo1`), cuyo precio actual es de 75,00 €, con un cupo máximo de 10.000 unidades y perfil de acceso a zonas públicas.  
-Su credencial está en estado activa, tiene vinculada la pulsera `NFC-4410` y cuenta con un saldo actual de 45,00 €. El 21 de mayo de 2027 a las 19:15 genera el `acceso1` con resultado permitido en la zona Pista General (`zona1`), una zona de tipo pública con un aforo máximo de 10.000 personas y una ocupación actual de 6.200 asistentes.
-
-**Caso 2: Varios accesos de un profesional entre distintas zonas**  
-El profesional Carlos Ruiz Navarro (`profesional1`), nacido el 8 de septiembre de 1988, con documento de identidad 29456123K, correo electrónico `carlos.r@azahar.es` y rol operativo de Seguridad, es titular de la credencial `CRD-2027-9004` (`credencial2`), definida por el tipo de credencial Pase Staff (`tipo2`), con un precio actual de 0,00 €, un cupo máximo de 300 unidades y perfil de acceso total.  
-Esta credencial se encuentra en estado activa, tiene asignada la pulsera `NFC-9004` y dispone de un saldo actual de 0,00 €. El 21 de mayo de 2027 registra dos accesos con resultado permitido: el `acceso2` a las 17:00 en la zona Backstage Técnico (`zona2`), de tipo restringida, con aforo máximo de 250 personas y ocupación actual de 95; y el `acceso3` a las 20:30 en la zona Pista General (`zona1`), de tipo pública, con aforo máximo de 10.000 personas y ocupación actual de 6.200.
-
-**Caso 3: Varios asistentes con distintos tipos de credencial y resultados de acceso**  
-El asistente Javier Serrano Ortiz (`asistente2`), nacido el 2 de noviembre de 1995, con documento de identidad 77890234M y correo `javier.s@mail.com`, posee la credencial `CRD-2027-0452` (`credencial3`) del tipo de credencial Abono VIP (`tipo3`), con precio actual de 140,00 €, cupo máximo de 1.500 y perfil de acceso a zonas públicas y VIP; la credencial está en estado activa, vinculada a `NFC-7821` y con un saldo actual de 110,50 €.  
-Por otro lado, la asistente Marta Blanco Díaz (`asistente3`), nacida el 19 de julio de 2002, con documento de identidad 53901842L y correo `marta.b@mail.com`, posee la credencial `CRD-2027-0889` (`credencial4`) del tipo Abono General (`tipo1`, precio actual de 75,00 €, cupo máximo de 10.000 y perfil de zonas públicas), en estado activa, con pulsera `NFC-3302` y saldo actual de 30,00 €.  
-El 21 de mayo de 2027 ambos pasan por el control de la Terraza VIP (`zona3`), una zona de tipo exclusiva con aforo máximo de 1.500 personas y ocupación actual de 410: Javier registra a las 20:10 el `acceso4` con resultado permitido, mientras que Marta registra a las 20:12 el `acceso5` con resultado denegado.
 
 ---
 
 #### 5.2.3. Escenario 3: Puntos de venta, productos y movimientos de saldo
 
+##### Caso 1: Consumo individual en una barra
+En el punto de venta Barra Azahar (`pv1`), de tipo bebidas, se ofrece el producto Cerveza 33 cl (`prod1`), con un precio actual de 3,50 €, que sí lleva alcohol y tiene un stock disponible de 480 unidades. El 21 de mayo de 2027 a las 21:10, la credencial `CRD-2027-0101` (`credencial1`), en estado activa y con pulsera `NFC-4410`, acumula el movimiento de saldo `mov1` de tipo consumo referido a este producto por una cantidad de 2 unidades y un importe de 7,00 €, dejando su saldo actual en 38,00 €.
+
 ```mermaid
 classDiagram
-    class pv1 {
-        <<PuntoVenta>>
-        +nombre
-        +tipo
+    class pv1["pv1 : PuntoVenta"] {
+        nombre = "Barra Azahar"
+        tipo = "Bebidas"
     }
-    class pv2 {
-        <<PuntoVenta>>
-        +nombre
-        +tipo
+    class prod1["prod1 : Producto"] {
+        nombre = "Cerveza 33 cl"
+        precioActual = 3.50
+        llevaAlcohol = true
+        stockDisponible = 480
     }
-    class pv3 {
-        <<PuntoVenta>>
-        +nombre
-        +tipo
+    class credencial1["credencial1 : Credencial"] {
+        codigo = "CRD-2027-0101"
+        estado = "Activa"
+        nfcActual = "NFC-4410"
+        saldoActual = 38.00
     }
-    class pv4 {
-        <<PuntoVenta>>
-        +nombre
-        +tipo
-    }
-    class prod1 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class prod2 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class prod3 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class prod4 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class prod5 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class prod6 {
-        <<Producto>>
-        +nombre
-        +precioActual
-        +llevaAlcohol
-        +stockDisponible
-    }
-    class mov1 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class mov2 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class mov3 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class mov4 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class mov5 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class mov6 {
-        <<MovimientoSaldo>>
-        +fechaHora
-        +tipoMovimiento
-        +importe
-        +cantidad
-    }
-    class credencial1 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class credencial3 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
-    }
-    class credencial4 {
-        <<Credencial>>
-        +codigo
-        +estado
-        +nfcActual
-        +saldoActual
+    class mov1["mov1 : MovimientoSaldo"] {
+        fechaHora = "21/05/2027 21:10"
+        tipoMovimiento = "Consumo"
+        importe = 7.00
+        cantidad = 2
     }
 
     pv1 -- prod1 : ofrece
+    credencial1 -- mov1 : acumula
+    mov1 -- prod1 : se refiere a
+```
+
+##### Caso 2: Varios productos y dos credenciales en un mismo punto de venta
+El punto de venta Barra Norte (`pv2`), de tipo bebidas y snacks, ofrece tres productos: Agua 50 cl (`prod2`) a un precio actual de 2,00 €, sin alcohol y con stock disponible de 900 unidades; Refresco Cola (`prod3`) a un precio actual de 3,00 €, sin alcohol y con stock disponible de 650 unidades; y Combinado (`prod4`) a un precio actual de 8,50 €, con alcohol y con stock disponible de 300 unidades. El 21 de mayo de 2027, la credencial `CRD-2027-0452` (`credencial3`, activa, pulsera `NFC-7821` y saldo actual de 93,50 € tras la compra) acumula a las 22:00 el movimiento `mov2` de tipo consumo por 2 unidades de Combinado y un importe de 17,00 €. A las 22:05, la credencial `CRD-2027-0889` (`credencial4`, activa, pulsera `NFC-3302` y saldo actual de 25,00 € tras ambas compras) acumula dos movimientos de tipo consumo: `mov3` por 1 unidad de Agua 50 cl con un importe de 2,00 €, y `mov4` por 1 unidad de Refresco Cola con un importe de 3,00 €.
+
+```mermaid
+classDiagram
+    class pv2["pv2 : PuntoVenta"] {
+        nombre = "Barra Norte"
+        tipo = "Bebidas y snacks"
+    }
+    class prod2["prod2 : Producto"] {
+        nombre = "Agua 50 cl"
+        precioActual = 2.00
+        llevaAlcohol = false
+        stockDisponible = 900
+    }
+    class prod3["prod3 : Producto"] {
+        nombre = "Refresco Cola"
+        precioActual = 3.00
+        llevaAlcohol = false
+        stockDisponible = 650
+    }
+    class prod4["prod4 : Producto"] {
+        nombre = "Combinado"
+        precioActual = 8.50
+        llevaAlcohol = true
+        stockDisponible = 300
+    }
+    class credencial3["credencial3 : Credencial"] {
+        codigo = "CRD-2027-0452"
+        estado = "Activa"
+        nfcActual = "NFC-7821"
+        saldoActual = 93.50
+    }
+    class credencial4["credencial4 : Credencial"] {
+        codigo = "CRD-2027-0889"
+        estado = "Activa"
+        nfcActual = "NFC-3302"
+        saldoActual = 25.00
+    }
+    class mov2["mov2 : MovimientoSaldo"] {
+        fechaHora = "21/05/2027 22:00"
+        tipoMovimiento = "Consumo"
+        importe = 17.00
+        cantidad = 2
+    }
+    class mov3["mov3 : MovimientoSaldo"] {
+        fechaHora = "21/05/2027 22:05"
+        tipoMovimiento = "Consumo"
+        importe = 2.00
+        cantidad = 1
+    }
+    class mov4["mov4 : MovimientoSaldo"] {
+        fechaHora = "21/05/2027 22:05"
+        tipoMovimiento = "Consumo"
+        importe = 3.00
+        cantidad = 1
+    }
+
     pv2 -- prod2 : ofrece
     pv2 -- prod3 : ofrece
     pv2 -- prod4 : ofrece
-    pv3 -- prod5 : ofrece
-    pv4 -- prod6 : ofrece
-
-    credencial1 -- mov1 : acumula
     credencial3 -- mov2 : acumula
     credencial4 -- mov3 : acumula
     credencial4 -- mov4 : acumula
-    credencial1 -- mov5 : acumula
-    credencial1 -- mov6 : acumula
-
-    mov1 -- prod1 : se refiere a
     mov2 -- prod4 : se refiere a
     mov3 -- prod2 : se refiere a
     mov4 -- prod3 : se refiere a
+```
+
+##### Caso 3: Varios puntos de venta y cadena de movimientos de una misma credencial
+El 22 de mayo de 2027, el punto de venta Triana Burgers (`pv3`), de tipo comida, ofrece el producto Hamburguesa Clásica (`prod5`) a un precio actual de 9,00 €, sin alcohol y con stock disponible de 120 unidades; mientras que el punto de venta Stand Oficial (`pv4`), de tipo merchandising, ofrece la Camiseta Azahar 2027 (`prod6`) a un precio actual de 22,00 €, sin alcohol y con stock disponible de 65 unidades. La credencial `CRD-2027-0101` (`credencial1`, en estado activa y con pulsera `NFC-4410`) acumula dos nuevos movimientos de tipo consumo: `mov5` a las 18:30 por 1 unidad de Camiseta Azahar 2027 con un importe de 22,00 €, y `mov6` a las 21:45 por 1 unidad de Hamburguesa Clásica con un importe de 9,00 €, situando su saldo actual final en 7,00 €.
+
+```mermaid
+classDiagram
+    class pv3["pv3 : PuntoVenta"] {
+        nombre = "Triana Burgers"
+        tipo = "Comida"
+    }
+    class pv4["pv4 : PuntoVenta"] {
+        nombre = "Stand Oficial"
+        tipo = "Merchandising"
+    }
+    class prod5["prod5 : Producto"] {
+        nombre = "Hamburguesa Clásica"
+        precioActual = 9.00
+        llevaAlcohol = false
+        stockDisponible = 120
+    }
+    class prod6["prod6 : Producto"] {
+        nombre = "Camiseta Azahar 2027"
+        precioActual = 22.00
+        llevaAlcohol = false
+        stockDisponible = 65
+    }
+    class credencial1["credencial1 : Credencial"] {
+        codigo = "CRD-2027-0101"
+        estado = "Activa"
+        nfcActual = "NFC-4410"
+        saldoActual = 7.00
+    }
+    class mov5["mov5 : MovimientoSaldo"] {
+        fechaHora = "22/05/2027 18:30"
+        tipoMovimiento = "Consumo"
+        importe = 22.00
+        cantidad = 1
+    }
+    class mov6["mov6 : MovimientoSaldo"] {
+        fechaHora = "22/05/2027 21:45"
+        tipoMovimiento = "Consumo"
+        importe = 9.00
+        cantidad = 1
+    }
+
+    pv3 -- prod5 : ofrece
+    pv4 -- prod6 : ofrece
+    credencial1 -- mov5 : acumula
+    credencial1 -- mov6 : acumula
     mov5 -- prod6 : se refiere a
     mov6 -- prod5 : se refiere a
 ```
-
-**Caso 1: Consumo individual en una barra**  
-En el punto de venta Barra Azahar (`pv1`), de tipo bebidas, se ofrece el producto Cerveza 33 cl (`prod1`), con un precio actual de 3,50 €, que sí lleva alcohol y tiene un stock disponible de 480 unidades.  
-El 21 de mayo de 2027 a las 21:10, la credencial `CRD-2027-0101` (`credencial1`), en estado activa, con pulsera `NFC-4410` y un saldo actual de 38,00 €, acumula el movimiento de saldo `mov1` de tipo consumo referido a este producto, por una cantidad de 2 unidades y un importe de 7,00 €.
-
-**Caso 2: Varios productos y dos credenciales en un mismo punto de venta**  
-El punto de venta Barra Norte (`pv2`), de tipo bebidas y snacks, ofrece tres productos: Agua 50 cl (`prod2`) a un precio actual de 2,00 €, sin alcohol y con stock disponible de 900 unidades; Refresco Cola (`prod3`) a un precio actual de 3,00 €, sin alcohol y con stock disponible de 650 unidades; y Combinado (`prod4`) a un precio actual de 8,50 €, con alcohol y con stock disponible de 300 unidades.  
-El 21 de mayo de 2027, la credencial `CRD-2027-0452` (`credencial3`, activa, pulsera `NFC-7821` y saldo actual de 93,50 €) acumula a las 22:00 el movimiento `mov2` de tipo consumo por 2 unidades de Combinado y un importe de 17,00 €.  
-A las 22:05, la credencial `CRD-2027-0889` (`credencial4`, activa, pulsera `NFC-3302` y saldo actual de 25,00 €) acumula dos movimientos de tipo consumo: `mov3` por 1 unidad de Agua 50 cl con un importe de 2,00 €, y `mov4` por 1 unidad de Refresco Cola con un importe de 3,00 €.
-
-**Caso 3: Varios puntos de venta y cadena de movimientos de una misma credencial**  
-El 22 de mayo de 2027, el punto de venta Triana Burgers (`pv3`), de tipo comida, ofrece el producto Hamburguesa Clásica (`prod5`) a un precio actual de 9,00 €, sin alcohol y con stock disponible de 120 unidades; mientras que el punto de venta Stand Oficial (`pv4`), de tipo merchandising, ofrece la Camiseta Azahar 2027 (`prod6`) a un precio actual de 22,00 €, sin alcohol y con stock disponible de 65 unidades.  
-La credencial `CRD-2027-0101` (`credencial1`, en estado activa, con pulsera `NFC-4410` y un saldo actual de 7,00 € tras ambas operaciones) acumula dos movimientos de tipo consumo: `mov5` a las 18:30 por 1 unidad de Camiseta Azahar 2027 con un importe de 22,00 €, y `mov6` a las 21:45 por 1 unidad de Hamburguesa Clásica con un importe de 9,00 €.
-
 ## 6. Matriz de trazabilidad
 
 - Matriz de trazabilidad entre los elementos del modelo conceptual y los requisitos. **Columnas:**
@@ -1352,6 +1326,41 @@ La credencial `CRD-2027-0101` (`credencial1`, en estado activa, con pulsera `NFC
 | **R.N.09** Devolución de saldo |  |  |  |  |  |  |  | x |  |  | x |  |  |  |  |  |  |  |  |  | x |  |  |  |  | x |  |  |  |  |  |  |  |  |
 | **R.N.10** Acceso y aforo de zona | x | x | x |  |  |  | x | x |  |  |  | x |  |  |  |  |  |  | x | x |  |  |  |  |  |  |  |  | x | x | x |  |  |  |
 | **R.N.11** Pulsera única | x |  |  |  |  |  |  | x |  |  | x | x |  |  |  |  |  |  |  |  | x |  |  |  |  | x |  |  | x |  |  |  |  |  |
+
+### Matriz de trazabilidad de restricciones
+
+Esta matriz recoge de forma independiente la correspondencia entre las restricciones del modelo conceptual (`R1`–`R11`) y las clases implicadas del diagrama UML del apartado 5.1.
+
+| Clase UML | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| **Edicion** | X | | | | | | | | X | | |
+| **Zona** | | X | | | | | | | | X | |
+| **Escenario** | X | | | | | | | | | | |
+| **Actuacion** | X | | | | | | | | | | |
+| **Artista** | | | | | | | | | | | |
+| **Usuario** | | | | | X | | X | | | | |
+| **Asistente** | | | | | X | | X | | | | |
+| **Profesional** | | | | | | | | | | | |
+| **TipoCredencial** | | X | X | X | | | | | | | |
+| **Credencial** | | | | X | | X | X | | X | X | X |
+| **Acceso** | | X | | | | | | | | X | |
+| **PuntoVenta** | | | | | | | | | | | |
+| **Producto** | | | | | | X | X | X | | | |
+| **MovimientoSaldo** | | | | | | X | X | X | X | | |
+
+**Leyenda de restricciones:**
+* **R1:** Sin solapes de actuaciones en el mismo escenario y dentro de las fechas de la edición.
+* **R2:** Control de ocupación y acceso según el perfil asignado a la zona.
+* **R3:** Coherencia entre precio y cupo máximo del tipo de credencial.
+* **R4:** El cupo máximo no puede reducirse por debajo de las credenciales ya emitidas.
+* **R5:** Menores de 16 años requieren adulto responsable.
+* **R6:** Saldo nunca negativo, recargas entre 5 € y 200 €, e importe igual a cantidad por precio.
+* **R7:** Prohibición de venta de alcohol a menores de 18 años.
+* **R8:** Control de existencias: no se puede vender más cantidad que el stock disponible.
+* **R9:** Devolución íntegra y sin comisiones del saldo sobrante tras finalizar la edición (una sola vez).
+* **R10:** Entradas y salidas alternas respetando siempre el aforo máximo de la zona.
+* **R11:** Una única pulsera NFC activa simultáneamente por credencial.
+
 ## 7. Modelo relacional en 3FN
 
 - Relaciones obtenidas al aplicar la transformación del modelo conceptual.
