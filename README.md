@@ -188,7 +188,7 @@ Una misma persona puede ser asistente y profesional a la vez. Por ejemplo, una p
 #### R.F.01. Cartel de una jornada
 
 Como asistente  
-quiero consultar el cartel de una jornada, con la hora de inicio y de fin de cada actuación, el artista, su género musical, el escenario, la zona donde está y su estado, ordenado por fecha y hora de inicio  
+quiero consultar el cartel de una jornada, con la hora de inicio y de fin de cada actuación, el artista o artistas participantes, su género musical, el escenario, la zona donde está y su estado, ordenado por fecha y hora de inicio  
 para decidir qué conciertos ver y cómo moverme por el recinto.
 
 #### R.F.02. Escaleta de un escenario
@@ -350,7 +350,7 @@ Como responsable de programación
 quiero disponer de la siguiente información sobre cada actuación:
 
 - Identificador de la actuación.
-- Artista que actúa, escenario y edición.
+- Artista o artistas que actúan, escenario y edición.
 - Fecha y hora de inicio y de fin.
 - Si es cabeza de cartel.
 - Estado: programada, realizada o cancelada.
@@ -359,7 +359,7 @@ para preparar el cartel y organizar el trabajo de cada escenario, respetando R.N
 
 **Relaciones:**
 
-- `artistaId` → R.I.05 (Artista): cada actuación tiene `1` artista; un artista tiene `0..*` actuaciones.
+- Participación de artistas → R.I.05 (Artista): cada actuación cuenta con `1..*` artistas; un artista participa en `0..*` actuaciones.
 - `escenarioId` → R.I.04 (Escenario): cada actuación se celebra en `1` escenario; un escenario acoge `0..*` actuaciones.
 - `edicionId` → R.I.02 (Edición): cada actuación pertenece a `1` edición; una edición programa `0..*` actuaciones.
 
@@ -506,7 +506,7 @@ para tener un registro centralizado de los problemas del evento y evitar que la 
 
 ##### R.N.01. Programación válida y sin solapes
 
-Dos actuaciones del mismo escenario no se pueden solapar, y entre el final de una y el principio de la siguiente tiene que haber al menos 30 minutos, que es lo que se tarda en desmontar el equipo de un artista y montar el del siguiente. Las actuaciones canceladas no cuentan. Un artista tampoco puede actuar en dos escenarios a la vez.
+Dos actuaciones del mismo escenario no se pueden solapar, y entre el final de una y el principio de la siguiente tiene que haber al menos 30 minutos, que es lo que se tarda en desmontar el equipo de un artista y montar el del siguiente. Las actuaciones canceladas no cuentan. Una misma actuación puede contar con varios artistas participantes al mismo tiempo en el mismo escenario. Un mismo artista no puede participar en dos actuaciones cuyos horarios se solapen, aunque sean en escenarios distintos.
 
 Una actuación tiene que terminar después de empezar y durar entre 30 minutos y 3 horas. Además, tiene que caer entera dentro de una jornada de su edición, es decir, entre las 12:00 de uno de sus días y las 06:00 del día siguiente. Entre las 06:00 y las 12:00 no hay actuaciones. Estas condiciones también se comprueban al modificar o reactivar una actuación (R.I.02, R.I.04, R.I.05 y R.I.06).
 
@@ -514,7 +514,7 @@ Una actuación tiene que terminar después de empezar y durar entre 30 minutos y
 
 - Si el Escenario Guadalquivir solo tiene el viernes 21 una actuación, de 20:30 a 21:40, se programa otra de 22:10 a 23:10, justo 30 minutos después, y se registra sin errores.
 - En esa misma situación, se intenta programar otra de 21:50 a 22:50 y se recibe un mensaje de error, porque solo quedarían 10 minutos para el cambio.
-- El viernes 21, en el Escenario Patio, que esa noche no tiene actuaciones, se programa a otro artista de 21:00 a 22:00 y se registra sin errores aunque coincida con la del Guadalquivir. Si fuera el mismo artista, se rechazaría.
+- El viernes 21, en el Escenario Patio, que esa noche no tiene actuaciones, se programa una actuación de 21:00 a 22:00 con dos artistas participantes y se registra sin errores. Si uno de esos artistas ya participara a esa misma hora en otra actuación del Escenario Guadalquivir, se rechazaría.
 - Se programa una actuación de 01:00 a 02:30 de la madrugada del domingo y se registra sin errores, porque pertenece a la jornada del sábado.
 - En un escenario libre se admiten por separado actuaciones del 22/05/2027 de 20:00 a 20:30 y de 20:00 a 23:00. Se rechazan las de 20:00 a 20:29 y de 20:00 a 23:01 por quedar fuera de los límites de duración.
 - Se intenta programar una actuación el sábado 22 de 05:00 a 06:30, que se sale de la jornada del viernes, y se recibe un mensaje de error.
@@ -810,7 +810,7 @@ Edicion "1" *-- "*" Zona : contiene
 Edicion "1" *-- "*" Actuacion : programa
 Zona "1" o-- "*" Escenario : contiene
 Escenario "1" -- "*" Actuacion : acoge
-Artista "1" -- "*" Actuacion : realiza
+Artista "*" -- "*" Actuacion : participa en
 
 TipoCredencial "1" -- "*" Credencial : define
 Usuario "1" -- "*" Credencial : es titular
@@ -833,162 +833,480 @@ note for Acceso "Entradas y salidas alternas<br/>Respeta el aforo de la zona"
 
 ### 5.2. Escenarios de prueba
 
-A continuación se recogen los casos principales de éxito de las reglas R.N.06 a R.N.09, representados con diagramas de objetos y una nota de validación en cada uno.
+A continuación se divide el modelo conceptual en tres escenarios que cubren todas las clases del diagrama UML del apartado 5.1. Cada escenario presenta un diagrama de objetos con las instancias implicadas, sus clases, atributos y enlaces, junto con varios casos concretos descritos en texto con todos sus atributos.
 
-#### R.N.06. Saldo nunca negativo y límites de recarga
-
-Una credencial con 10 € de saldo paga 2 bocadillos de 5 €. El saldo queda en 0 €.
+#### 5.2.1. Escenario 1: Edición, escenarios, actuaciones y artistas
 
 ```mermaid
 classDiagram
-direction LR
+    class edicion1 {
+        <<Edicion>>
+        +nombre
+        +anio
+        +fechaInicio
+        +fechaFin
+        +aforoAutorizado
+    }
+    class edicion2 {
+        <<Edicion>>
+        +nombre
+        +anio
+        +fechaInicio
+        +fechaFin
+        +aforoAutorizado
+    }
+    class edicion3 {
+        <<Edicion>>
+        +nombre
+        +anio
+        +fechaInicio
+        +fechaFin
+        +aforoAutorizado
+    }
+    class escenario1 {
+        <<Escenario>>
+        +nombre
+    }
+    class escenario2 {
+        <<Escenario>>
+        +nombre
+    }
+    class escenario3 {
+        <<Escenario>>
+        +nombre
+    }
+    class escenario4 {
+        <<Escenario>>
+        +nombre
+    }
+    class actuacion1 {
+        <<Actuacion>>
+        +fechaHoraInicio
+        +fechaHoraFin
+        +estado
+    }
+    class actuacion2 {
+        <<Actuacion>>
+        +fechaHoraInicio
+        +fechaHoraFin
+        +estado
+    }
+    class actuacion3 {
+        <<Actuacion>>
+        +fechaHoraInicio
+        +fechaHoraFin
+        +estado
+    }
+    class actuacion4 {
+        <<Actuacion>>
+        +fechaHoraInicio
+        +fechaHoraFin
+        +estado
+    }
+    class actuacion5 {
+        <<Actuacion>>
+        +fechaHoraInicio
+        +fechaHoraFin
+        +estado
+    }
+    class artista1 {
+        <<Artista>>
+        +nombreArtistico
+    }
+    class artista2 {
+        <<Artista>>
+        +nombreArtistico
+    }
+    class artista3 {
+        <<Artista>>
+        +nombreArtistico
+    }
+    class artista4 {
+        <<Artista>>
+        +nombreArtistico
+    }
+    class artista5 {
+        <<Artista>>
+        +nombreArtistico
+    }
+    class artista6 {
+        <<Artista>>
+        +nombreArtistico
+    }
 
-class Credencial01 {
-  <<Credencial>>
-  codigo = "CRD-2027-00841"
-  estado = "canjeada"
-  saldoAntes = 10.00
-  saldoDespues = 0.00
-}
-class Pulsera01 {
-  <<Pulsera>>
-  estado = "activa"
-}
-class Bocadillo {
-  <<Producto>>
-  nombre = "Bocadillo"
-  precioActual = 5.00
-  stockDisponible = 80
-}
-class Consumo01 {
-  <<MovimientoSaldo>>
-  tipoMovimiento = "consumo"
-  cantidad = 2
-  precioUnitario = 5.00
-  importe = 10.00
-}
+    edicion1 -- actuacion1 : programa
+    escenario1 -- actuacion1 : acoge
+    artista1 -- actuacion1 : realiza
 
-Credencial01 -- Pulsera01 : pulsera actual
-Consumo01 -- Credencial01 : acumula
-Consumo01 -- Bocadillo : se refiere a
+    edicion2 -- actuacion2 : programa
+    escenario2 -- actuacion2 : acoge
+    artista2 -- actuacion2 : realiza
+    artista3 -- actuacion2 : realiza
+    artista4 -- actuacion2 : realiza
 
-note for Consumo01 "Calculo: cantidad 2 x precio 5.00 = 10.00"
-note for Credencial01 "Prueba de Aceptación (RN-06):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: importe 10.00 no supera el saldo 10.00.<br/>El saldo queda en 0.00, nunca negativo."
+    edicion3 -- actuacion3 : programa
+    edicion3 -- actuacion4 : programa
+    edicion3 -- actuacion5 : programa
+    escenario3 -- actuacion3 : acoge
+    escenario3 -- actuacion4 : acoge
+    escenario4 -- actuacion5 : acoge
+    artista5 -- actuacion3 : realiza
+    artista5 -- actuacion4 : realiza
+    artista6 -- actuacion4 : realiza
+    artista6 -- actuacion5 : realiza
 ```
 
-#### R.N.07. Prohibida la venta de alcohol a menores
+**Caso 1: Actuación individual (Puro Latino)**  
+La `edicion1`, Puro Latino, se celebrará en el año 2027 entre el 25 de junio y el 27 de junio con un aforo autorizado de 30.000 asistentes.  
+En el Escenario Principal (`escenario1`) se ha programado la actuación `actuacion1`, actualmente en estado programada, que acogerá al artista Quevedo (`artista1`) el 25 de junio de 2027 desde las 23:00 hasta las 00:30 del día 26.
 
-Martín, nacido el 14/03/2012 (15 años en mayo de 2027), compra un refresco sin alcohol.
+**Caso 2: Varios artistas en una misma actuación**  
+La `edicion2`, Azahar Sound, se celebra en el año 2027 entre el 21 de mayo y el 23 de mayo con un aforo autorizado de 15.000 asistentes.  
+En el Escenario Guadalquivir (`escenario2`) se desarrolla la `actuacion2`, en estado en curso, el 22 de mayo de 2027 desde las 22:00 hasta las 23:30, acogiendo de forma conjunta a tres artistas: Vetusta Morla (`artista2`), Rozalén (`artista3`) y Xoel López (`artista4`).
+
+**Caso 3: Varias actuaciones en distintos horarios y escenarios**  
+La `edicion3`, Icónica Fest, tiene lugar en el año 2027 entre el 10 de julio y el 12 de julio con un aforo autorizado de 18.000 asistentes, repartiendo su programación entre el Escenario Central (`escenario3`) y la Carpa Electrónica (`escenario4`).  
+En el Escenario Central se celebran dos actuaciones el 10 de julio de 2027: la `actuacion3`, de 20:00 a 21:30 y en estado finalizada, protagonizada por Nathy Peluso (`artista5`); y la `actuacion4`, de 22:00 a 23:30 en estado en curso, en la que actúan juntos Nathy Peluso y Bizarrap (`artista6`).  
+Por último, en la Carpa Electrónica se programa la `actuacion5`, en estado programada, para el 11 de julio de 2027 de 01:00 a 02:30, con Bizarrap como artista.
+
+---
+
+#### 5.2.2. Escenario 2: Usuarios, credenciales, accesos y zonas
 
 ```mermaid
 classDiagram
-direction LR
+    class asistente1 {
+        <<Asistente>>
+        +email
+        +nombre
+        +apellidos
+        +fechaNacimiento
+        +documentoIdentidad
+    }
+    class profesional1 {
+        <<Profesional>>
+        +email
+        +nombre
+        +apellidos
+        +fechaNacimiento
+        +documentoIdentidad
+        +rolOperativo
+    }
+    class asistente2 {
+        <<Asistente>>
+        +email
+        +nombre
+        +apellidos
+        +fechaNacimiento
+        +documentoIdentidad
+    }
+    class asistente3 {
+        <<Asistente>>
+        +email
+        +nombre
+        +apellidos
+        +fechaNacimiento
+        +documentoIdentidad
+    }
+    class tipo1 {
+        <<TipoCredencial>>
+        +nombre
+        +precioActual
+        +cupoMaximo
+        +perfilAcceso
+    }
+    class tipo2 {
+        <<TipoCredencial>>
+        +nombre
+        +precioActual
+        +cupoMaximo
+        +perfilAcceso
+    }
+    class tipo3 {
+        <<TipoCredencial>>
+        +nombre
+        +precioActual
+        +cupoMaximo
+        +perfilAcceso
+    }
+    class credencial1 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class credencial2 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class credencial3 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class credencial4 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class acceso1 {
+        <<Acceso>>
+        +fechaHora
+        +resultado
+    }
+    class acceso2 {
+        <<Acceso>>
+        +fechaHora
+        +resultado
+    }
+    class acceso3 {
+        <<Acceso>>
+        +fechaHora
+        +resultado
+    }
+    class acceso4 {
+        <<Acceso>>
+        +fechaHora
+        +resultado
+    }
+    class acceso5 {
+        <<Acceso>>
+        +fechaHora
+        +resultado
+    }
+    class zona1 {
+        <<Zona>>
+        +nombre
+        +tipo
+        +aforoMaximo
+        +ocupacionActual
+    }
+    class zona2 {
+        <<Zona>>
+        +nombre
+        +tipo
+        +aforoMaximo
+        +ocupacionActual
+    }
+    class zona3 {
+        <<Zona>>
+        +nombre
+        +tipo
+        +aforoMaximo
+        +ocupacionActual
+    }
 
-class Martin {
-  <<Usuario>>
-  nombre = "Martín Ruiz Ortega"
-  fechaNacimiento = "14/03/2012"
-}
-class Credencial03 {
-  <<Credencial>>
-  tipo = "Abono General"
-  saldoActual = 20.00
-}
-class Refresco {
-  <<Producto>>
-  nombre = "Refresco"
-  llevaAlcohol = false
-  precioActual = 3.00
-}
-class Consumo02 {
-  <<MovimientoSaldo>>
-  fechaHora = "22/05/2027 20:00"
-  cantidad = 1
-  importe = 3.00
-}
+    asistente1 -- credencial1 : es titular
+    profesional1 -- credencial2 : es titular
+    asistente2 -- credencial3 : es titular
+    asistente3 -- credencial4 : es titular
 
-Martin -- Credencial03 : es titular
-Consumo02 -- Credencial03 : acumula
-Consumo02 -- Refresco : se refiere a
+    tipo1 -- credencial1 : define
+    tipo2 -- credencial2 : define
+    tipo3 -- credencial3 : define
+    tipo1 -- credencial4 : define
 
-note for Consumo02 "Prueba de Aceptación (RN-07):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: el producto no lleva alcohol,<br/>se puede vender a cualquier titular."
+    credencial1 -- acceso1 : genera
+    credencial2 -- acceso2 : genera
+    credencial2 -- acceso3 : genera
+    credencial3 -- acceso4 : genera
+    credencial4 -- acceso5 : genera
+
+    zona1 -- acceso1 : registra
+    zona2 -- acceso2 : registra
+    zona1 -- acceso3 : registra
+    zona3 -- acceso4 : registra
+    zona3 -- acceso5 : registra
 ```
 
-#### R.N.08. Control de stock
+**Caso 1: Acceso de un asistente a una zona pública**  
+La asistente Laura Mendoza Gil (`asistente1`), nacida el 14 de marzo de 1999, con documento de identidad 48123901A y correo electrónico `laura.m@mail.com`, es titular de la credencial `CRD-2027-0101` (`credencial1`), correspondiente al tipo de credencial Abono General (`tipo1`), cuyo precio actual es de 75,00 €, con un cupo máximo de 10.000 unidades y perfil de acceso a zonas públicas.  
+Su credencial está en estado activa, tiene vinculada la pulsera `NFC-4410` y cuenta con un saldo actual de 45,00 €. El 21 de mayo de 2027 a las 19:15 genera el `acceso1` con resultado permitido en la zona Pista General (`zona1`), una zona de tipo pública con un aforo máximo de 10.000 personas y una ocupación actual de 6.200 asistentes.
 
-Se cobran 2 aguas de la «Barra Azahar», que tiene 100 unidades. El stock pasa a 98.
+**Caso 2: Varios accesos de un profesional entre distintas zonas**  
+El profesional Carlos Ruiz Navarro (`profesional1`), nacido el 8 de septiembre de 1988, con documento de identidad 29456123K, correo electrónico `carlos.r@azahar.es` y rol operativo de Seguridad, es titular de la credencial `CRD-2027-9004` (`credencial2`), definida por el tipo de credencial Pase Staff (`tipo2`), con un precio actual de 0,00 €, un cupo máximo de 300 unidades y perfil de acceso total.  
+Esta credencial se encuentra en estado activa, tiene asignada la pulsera `NFC-9004` y dispone de un saldo actual de 0,00 €. El 21 de mayo de 2027 registra dos accesos con resultado permitido: el `acceso2` a las 17:00 en la zona Backstage Técnico (`zona2`), de tipo restringida, con aforo máximo de 250 personas y ocupación actual de 95; y el `acceso3` a las 20:30 en la zona Pista General (`zona1`), de tipo pública, con aforo máximo de 10.000 personas y ocupación actual de 6.200.
+
+**Caso 3: Varios asistentes con distintos tipos de credencial y resultados de acceso**  
+El asistente Javier Serrano Ortiz (`asistente2`), nacido el 2 de noviembre de 1995, con documento de identidad 77890234M y correo `javier.s@mail.com`, posee la credencial `CRD-2027-0452` (`credencial3`) del tipo de credencial Abono VIP (`tipo3`), con precio actual de 140,00 €, cupo máximo de 1.500 y perfil de acceso a zonas públicas y VIP; la credencial está en estado activa, vinculada a `NFC-7821` y con un saldo actual de 110,50 €.  
+Por otro lado, la asistente Marta Blanco Díaz (`asistente3`), nacida el 19 de julio de 2002, con documento de identidad 53901842L y correo `marta.b@mail.com`, posee la credencial `CRD-2027-0889` (`credencial4`) del tipo Abono General (`tipo1`, precio actual de 75,00 €, cupo máximo de 10.000 y perfil de zonas públicas), en estado activa, con pulsera `NFC-3302` y saldo actual de 30,00 €.  
+El 21 de mayo de 2027 ambos pasan por el control de la Terraza VIP (`zona3`), una zona de tipo exclusiva con aforo máximo de 1.500 personas y ocupación actual de 410: Javier registra a las 20:10 el `acceso4` con resultado permitido, mientras que Marta registra a las 20:12 el `acceso5` con resultado denegado.
+
+---
+
+#### 5.2.3. Escenario 3: Puntos de venta, productos y movimientos de saldo
 
 ```mermaid
 classDiagram
-direction LR
+    class pv1 {
+        <<PuntoVenta>>
+        +nombre
+        +tipo
+    }
+    class pv2 {
+        <<PuntoVenta>>
+        +nombre
+        +tipo
+    }
+    class pv3 {
+        <<PuntoVenta>>
+        +nombre
+        +tipo
+    }
+    class pv4 {
+        <<PuntoVenta>>
+        +nombre
+        +tipo
+    }
+    class prod1 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class prod2 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class prod3 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class prod4 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class prod5 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class prod6 {
+        <<Producto>>
+        +nombre
+        +precioActual
+        +llevaAlcohol
+        +stockDisponible
+    }
+    class mov1 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class mov2 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class mov3 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class mov4 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class mov5 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class mov6 {
+        <<MovimientoSaldo>>
+        +fechaHora
+        +tipoMovimiento
+        +importe
+        +cantidad
+    }
+    class credencial1 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class credencial3 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
+    class credencial4 {
+        <<Credencial>>
+        +codigo
+        +estado
+        +nfcActual
+        +saldoActual
+    }
 
-class BarraAzahar {
-  <<PuntoVenta>>
-  nombre = "Barra Azahar"
-  tipo = "barra"
-}
-class Agua {
-  <<Producto>>
-  nombre = "Agua"
-  precioActual = 2.00
-  stockAntes = 100
-  stockDespues = 98
-}
-class Credencial05 {
-  <<Credencial>>
-  saldoActual = 15.00
-}
-class Consumo03 {
-  <<MovimientoSaldo>>
-  cantidad = 2
-  precioUnitario = 2.00
-  importe = 4.00
-}
+    pv1 -- prod1 : ofrece
+    pv2 -- prod2 : ofrece
+    pv2 -- prod3 : ofrece
+    pv2 -- prod4 : ofrece
+    pv3 -- prod5 : ofrece
+    pv4 -- prod6 : ofrece
 
-BarraAzahar -- Agua : ofrece
-Consumo03 -- Credencial05 : acumula
-Consumo03 -- Agua : se refiere a
+    credencial1 -- mov1 : acumula
+    credencial3 -- mov2 : acumula
+    credencial4 -- mov3 : acumula
+    credencial4 -- mov4 : acumula
+    credencial1 -- mov5 : acumula
+    credencial1 -- mov6 : acumula
 
-note for Agua "Prueba de Aceptación (RN-08):<br/>El consumo es VÁLIDO.<br/><br/>Motivo: cantidad 2 es menor o igual que el stock 100.<br/>Stock final 100 - 2 = 98 (mayor o igual que 0)."
+    mov1 -- prod1 : se refiere a
+    mov2 -- prod4 : se refiere a
+    mov3 -- prod2 : se refiere a
+    mov4 -- prod3 : se refiere a
+    mov5 -- prod6 : se refiere a
+    mov6 -- prod5 : se refiere a
 ```
 
-#### R.N.09. Devolución del saldo sin comisión
+**Caso 1: Consumo individual en una barra**  
+En el punto de venta Barra Azahar (`pv1`), de tipo bebidas, se ofrece el producto Cerveza 33 cl (`prod1`), con un precio actual de 3,50 €, que sí lleva alcohol y tiene un stock disponible de 480 unidades.  
+El 21 de mayo de 2027 a las 21:10, la credencial `CRD-2027-0101` (`credencial1`), en estado activa, con pulsera `NFC-4410` y un saldo actual de 38,00 €, acumula el movimiento de saldo `mov1` de tipo consumo referido a este producto, por una cantidad de 2 unidades y un importe de 7,00 €.
 
-El lunes 24/05/2027 a las 06:00, justo al terminar la última jornada, se solicita la devolución completa de 11,50 € sin comisión.
+**Caso 2: Varios productos y dos credenciales en un mismo punto de venta**  
+El punto de venta Barra Norte (`pv2`), de tipo bebidas y snacks, ofrece tres productos: Agua 50 cl (`prod2`) a un precio actual de 2,00 €, sin alcohol y con stock disponible de 900 unidades; Refresco Cola (`prod3`) a un precio actual de 3,00 €, sin alcohol y con stock disponible de 650 unidades; y Combinado (`prod4`) a un precio actual de 8,50 €, con alcohol y con stock disponible de 300 unidades.  
+El 21 de mayo de 2027, la credencial `CRD-2027-0452` (`credencial3`, activa, pulsera `NFC-7821` y saldo actual de 93,50 €) acumula a las 22:00 el movimiento `mov2` de tipo consumo por 2 unidades de Combinado y un importe de 17,00 €.  
+A las 22:05, la credencial `CRD-2027-0889` (`credencial4`, activa, pulsera `NFC-3302` y saldo actual de 25,00 €) acumula dos movimientos de tipo consumo: `mov3` por 1 unidad de Agua 50 cl con un importe de 2,00 €, y `mov4` por 1 unidad de Refresco Cola con un importe de 3,00 €.
 
-```mermaid
-classDiagram
-direction LR
+**Caso 3: Varios puntos de venta y cadena de movimientos de una misma credencial**  
+El 22 de mayo de 2027, el punto de venta Triana Burgers (`pv3`), de tipo comida, ofrece el producto Hamburguesa Clásica (`prod5`) a un precio actual de 9,00 €, sin alcohol y con stock disponible de 120 unidades; mientras que el punto de venta Stand Oficial (`pv4`), de tipo merchandising, ofrece la Camiseta Azahar 2027 (`prod6`) a un precio actual de 22,00 €, sin alcohol y con stock disponible de 65 unidades.  
+La credencial `CRD-2027-0101` (`credencial1`, en estado activa, con pulsera `NFC-4410` y un saldo actual de 7,00 € tras ambas operaciones) acumula dos movimientos de tipo consumo: `mov5` a las 18:30 por 1 unidad de Camiseta Azahar 2027 con un importe de 22,00 €, y `mov6` a las 21:45 por 1 unidad de Hamburguesa Clásica con un importe de 9,00 €.
 
-class Edicion2027 {
-  <<Edicion>>
-  nombre = "Azahar Sound 2027"
-  fechaFin = "23/05/2027"
-  cierreEfectivo = "24/05/2027 06:00"
-}
-class Credencial07 {
-  <<Credencial>>
-  saldoActual = 11.50
-  saldoDisponible = 0.00
-}
-class Devolucion01 {
-  <<Devolucion>>
-  fechaSolicitud = "24/05/2027 06:00"
-  importeSolicitado = 11.50
-  comision = 0.00
-  estado = "solicitada"
-}
-class Atencion {
-  <<Usuario>>
-  rol = "Atención al cliente"
-}
-
-Credencial07 -- Edicion2027 : de la edicion
-Devolucion01 -- Credencial07 : integrada en
-Devolucion01 -- Atencion : tramita
-
-note for Devolucion01 "Prueba de Aceptación (RN-09):<br/>La solicitud es VÁLIDA.<br/><br/>Motivo: fecha mayor o igual que el cierre, importe igual al saldo completo,<br/>sin comisión. El saldo disponible queda en 0.00."
-```
 ## 6. Matriz de trazabilidad
 
 - Matriz de trazabilidad entre los elementos del modelo conceptual y los requisitos. **Columnas:**
