@@ -1365,9 +1365,103 @@ Esta matriz recoge de forma independiente la correspondencia entre las restricci
 
 - Relaciones obtenidas al aplicar la transformación del modelo conceptual.
 
+A partir del modelo conceptual del apartado 5.1, los requisitos de información (`R.I.01`–`R.I.13`) y las asociaciones de la matriz de trazabilidad (`A01`–`A21`), se obtiene el siguiente esquema relacional normalizado en Tercera Forma Normal (3FN). Se emplea el subrayado continuo para las claves primarias (`PK`), asterisco (`*`) para las claves ajenas (`FK`) y `(UQ)` para las claves alternativas únicas.
+
+### Esquema de relaciones
+
+1. **Usuario** (<u>idUsuario</u>, email *(UQ)*, passwordHash, nombre, apellidos, documentoIdentidad *(UQ)*, fechaNacimiento, telefono, fechaAlta, esAsistente, esProfesional, empresa, rolOperativo)
+   - **PK:** `idUsuario`
+   - **Claves alternativas (UQ):** `email`, `documentoIdentidad`
+   - **Nulos admitidos:** `telefono`, `empresa`, `rolOperativo`
+
+2. **Edicion** (<u>idEdicion</u>, nombre, anio *(UQ)*, fechaInicio, fechaFin, aforoAutorizado)
+   - **PK:** `idEdicion`
+   - **Claves alternativas (UQ):** `anio`
+
+3. **Zona** (<u>idZona</u>, nombre *(UQ)*, tipo, aforoMaximo, ubicacion)
+   - **PK:** `idZona`
+   - **Claves alternativas (UQ):** `nombre`
+   - **Nota de normalización:** El atributo derivado `/ocupacionActual` del modelo conceptual no se almacena para evitar anomalías de actualización; se calcula a partir de `Acceso`.
+
+4. **Artista** (<u>idArtista</u>, nombreArtistico *(UQ)*, generoMusical, paisOrigen)
+   - **PK:** `idArtista`
+   - **Claves alternativas (UQ):** `nombreArtistico`
+
+5. **Escenario** (<u>idEscenario</u>, nombre *(UQ)*, *zonaId*, *responsableId*)
+   - **PK:** `idEscenario`
+   - **Claves alternativas (UQ):** `nombre`
+   - **FKs:** `zonaId` → `Zona(idZona)` (asociación A01); `responsableId` → `Usuario(idUsuario)` (asociación A02, admite `NULL`)
+
+6. **TipoCredencial** (<u>idTipoCredencial</u>, *edicionId*, nombre, destinatario, fechaValidez, perfilAcceso, precioActual, cupoMaximo)
+   - **PK:** `idTipoCredencial`
+   - **Claves alternativas (UQ):** `(edicionId, nombre)`
+   - **FKs:** `edicionId` → `Edicion(idEdicion)` (asociación A06)
+   - **Nulos admitidos:** `fechaValidez` (`NULL` indica validez para todas las jornadas de la edición)
+
+7. **PuntoVenta** (<u>idPuntoVenta</u>, *edicionId*, nombre, tipo, *zonaId*, *responsableId*)
+   - **PK:** `idPuntoVenta`
+   - **Claves alternativas (UQ):** `(edicionId, nombre)`
+   - **FKs:** `edicionId` → `Edicion(idEdicion)` (A09); `zonaId` → `Zona(idZona)` (A10); `responsableId` → `Usuario(idUsuario)` (A11)
+
+8. **Incidencia** (<u>idIncidencia</u>, *edicionId*, fechaHora, *zonaId*, tipo, gravedad, descripcion, *registradorId*)
+   - **PK:** `idIncidencia`
+   - **FKs:** `edicionId` → `Edicion(idEdicion)` (A19); `zonaId` → `Zona(idZona)` (A20); `registradorId` → `Usuario(idUsuario)` (A21)
+
+9. **Actuacion** (<u>idActuacion</u>, *escenarioId*, *edicionId*, fechaHoraInicio, fechaHoraFin, esCabezaCartel, estado)
+   - **PK:** `idActuacion`
+   - **FKs:** `escenarioId` → `Escenario(idEscenario)` (A04); `edicionId` → `Edicion(idEdicion)` (A05)
+
+10. **ActuacionArtista** (<u>*actuacionId*</u>, <u>*artistaId*</u>)
+    - **PK:** `(actuacionId, artistaId)`
+    - **FKs:** `actuacionId` → `Actuacion(idActuacion)` (A03); `artistaId` → `Artista(idArtista)` (A03)
+    - **Nota de normalización:** Tabla asociativa resultante de transformar la relación muchos a muchos (`1..*` a `0..*`) entre `Actuacion` y `Artista`.
+
+11. **Credencial** (<u>codigo</u>, *tipoCredencialId*, *titularId*, *compradorId*, fechaHoraEmision, precioPagado, estado, fechaHoraPrimerCanje, *adultoResponsableId*, urlAutorizacionMenor, nfcActual *(UQ)*, estadoPulsera, fechaHoraAsignacionPulsera, fechaHoraBloqueoPulsera, fechaHoraSolicitudDevolucion, importeDevolucion, *tramitadorDevolucionId*, fechaHoraPagoDevolucion)
+    - **PK:** `codigo`
+    - **Claves alternativas (UQ):** `nfcActual`
+    - **FKs:** `tipoCredencialId` → `TipoCredencial(idTipoCredencial)` (A07); `titularId` → `Usuario(idUsuario)` (A08); `compradorId` → `Usuario(idUsuario)` (A08, admite `NULL`); `adultoResponsableId` → `Usuario(idUsuario)` (A08, admite `NULL`); `tramitadorDevolucionId` → `Usuario(idUsuario)` (A08, admite `NULL`)
+    - **Nulos admitidos:** `compradorId`, `fechaHoraPrimerCanje`, `adultoResponsableId`, `urlAutorizacionMenor`, `nfcActual`, `estadoPulsera`, `fechaHoraAsignacionPulsera`, `fechaHoraBloqueoPulsera`, `fechaHoraSolicitudDevolucion`, `importeDevolucion`, `tramitadorDevolucionId`, `fechaHoraPagoDevolucion`
+    - **Nota de normalización:** Los atributos derivados `/saldoActual`, `/saldoDisponible` y el estado de la devolución no se almacenan, evitando redundancias y dependencias transitivas. Los datos de la pulsera actual (`R.N.11`) y de la única solicitud de devolución permitida (`R.N.09`) dependen funcionalmente de forma directa de `codigo`.
+
+12. **Producto** (<u>idProducto</u>, *puntoVentaId*, nombre, categoria, precioActual, llevaAlcohol, stockDisponible, stockMinimo)
+    - **PK:** `idProducto`
+    - **Claves alternativas (UQ):** `(puntoVentaId, nombre)`
+    - **FKs:** `puntoVentaId` → `PuntoVenta(idPuntoVenta)` (A12)
+
+13. **MovimientoSaldo** (<u>idMovimiento</u>, *credencialId*, fechaHora, tipoMovimiento, importe, canalRecarga, *productoId*, cantidad, precioUnitario, *vendedorId*)
+    - **PK:** `idMovimiento`
+    - **FKs:** `credencialId` → `Credencial(codigo)` (A13); `productoId` → `Producto(idProducto)` (A14, admite `NULL`); `vendedorId` → `Usuario(idUsuario)` (A15, admite `NULL`)
+    - **Nulos admitidos:** `canalRecarga` (solo en recargas); `productoId`, `cantidad`, `precioUnitario`, `vendedorId` (solo en consumos)
+
+14. **Acceso** (<u>idAcceso</u>, *credencialId*, *zonaId*, fechaHora, tipoMovimiento, *validadorId*, resultado, motivoDenegacion)
+    - **PK:** `idAcceso`
+    - **FKs:** `credencialId` → `Credencial(codigo)` (A16, admite `NULL`); `zonaId` → `Zona(idZona)` (A17); `validadorId` → `Usuario(idUsuario)` (A18)
+    - **Nulos admitidos:** `credencialId` (cuando se lee un código NFC desconocido, que queda denegado), `motivoDenegacion` (cuando `resultado = 'permitido'`)
+
+### Verificación de la Tercera Forma Normal (3FN)
+
+- **1FN:** Todos los atributos toman valores atómicos (sin grupos repetitivos ni atributos multivaluados). Las asociaciones muchos a muchos (`Actuacion`–`Artista`) se han descompuesto en relaciones independientes (`ActuacionArtista`).
+- **2FN:** En todas las tablas con clave primaria simple (`13` de las `14` tablas) la 2FN se cumple automáticamente. En `ActuacionArtista`, cuya clave es compuesta `(actuacionId, artistaId)`, no existen atributos no primos que dependan parcialmente de solo una parte de la clave.
+- **3FN:** Ningún atributo no clave determina transitivamente a otro atributo no clave. Los datos propios de la edición, el tipo de credencial o el punto de venta (como edición, perfil de acceso o ubicación) permanecen en sus respectivas tablas maestras sin replicarse en `Credencial` o `MovimientoSaldo`, y todos los atributos calculados (`/ocupacionActual`, `/saldoActual`) se han excluido del almacenamiento físico.
+
 ### 7.1.  Justificación de la estrategia de transformación de jerarquías
 
-- si se identificaron jerarquías en el MC.
+En el modelo conceptual del apartado 5.1 se ha identificado una única jerarquía de generalización/especialización: la superclase **`Usuario`** con las subclases **`Asistente`** y **`Profesional`**. Según el requisito `R.I.01`, todo usuario del sistema debe ser asistente, profesional o ambos simultáneamente (*«Si es asistente, profesional o las dos cosas a la vez. Todo usuario es al menos una de ellas»*), por lo que se trata de una jerarquía **total (obligatoria) y solapada**.
+
+Para su transformación al modelo relacional se evaluaron las tres alternativas clásicas:
+
+1. **Opción A — Tabla única para toda la jerarquía (Single Table Inheritance):** Concentrar la superclase y las subclases en una sola tabla `Usuario`, incorporando dos atributos discriminadores booleanos (`esAsistente` y `esProfesional`) junto con los atributos específicos de `Profesional` (`empresa` y `rolOperativo`) como anulables.
+2. **Opción B — Una tabla para la superclase y una tabla por cada subclase (Class Table Inheritance):** Crear `Usuario` con los atributos comunes y dos tablas hijas (`Asistente` y `Profesional`) cuya clave primaria es a la vez clave ajena hacia `Usuario`.
+3. **Opción C — Una tabla por cada subclase concreta sin tabla superclase (Concrete Table Inheritance):** Crear únicamente `Asistente` y `Profesional`, replicando en ambas todos los atributos de `Usuario`.
+
+**Decisión adoptada y justificación:** Se ha elegido la **Opción A (tabla única `Usuario` con discriminadores `esAsistente` y `esProfesional`)** por los siguientes motivos técnicos y de dominio:
+
+- **Descarte de la Opción C por solapamiento y redundancia:** Dado que una misma persona puede ser asistente y profesional a la vez (por ejemplo, un trabajador de barra que compra una entrada para asistir como público otro día, como indica el apartado 3.2), la Opción C obligaría a duplicar todos sus datos personales (`email`, `documentoIdentidad`, `nombre`, `fechaNacimiento`, etc.) en dos tablas distintas, violando la 3FN e introduciendo anomalías de actualización. Además, relaciones como `Credencial.titularId` apuntan indistintamente a asistentes y profesionales, lo que impediría mantener una única clave ajena íntegra.
+- **Ventajas frente a la Opción B en este dominio:**
+  1. *Ausencia de atributos propios en `Asistente`:* Según `R.I.01` y el diagrama UML, la subclase `Asistente` no posee ningún atributo específico adicional a los de `Usuario`. Aplicar la Opción B generaría una tabla `Asistente(idUsuario)` con una única columna, aportando complejidad estructural sin valor informativo.
+  2. *Control declarativo de la participación total:* En MariaDB, la obligatoriedad de pertenecer al menos a una subclase se garantiza de forma puramente declarativa mediante una restricción `CHECK (esAsistente = TRUE OR esProfesional = TRUE)` en `Usuario`. Con la Opción B, exigir que toda fila de `Usuario` exista en `Asistente` o `Profesional` requeriría lógica procedimental compleja en *triggers*.
+  3. *Coherencia de atributos de subclase mediante `CHECK`:* La tabla única permite garantizar declarativamente que si `esProfesional = FALSE`, tanto `empresa` como `rolOperativo` sean `NULL`, y que si `esProfesional = TRUE`, `empresa` sea obligatoria (admitiendo `rolOperativo IS NULL` para artistas y técnicos acreditados sin rol operativo, tal como exige `R.I.01`).
+  4. *Rendimiento y simplicidad en consultas:* Evita realizar múltiples operaciones `JOIN` entre `Usuario`, `Asistente` y `Profesional` en consultas frecuentes como `R.F.03`, `R.F.05`, `R.F.06` o `R.F.10`, contribuyendo al requisito no funcional de respuesta rápida (`R.N.F.03`).
 
 
 ### 8. Matriz de trazabilidad MC/SQL (opcional):
